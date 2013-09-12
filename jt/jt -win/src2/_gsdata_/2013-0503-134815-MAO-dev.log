@@ -1,0 +1,50 @@
+2013-05-03 13:48:16: ----- ：任务 'dev'：计算机 'MAO' 上的分析操作已由 User 所启动 (GoodSync v 9.4.8.8) -----
+2013-05-03 13:48:16: I:\jpac\jt -win\src <-> \\192.168.1.1\U\jpac\jt-win\src, UberUnlockedUpload, OnFileChangeDelay=120
+2013-05-03 13:48:16: 左侧：文件： 129 (已排除 )。文件夹： 12 (已排除 1)。 I: NTFS, 可用空间：160 GB，总计空间：454 GB
+2013-05-03 13:48:17: 右侧：文件： 129 (已排除 )。文件夹： 12 (已排除 1)。 \\192.168.1.1\U \\192.168.1.1\U NTFS, 可用空间：6.54 GB，总计空间：7.42 GB
+2013-05-03 13:48:17: /com/mao/jf/beans/BeanMao.java: 冲突：文件两侧都进行了改动
+2013-05-03 13:48:17: /com/mao/jf/beans/Bill.java: 冲突：文件两侧都进行了改动
+2013-05-03 13:48:17: /com/mao/jf/beans/Operation.java: 冲突：文件两侧都进行了改动
+2013-05-03 13:48:17: /com/mao/jf/beans/OperCost.java: 冲突：文件两侧都进行了改动
+2013-05-03 13:48:17: /com/mao/jf/beans/PlanCost.java: 冲突：文件两侧都进行了改动
+2013-05-03 13:48:17: /com/mao/jf/beans/SessionData.java: 冲突：文件两侧都进行了改动
+2013-05-03 13:48:17: /validation/builtin/NumberMaxE.java: 冲突: 新文件有变化
+2013-05-03 13:48:17: /windows/BillTable.java: 冲突：文件两侧都进行了改动
+2013-05-03 13:48:17: /windows/costPanes/OperationPnl.java: 冲突：文件两侧都进行了改动
+2013-05-03 13:48:17: /windows/costPanes/OperCostPnl.java: 冲突：文件两侧都进行了改动
+2013-05-03 13:48:17: /windows/costPanes/PlanCostPnl.java: 冲突：文件两侧都进行了改动
+2013-05-03 13:48:17: /windows/customComponet/BeansPanel.java: 冲突：文件两侧都进行了改动
+2013-05-03 13:48:17: /windows/customComponet/BeansPanelV.java: 冲突：文件两侧都进行了改动
+2013-05-03 13:48:17: /windows/customComponet/BeanTableModel.java: 冲突：文件两侧都进行了改动
+2013-05-03 13:48:17: /windows/MainMenu.java: 冲突：文件两侧都进行了改动
+2013-05-03 13:48:17: /windows/MenuAction.java: 冲突：文件两侧都进行了改动
+2013-05-03 13:48:17: /windows/MyImageView.java: 冲突：文件两侧都进行了改动
+2013-05-03 13:48:17: 分析完毕并发现冲突情况。如需解决冲突请选择正常的同步方向。
+2013-05-03 13:48:17: 变更：19， 冲突：17， 复制时间：， 复制状态：/2， 错误： 
+2013-05-03 13:48:17: Left to Right: Copy File: 2 
+2013-05-03 13:48:17: ----- ：分析已结束。 历时 00:00:02， 速度： 71 个文件/秒 -----
+2013-05-03 13:48:17: 
+2013-05-03 13:48:30: ===== ：任务 'dev'：同步已被 User 所启动，位于计算机 'MAO' =====
+2013-05-03 13:48:30: I:\jpac\jt -win\src <-> \\192.168.1.1\U\jpac\jt-win\src, UberUnlockedUpload, OnFileChangeDelay=120
+2013-05-03 13:48:31: 删除文件 '\\192.168.1.1\U\jpac\jt-win\src\windows\customComponet\BeansPanelV.java' (User Action)
+2013-05-03 13:48:32: 覆盖复制 'I:\jpac\jt -win\src\com\mao\jf\beans\BeanMao.java' -> '\\192.168.1.1\U\jpac\jt-win\src\com\mao\jf\beans\BeanMao.java' (User Action)
+2013-05-03 13:48:32: 覆盖复制 'I:\jpac\jt -win\src\com\mao\jf\beans\Bill.java' -> '\\192.168.1.1\U\jpac\jt-win\src\com\mao\jf\beans\Bill.java' (User Action)
+2013-05-03 13:48:33: 新建复制 'I:\jpac\jt -win\src\com\mao\jf\beans\ffdf.java' -> '\\192.168.1.1\U\jpac\jt-win\src\com\mao\jf\beans\ffdf.java'
+2013-05-03 13:48:33: 覆盖复制 'I:\jpac\jt -win\src\com\mao\jf\beans\Operation.java' -> '\\192.168.1.1\U\jpac\jt-win\src\com\mao\jf\beans\Operation.java' (User Action)
+2013-05-03 13:48:34: 覆盖复制 'I:\jpac\jt -win\src\com\mao\jf\beans\OperCost.java' -> '\\192.168.1.1\U\jpac\jt-win\src\com\mao\jf\beans\OperCost.java' (User Action)
+2013-05-03 13:48:34: 覆盖复制 'I:\jpac\jt -win\src\com\mao\jf\beans\PlanCost.java' -> '\\192.168.1.1\U\jpac\jt-win\src\com\mao\jf\beans\PlanCost.java' (User Action)
+2013-05-03 13:48:35: 覆盖复制 'I:\jpac\jt -win\src\com\mao\jf\beans\SessionData.java' -> '\\192.168.1.1\U\jpac\jt-win\src\com\mao\jf\beans\SessionData.java' (User Action)
+2013-05-03 13:48:36: 覆盖复制 'I:\jpac\jt -win\src\validation\builtin\NumberMaxE.java' -> '\\192.168.1.1\U\jpac\jt-win\src\validation\builtin\NumberMaxE.java' (User Action)
+2013-05-03 13:48:36: 覆盖复制 'I:\jpac\jt -win\src\windows\BillPanel.java' -> '\\192.168.1.1\U\jpac\jt-win\src\windows\BillPanel.java'
+2013-05-03 13:48:37: 覆盖复制 'I:\jpac\jt -win\src\windows\BillTable.java' -> '\\192.168.1.1\U\jpac\jt-win\src\windows\BillTable.java' (User Action)
+2013-05-03 13:48:37: 覆盖复制 'I:\jpac\jt -win\src\windows\costPanes\OperationPnl.java' -> '\\192.168.1.1\U\jpac\jt-win\src\windows\costPanes\OperationPnl.java' (User Action)
+2013-05-03 13:48:38: 覆盖复制 'I:\jpac\jt -win\src\windows\costPanes\OperCostPnl.java' -> '\\192.168.1.1\U\jpac\jt-win\src\windows\costPanes\OperCostPnl.java' (User Action)
+2013-05-03 13:48:41: 覆盖复制 'I:\jpac\jt -win\src\windows\costPanes\PlanCostPnl.java' -> '\\192.168.1.1\U\jpac\jt-win\src\windows\costPanes\PlanCostPnl.java' (User Action)
+2013-05-03 13:48:42: 覆盖复制 'I:\jpac\jt -win\src\windows\customComponet\BeansPanel.java' -> '\\192.168.1.1\U\jpac\jt-win\src\windows\customComponet\BeansPanel.java' (User Action)
+2013-05-03 13:48:42: 覆盖复制 'I:\jpac\jt -win\src\windows\customComponet\BeanTableModel.java' -> '\\192.168.1.1\U\jpac\jt-win\src\windows\customComponet\BeanTableModel.java' (User Action)
+2013-05-03 13:48:43: 覆盖复制 'I:\jpac\jt -win\src\windows\MainMenu.java' -> '\\192.168.1.1\U\jpac\jt-win\src\windows\MainMenu.java' (User Action)
+2013-05-03 13:48:43: 覆盖复制 'I:\jpac\jt -win\src\windows\MenuAction.java' -> '\\192.168.1.1\U\jpac\jt-win\src\windows\MenuAction.java' (User Action)
+2013-05-03 13:48:44: 覆盖复制 'I:\jpac\jt -win\src\windows\MyImageView.java' -> '\\192.168.1.1\U\jpac\jt-win\src\windows\MyImageView.java' (User Action)
+2013-05-03 13:48:44: 项目同步未必： 21，错误： 
+2013-05-03 13:48:44: ===== ：同步完毕。时间：00:00:14，速度： 10.4 KB/s (15.0 KB/s) =====
+2013-05-03 13:48:44: 

@@ -1,0 +1,78 @@
+2013-05-02 12:05:18: ----- ：任务 'dev'：计算机 'MAO' 上的分析操作已由 On File Change, After Delay 所启动 (GoodSync v 9.4.8.8) -----
+2013-05-02 12:05:18: I:\jpac\jt -win\src <-> \\192.168.1.1\U\jpac\jt-win\src, UberUnlockedUpload, OnFileChangeDelay=120
+2013-05-02 12:05:18: Change in: I:\jpac\jt -win\src\windows\MainMenu.java
+2013-05-02 12:05:18: Change in: I:\jpac\jt -win\src\windows\customComponet\BeanTableModel.java
+2013-05-02 12:05:18: Change in: I:\jpac\jt -win\src\windows\costPanes\PlanCostPnl.java
+2013-05-02 12:05:19: Change in: I:\jpac\jt -win\src\windows\BillTable.java
+2013-05-02 12:05:19: Change in: I:\jpac\jt -win\src\validation\builtin\NumberMaxE.java
+2013-05-02 12:05:19: Change in: I:\jpac\jt -win\src\windows\costPanes\OperCostPnl.java
+2013-05-02 12:05:19: Change in: I:\jpac\jt -win\src\windows\costPanes\OperationPnl.java
+2013-05-02 12:05:19: Change in: I:\jpac\jt -win\src\com\mao\jf\beans\OperCost.java
+2013-05-02 12:05:19: Change in: I:\jpac\jt -win\src\com\mao\jf\beans\Bill.java
+2013-05-02 12:05:19: Change in: I:\jpac\jt -win\src\com\mao\jf\beans\Operation.java
+2013-05-02 12:05:19: Change in: I:\jpac\jt -win\src\com\mao\jf\beans\BillItem.java
+2013-05-02 12:05:19: Change in: I:\jpac\jt -win\src\src.rar
+2013-05-02 12:05:19: Change in: I:\jpac\jt -win\src\windows\MyImageView.java
+2013-05-02 12:05:19: Change in: I:\jpac\jt -win\src\windows\customComponet\BeansPanelV.java
+2013-05-02 12:05:19: Change in: I:\jpac\jt -win\src\com\mao\jf\beans\PlanCost.java
+2013-05-02 12:05:19: Change in: I:\jpac\jt -win\src\windows\Dddd.java
+2013-05-02 12:05:19: Change in: I:\jpac\jt -win\src\windows\MenuAction.java
+2013-05-02 12:05:19: Change in: I:\jpac\jt -win\src\com\mao\jf\beans\BeanMao.java
+2013-05-02 12:05:19: Change in: I:\jpac\jt -win\src\com\mao\jf\beans\SessionData.java
+2013-05-02 12:05:19: Change in: \\192.168.1.1\U\jpac\jt-win\src\windows\MainMenu.java
+2013-05-02 12:05:19: Change in: \\192.168.1.1\U\jpac\jt-win\src\windows\customComponet\BeanTableModel.java
+2013-05-02 12:05:19: Change in: \\192.168.1.1\U\jpac\jt-win\src\windows\costPanes\PlanCostPnl.java
+2013-05-02 12:05:19: Change in: \\192.168.1.1\U\jpac\jt-win\src\windows\BillTable.java
+2013-05-02 12:05:19: Change in: \\192.168.1.1\U\jpac\jt-win\src\validation\builtin\NumberMaxE.java
+2013-05-02 12:05:19: Change in: \\192.168.1.1\U\jpac\jt-win\src\windows\costPanes\OperCostPnl.java
+2013-05-02 12:05:19: Change in: \\192.168.1.1\U\jpac\jt-win\src\windows\costPanes\OperationPnl.java
+2013-05-02 12:05:19: Change in: \\192.168.1.1\U\jpac\jt-win\src\com\mao\jf\beans\OperCost.java
+2013-05-02 12:05:19: Change in: \\192.168.1.1\U\jpac\jt-win\src\com\mao\jf\beans\Bill.java
+2013-05-02 12:05:19: Change in: \\192.168.1.1\U\jpac\jt-win\src\com\mao\jf\beans\Operation.java
+2013-05-02 12:05:19: Change in: \\192.168.1.1\U\jpac\jt-win\src\windows\MyImageView.java
+2013-05-02 12:05:19: Change in: \\192.168.1.1\U\jpac\jt-win\src\windows\customComponet\BeansPanelV.java
+2013-05-02 12:05:19: Change in: \\192.168.1.1\U\jpac\jt-win\src\com\mao\jf\beans\PlanCost.java
+2013-05-02 12:05:19: Change in: \\192.168.1.1\U\jpac\jt-win\src\windows\MenuAction.java
+2013-05-02 12:05:19: Change in: \\192.168.1.1\U\jpac\jt-win\src\com\mao\jf\beans\BeanMao.java
+2013-05-02 12:05:19: Change in: \\192.168.1.1\U\jpac\jt-win\src\com\mao\jf\beans\SessionData.java
+2013-05-02 12:05:19: /com/mao/jf/beans/BeanMao.java: 冲突：文件两侧都进行了改动
+2013-05-02 12:05:19: /com/mao/jf/beans/Bill.java: 冲突：文件两侧都进行了改动
+2013-05-02 12:05:19: /com/mao/jf/beans/Operation.java: 冲突：文件两侧都进行了改动
+2013-05-02 12:05:19: /com/mao/jf/beans/OperCost.java: 冲突：文件两侧都进行了改动
+2013-05-02 12:05:19: /com/mao/jf/beans/PlanCost.java: 冲突：文件两侧都进行了改动
+2013-05-02 12:05:19: /com/mao/jf/beans/SessionData.java: 冲突：文件两侧都进行了改动
+2013-05-02 12:05:19: /validation/builtin/NumberMaxE.java: 冲突: 新文件有变化
+2013-05-02 12:05:19: /windows/BillTable.java: 冲突：文件两侧都进行了改动
+2013-05-02 12:05:19: /windows/costPanes/OperationPnl.java: 冲突：文件两侧都进行了改动
+2013-05-02 12:05:19: /windows/costPanes/OperCostPnl.java: 冲突：文件两侧都进行了改动
+2013-05-02 12:05:19: /windows/costPanes/PlanCostPnl.java: 冲突：文件两侧都进行了改动
+2013-05-02 12:05:19: /windows/customComponet/BeansPanelV.java: 冲突：文件两侧都进行了改动
+2013-05-02 12:05:19: /windows/customComponet/BeanTableModel.java: 冲突：文件两侧都进行了改动
+2013-05-02 12:05:19: /windows/MainMenu.java: 冲突：文件两侧都进行了改动
+2013-05-02 12:05:19: /windows/MenuAction.java: 冲突：文件两侧都进行了改动
+2013-05-02 12:05:19: /windows/MyImageView.java: 冲突：文件两侧都进行了改动
+2013-05-02 12:05:19: 分析完毕并发现冲突情况。如需解决冲突请选择正常的同步方向。
+2013-05-02 12:05:19: 变更：16， 冲突：16， 复制时间：， 复制状态：/， 错误： 
+2013-05-02 12:05:19: ----- ：分析已结束。 历时 00:00:01， 速度： 142 个文件/秒 -----
+2013-05-02 12:05:19: ===== ：任务 'dev'：同步已被 On File Change, After Delay 所启动，位于计算机 'MAO' =====
+2013-05-02 12:05:19: I:\jpac\jt -win\src <-> \\192.168.1.1\U\jpac\jt-win\src, UberUnlockedUpload, OnFileChangeDelay=120
+2013-05-02 12:05:19: /com/mao/jf/beans/BeanMao.java: unresolved conflict results in No Copy
+2013-05-02 12:05:19: /com/mao/jf/beans/Bill.java: unresolved conflict results in No Copy
+2013-05-02 12:05:19: /com/mao/jf/beans/Operation.java: unresolved conflict results in No Copy
+2013-05-02 12:05:19: /com/mao/jf/beans/OperCost.java: unresolved conflict results in No Copy
+2013-05-02 12:05:19: /com/mao/jf/beans/PlanCost.java: unresolved conflict results in No Copy
+2013-05-02 12:05:19: /com/mao/jf/beans/SessionData.java: unresolved conflict results in No Copy
+2013-05-02 12:05:19: /validation/builtin/NumberMaxE.java: unresolved conflict results in No Copy
+2013-05-02 12:05:19: /windows/BillTable.java: unresolved conflict results in No Copy
+2013-05-02 12:05:19: /windows/costPanes/OperationPnl.java: unresolved conflict results in No Copy
+2013-05-02 12:05:19: /windows/costPanes/OperCostPnl.java: unresolved conflict results in No Copy
+2013-05-02 12:05:19: /windows/costPanes/PlanCostPnl.java: unresolved conflict results in No Copy
+2013-05-02 12:05:19: /windows/customComponet/BeansPanelV.java: unresolved conflict results in No Copy
+2013-05-02 12:05:19: /windows/customComponet/BeanTableModel.java: unresolved conflict results in No Copy
+2013-05-02 12:05:19: /windows/MainMenu.java: unresolved conflict results in No Copy
+2013-05-02 12:05:19: /windows/MenuAction.java: unresolved conflict results in No Copy
+2013-05-02 12:05:19: /windows/MyImageView.java: unresolved conflict results in No Copy
+2013-05-02 12:05:20: 同步完成，未解决的冲突数为 16 。点击冲突按钮即可查看未解决的冲突情况。
+2013-05-02 12:05:20: 项目同步未必： ，错误： 
+2013-05-02 12:05:20: ===== ：同步完毕。时间：00:00:01，速度： 235 KB/s (41.4 KB/s) =====
+2013-05-02 12:05:20: 

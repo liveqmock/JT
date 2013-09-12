@@ -1,0 +1,33 @@
+2013-06-16 08:41:55: ----- ：任务 'dev'：计算机 'MAO' 上的分析操作已由 On File Change 1st Full Analyze 所启动 (GoodSync v 9.4.8.8) -----
+2013-06-16 08:41:55: I:\jpac\jt -win\ (I:\jpac\jt -win) <-> \\192.168.1.1\U\jpac\jt-win\ (\\192.168.1.1\U\jpac\jt-win), UberUnlockedUpload, OnFileChangeDelay=120
+2013-06-16 08:41:55: 左侧：文件： 242 (已排除 306)。文件夹： 44 (已排除 2)。 I: NTFS, 可用空间：161 GB，总计空间：454 GB
+2013-06-16 08:41:59: 右侧：文件： 240 (已排除 290)。文件夹： 43 (已排除 3)。 \\192.168.1.1\U \\192.168.1.1\U NTFS, 可用空间：6.50 GB，总计空间：7.42 GB
+2013-06-16 08:41:59: /src/windows/costPanes/PlanTableMode.java: 冲突：文件两侧都进行了改动
+2013-06-16 08:41:59: /src/windows/costPanes/PlanWorkTableMode.java: 冲突：文件两侧都进行了改动
+2013-06-16 08:41:59: /src/windows/costPanes/WorkCreatePanel.java: 冲突：文件两侧都进行了改动
+2013-06-16 08:41:59: 分析完毕并发现冲突情况。如需解决冲突请选择正常的同步方向。
+2013-06-16 08:41:59: 变更：3， 冲突：3， 复制时间：， 复制状态：/， 错误： 
+2013-06-16 08:41:59: ----- ：分析已结束。 历时 00:00:04， 速度： 148 个文件/秒 -----
+2013-06-16 08:41:59: ===== ：任务 'dev'：同步已被 On File Change 1st Full Analyze 所启动，位于计算机 'MAO' =====
+2013-06-16 08:41:59: I:\jpac\jt -win\ (I:\jpac\jt -win) <-> \\192.168.1.1\U\jpac\jt-win\ (\\192.168.1.1\U\jpac\jt-win), UberUnlockedUpload, OnFileChangeDelay=120
+2013-06-16 08:41:59: /src/windows/costPanes/PlanTableMode.java: unresolved conflict results in No Copy
+2013-06-16 08:41:59: /src/windows/costPanes/PlanWorkTableMode.java: unresolved conflict results in No Copy
+2013-06-16 08:41:59: /src/windows/costPanes/WorkCreatePanel.java: unresolved conflict results in No Copy
+2013-06-16 08:42:00: 同步完成，未解决的冲突数为 3 。点击冲突按钮即可查看未解决的冲突情况。
+2013-06-16 08:42:00: 项目同步未必： ，错误： 
+2013-06-16 08:42:00: ===== ：同步完毕。时间：00:00:01，速度： 29.3 KB/s (500 KB/s) =====
+2013-06-16 08:42:00: 
+2013-06-16 08:42:12: === User Changed Action from 'CONFLICT' to 'COPY_RIGHT_TO_LEFT' on item /src/windows/costPanes/PlanTableMode.java
+2013-06-16 08:42:12: Done.
+2013-06-16 08:42:13: === User Changed Action from 'CONFLICT' to 'COPY_RIGHT_TO_LEFT' on item /src/windows/costPanes/PlanWorkTableMode.java
+2013-06-16 08:42:13: Done.
+2013-06-16 08:42:15: === User Changed Action from 'CONFLICT' to 'COPY_RIGHT_TO_LEFT' on item /src/windows/costPanes/WorkCreatePanel.java
+2013-06-16 08:42:15: Done.
+2013-06-16 08:42:18: ===== ：任务 'dev'：同步已被 User 所启动，位于计算机 'MAO' =====
+2013-06-16 08:42:18: I:\jpac\jt -win\ (I:\jpac\jt -win) <-> \\192.168.1.1\U\jpac\jt-win\ (\\192.168.1.1\U\jpac\jt-win), UberUnlockedUpload, OnFileChangeDelay=120
+2013-06-16 08:42:18: 删除文件 'I:\jpac\jt -win\src\windows\costPanes\PlanTableMode.java' (User Action)
+2013-06-16 08:42:18: 删除文件 'I:\jpac\jt -win\src\windows\costPanes\PlanWorkTableMode.java' (User Action)
+2013-06-16 08:42:18: 覆盖复制 '\\192.168.1.1\U\jpac\jt-win\src\windows\costPanes\WorkCreatePanel.java' -> 'I:\jpac\jt -win\src\windows\costPanes\WorkCreatePanel.java' (User Action)
+2013-06-16 08:42:19: 项目同步未必： 3，错误： 
+2013-06-16 08:42:19: ===== ：同步完毕。时间：00:00:02，速度： 11.0 KB/s (92.6 KB/s) =====
+2013-06-16 08:42:19: 

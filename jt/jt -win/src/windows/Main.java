@@ -38,8 +38,11 @@ public class Main extends JFrame {
 
 	public Main() {
 		setBounds(100, 100, 700, 400);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setExtendedState(Frame.MAXIMIZED_BOTH);
 		setTitle("津田精密机构订单管理系统");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(About.class.getResource("/windows/logo.PNG")));
+
 		final BillManagerPnl billManagerPnl=new BillManagerPnl();
 		setJMenuBar(new MainMenu(billManagerPnl.getTable()));
 		setContentPane(billManagerPnl);
@@ -138,11 +141,6 @@ public class Main extends JFrame {
 
 
 		setVisible(true);
-		toFront();
-		setAutoRequestFocus(true);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setExtendedState(Frame.MAXIMIZED_BOTH);
-		
 	}
 
 	public static void main(String[] args) {
@@ -201,8 +199,7 @@ public class Main extends JFrame {
 						}
 					};
 					dialog.setVisible(true);
-					dialog.toFront();
-					
+
 
 				} catch (Exception e) {
 					e.printStackTrace();

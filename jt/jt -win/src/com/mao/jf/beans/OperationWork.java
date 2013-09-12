@@ -26,12 +26,12 @@ public class OperationWork extends BeanMao {
 		super();
 	}
 
+
 	public OperationWork(OperationPlan operationPlan) {
 		
 		setOperationPlan(operationPlan);
 	}
 	@ChinaAno(str="工序名",order=1)
-	@Transient
 	public String getOperationName() {
 		return operationPlan.getName();
 	}
@@ -61,9 +61,7 @@ public class OperationWork extends BeanMao {
 	public OperationPlan getOperationPlan() {
 		return operationPlan;
 	}
-	public Plan getPlan() {
-		return getOperationPlan().getPlan();
-	}
+
 	@ChinaAno(order = 7, str = "计划费用")
 	public float getPlanCost() {
 		return planCost==0?getOperationPlan().getPlanCost():planCost;

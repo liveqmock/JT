@@ -20,13 +20,10 @@ import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
 
 import windows.costPanes.EmployeeCostPnl;
 import windows.costPanes.EmployeePnl;
@@ -52,7 +49,6 @@ import com.mao.jf.beans.Custom;
 import com.mao.jf.beans.Employee;
 import com.mao.jf.beans.Operation;
 import com.mao.jf.beans.OutCustom;
-import com.mao.jf.beans.Plan;
 import com.mao.jf.beans.SessionData;
 import com.mao.jf.beans.Userman;
 
@@ -335,28 +331,7 @@ public class MenuAction extends AbstractAction {
 				dialog.dispose();
 			}
 		});
-		JPanel panel_2 = new JPanel();
-		panel_2.setBorder(new EmptyBorder(1, 1, 1, 1));
-		dialog.add(panel_2, BorderLayout.NORTH);
-		panel_2.setLayout(new BoxLayout(panel_2, BoxLayout.X_AXIS));
-
-		JLabel label = new JLabel("\u56FE\u53F7\uFF1A");
-		panel_2.add(label);
-
-		final JTextField textField = new JTextField();
-		panel_2.add(textField);
-		textField.setColumns(10);
-
-		JButton searchBt = new JButton("\u67E5\u627E");
-		panel_2.add(searchBt);
-		searchBt.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				table.setPlans(Plan.loadUnCompletedByOut(textField.getText()));
-				
-			}
-		});
+		
 		
 		btPanel.add(Okbt);
 		
@@ -375,7 +350,6 @@ public class MenuAction extends AbstractAction {
 		final PlanTable table = new PlanTable();
 		JScrollPane scroll = new JScrollPane( table );
 		final JDialog  dialog=new JDialog();
-		
 		dialog.getContentPane().add( scroll,BorderLayout.CENTER );
 		dialog.setTitle("生产计划管理");
 		JPanel btPanel=new JPanel();
@@ -389,28 +363,6 @@ public class MenuAction extends AbstractAction {
 				dialog.dispose();
 			}
 		});
-		JPanel panel_2 = new JPanel();
-		panel_2.setBorder(new EmptyBorder(1, 1, 1, 1));
-		dialog.add(panel_2, BorderLayout.NORTH);
-		panel_2.setLayout(new BoxLayout(panel_2, BoxLayout.X_AXIS));
-
-		JLabel label = new JLabel("\u56FE\u53F7\uFF1A");
-		panel_2.add(label);
-
-		final JTextField textField = new JTextField();
-		panel_2.add(textField);
-		textField.setColumns(10);
-
-		JButton searchBt = new JButton("\u67E5\u627E");
-		panel_2.add(searchBt);
-		searchBt.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				table.setPlans(Plan.loadUnCompletedBySearch(textField.getText()));
-				
-			}
-		});
 		JButton addBt=new JButton("新增排产计划");
 		addBt.addActionListener(new ActionListener() {
 			
@@ -420,7 +372,6 @@ public class MenuAction extends AbstractAction {
 				
 			}
 		});
-
 		
 		btPanel.add(addBt);
 		btPanel.add(Okbt);

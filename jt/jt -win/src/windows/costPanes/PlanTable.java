@@ -46,7 +46,7 @@ public class PlanTable extends JXTable {
 	private JPopupMenu popupMenu;
 	public PlanTable() {
 		super();
-		plans=Plan.loadAllUnCompletedByNotOut(null);
+		plans=Plan.loadAllUnCompletedByNotOut();
 		setHighlighters(HighlighterFactory.
 				createAlternateStriping());
 		setHorizontalScrollEnabled(true);
@@ -301,10 +301,6 @@ public class PlanTable extends JXTable {
 			});
 		}
 
-	}
-	public void setPlans(Vector<Plan> plans) {
-		this.plans = plans;
-		mode.setPlans(plans);
 	}
 
 }

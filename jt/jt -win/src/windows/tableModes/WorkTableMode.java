@@ -32,8 +32,6 @@ public class WorkTableMode extends AbstractTableModel {
 
 	public void setPlans(Vector<Plan> plans) {
 		this.plans = plans;
-		fireTableDataChanged();
-	
 	}
 
 	@Override

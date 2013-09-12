@@ -36,8 +36,12 @@ public class MaterialTableMode extends AbstractTableModel {
 		columnNames.add("入库状态");
 		columnNames.add("排产日期");
 		columnNames.add("排产数量");
+		createOperationNames();
 
+		
 
+	}
+	public void createOperationNames() {
 		Vector<Operation> operations;
 
 		try {
@@ -55,15 +59,14 @@ public class MaterialTableMode extends AbstractTableModel {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();
 		}
-
 	}
-
 	public Vector<Plan> getPlans() {
 		return plans;
 	}
 
 	public void setPlans(Vector<Plan> plans) {
 		this.plans = plans;
+		fireTableDataChanged();
 	}
 
 	@Override

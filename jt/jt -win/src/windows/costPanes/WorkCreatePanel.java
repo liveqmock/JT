@@ -28,11 +28,16 @@ import com.mao.jf.beans.Plan;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import java.awt.Component;
 
 public class WorkCreatePanel extends JPanel {
 	private WorkTable table;
 	private BeanTablePane<OperationWork> workTablePane;
 	private OperationWorkPnl workPnl=new OperationWorkPnl(new OperationWork());
+	private JTextField textField;
 
 	public WorkCreatePanel() {
 		createContents();
@@ -41,53 +46,70 @@ public class WorkCreatePanel extends JPanel {
 		setLayout(new BorderLayout(0, 0));
 
 		workTablePane = new BeanTablePane<>(null);
-		
-		
-		JSplitPane splitPane = new JSplitPane();
-		splitPane.setResizeWeight(0.6);
-		add(splitPane, BorderLayout.CENTER);
-		
-		JScrollPane plan = new JScrollPane();
-		table=new WorkTable(Plan.loadUnCompleted());
-		plan.setViewportView(table);
-		
-		splitPane.setLeftComponent(plan);
-		ValidationPanel validationPanel=new ValidationPanel();
-		validationPanel.setInnerComponent(workPnl);
 
+
+		JSplitPane splitPane = new JSplitPane();
+		add(splitPane, BorderLayout.CENTER);
 		JPanel panel_3 = new JPanel();
-		panel_3.setLayout(new BoxLayout(panel_3, BoxLayout.X_AXIS));
+		panel_3.setLayout(new BorderLayout(0, 0));
 
 		JButton okBt= new JButton("\u786E\u5B9A\uFF08O\uFF09");
+		okBt.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		okBt.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		okBt.setMnemonic('o');
-		panel_3.add(okBt);
-		
+		panel_3.add(okBt, BorderLayout.SOUTH);
+
 		JPanel panel_1 = new JPanel();
 
-		panel_1.setPreferredSize(new Dimension(500, 480));
 		splitPane.setRightComponent(panel_1);
-		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
-		gl_panel_1.setHorizontalGroup(
-			gl_panel_1.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_1.createSequentialGroup()
-					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-						.addComponent(validationPanel, GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
-						.addGroup(gl_panel_1.createSequentialGroup()
-							.addGap(103)
-							.addComponent(panel_3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addComponent(workTablePane, GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE))
-					.addContainerGap())
-		);
-		gl_panel_1.setVerticalGroup(
-			gl_panel_1.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_1.createSequentialGroup()
-					.addComponent(validationPanel, GroupLayout.PREFERRED_SIZE, 212, GroupLayout.PREFERRED_SIZE)
-					.addComponent(panel_3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(workTablePane, GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
-					.addContainerGap())
-		);
-		panel_1.setLayout(gl_panel_1);
+		panel_1.setLayout(new BorderLayout(0, 0));
+		panel_1.add(panel_3, BorderLayout.NORTH);
+		ValidationPanel validationPanel=new ValidationPanel();
+		panel_3.add(validationPanel);
+		validationPanel.setInnerComponent(workPnl);
+		panel_1.add(workTablePane);
+
+		JPanel panel = new JPanel();
+		panel.setMinimumSize(new Dimension(100,0));
+		splitPane.setLeftComponent(panel);		
+		panel.setLayout(new BorderLayout(0, 0));
+
+		JScrollPane plan = new JScrollPane();
+		panel.add(plan, BorderLayout.CENTER);
+		table=new WorkTable(Plan.loadUnCompleted());
+		plan.setViewportView(table);
+
+		JPanel panel_2 = new JPanel();
+		panel_2.setBorder(new EmptyBorder(1, 1, 1, 1));
+		panel.add(panel_2, BorderLayout.NORTH);
+		panel_2.setLayout(new BoxLayout(panel_2, BoxLayout.X_AXIS));
+
+		JLabel label = new JLabel("\u56FE\u53F7\uFF1A");
+		panel_2.add(label);
+
+		textField = new JTextField();
+		panel_2.add(textField);
+		textField.setColumns(10);
+
+		JButton searchBt = new JButton("\u67E5\u627E");
+		panel_2.add(searchBt);
+		searchBt.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				table.changeData(Plan.loadUnCompletedBySearch(textField.getText()));
+				
+			}
+		});
+		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				workPnl.setOperationPlans(table.getSelectPlan().getOperationPlans());
+				workTablePane.setBeans(table.getSelectPlan().getOperationWorks());
+
+			}
+		});
 		okBt.addActionListener(new ActionListener() {
 
 			@Override
@@ -110,16 +132,6 @@ public class WorkCreatePanel extends JPanel {
 
 			}
 		});
-
-		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				workPnl.setOperationPlans(table.getSelectPlan().getOperationPlans());
-				workTablePane.setBeans(table.getSelectPlan().getOperationWorks());
-
-			}
-		});
 		ActionListener listener = new ActionListener() {
 
 			@Override
@@ -133,15 +145,15 @@ public class WorkCreatePanel extends JPanel {
 					break;
 				case "修改":
 
-						try {
-							workPnl.setBean((OperationWork) BeanUtils.cloneBean( workTablePane.getSelectBean()));
-						} catch (IllegalAccessException | InstantiationException
-								| InvocationTargetException | NoSuchMethodException e1) {
-							// TODO 自动生成的 catch 块
-							e1.printStackTrace();
-						}
+					try {
+						workPnl.setBean((OperationWork) BeanUtils.cloneBean( workTablePane.getSelectBean()));
+					} catch (IllegalAccessException | InstantiationException
+							| InvocationTargetException | NoSuchMethodException e1) {
+						// TODO 自动生成的 catch 块
+						e1.printStackTrace();
+					}
 
-						break;
+					break;
 
 				default:
 					break;
@@ -151,6 +163,9 @@ public class WorkCreatePanel extends JPanel {
 		};
 		workTablePane.getPopupMenu().add("修改").addActionListener(listener);
 		workTablePane.getPopupMenu().add("删除").addActionListener(listener);
+
+		splitPane.setDividerLocation(0.6);
+		splitPane.setDividerLocation(500);
 	}
 
 

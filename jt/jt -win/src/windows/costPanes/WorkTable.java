@@ -38,4 +38,8 @@ public class WorkTable extends JXTable {
 		 }
 		
 	}
+	
+	public void changeData(Vector<Plan> plans) {
+		mode.setPlans(plans);
+	}
 }

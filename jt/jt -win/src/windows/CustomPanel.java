@@ -22,7 +22,7 @@ public class CustomPanel extends BeanPanel<AbstractCustom> {
 	private JTextField addressFld;
 	private JTextField faxFld;
 	private JTextField contactFld;
-	private JTextField emailFld;
+	private JTextField emailFld  ;
 	public CustomPanel(AbstractCustom bean) {
 		super(bean);
 	}
@@ -43,7 +43,7 @@ public class CustomPanel extends BeanPanel<AbstractCustom> {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC, 
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,}));
 		

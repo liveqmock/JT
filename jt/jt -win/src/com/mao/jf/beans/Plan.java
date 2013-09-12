@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import javax.swing.JTextField;
+
 public class Plan extends BeanMao {
 
 
@@ -57,8 +59,8 @@ public class Plan extends BeanMao {
 		}
 		return plans;
 	}
-	public static Vector<Plan> loadAllUnCompletedByNotOut() {       
-		Vector<Plan> plans=loadUnCompletedByNotOut();
+	public static Vector<Plan> loadAllUnCompletedByNotOut(String search) {       
+		Vector<Plan> plans=loadUnCompletedByNotOut(search);
 		Vector<Plan> newPlans = loadallNew();
 		if(plans!=null)
 			plans.addAll(newPlans);
@@ -68,62 +70,30 @@ public class Plan extends BeanMao {
 		return plans;
 	}
 	public static Vector<Plan> loadUnCompleted() {
+		return loadUnCompletedBySearch(null);
+
+	}
+	public static Vector<Plan> loadUnCompletedByNotOut(String search) {
 
 
 		Vector<Plan> plans=null;
-		try {
-			plans= Plan.loadAll(Plan.class,"Select * from plan where not completed ");
-			for(Plan plan:plans){
-				plan.initOperations();
-			}
-
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException
-				| IntrospectionException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
+		plans= loadUnCompletedBySearch(search);
+		for(Plan plan:plans){
+			plan.initOperationsByNotOut();
 		}
 
 		return plans;
 	}
-	public static Vector<Plan> loadUnCompletedByNotOut() {
+	public static Vector<Plan> loadUnCompletedByOut(String search) {
 
 
 		Vector<Plan> plans=null;
-		try {
-			plans= Plan.loadAll(Plan.class,"Select * from plan where not completed ");
-			for(Plan plan:plans){
-				plan.initOperationsByNotOut();
-			}
-
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException
-				| IntrospectionException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
+		plans= loadUnCompletedBySearch(search);
+		for(Plan plan:plans){
+			plan.initOperationOuts();
 		}
 
-		return plans;
-	}
-	public static Vector<Plan> loadUnCompletedByOut() {
 
-
-		Vector<Plan> plans=null;
-		try {
-			plans= Plan.loadAll(Plan.class,"Select * from plan where not completed ");
-			for(Plan plan:plans){
-				plan.initOperationOuts();
-			}
-
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException
-				| IntrospectionException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
 
 		return plans;
 	}
@@ -269,27 +239,27 @@ public class Plan extends BeanMao {
 	@Override
 	public void 	save() {
 		try {
-				if(operationPlans!=null) {
-					if(getUserTime()>0||getId()>0)
-						super.save();
-					for(OperationPlan operationPlan:operationPlans.values()){
-						if(operationPlan.getUnitUseTime()> 0) {
-							operationPlan.save();
-						}else if(operationPlan.getId()>0 ) {
-							operationPlan.remove();
-						}
-					}
-				}
-				if(operationOuts!=null) {
+			if(operationPlans!=null) {
+				if(getUserTime()>0||getId()>0)
 					super.save();
-					for(OperationOut operationOut:operationOuts.values()){
-						if(operationOut.getMaterialNum()> 0) {
-							operationOut.save();
-						}else if(operationOut.getId()>0 ) {
-							operationOut.remove();
-						}
+				for(OperationPlan operationPlan:operationPlans.values()){
+					if(operationPlan.getUnitUseTime()> 0) {
+						operationPlan.save();
+					}else if(operationPlan.getId()>0 ) {
+						operationPlan.remove();
 					}
 				}
+			}
+			if(operationOuts!=null) {
+				super.save();
+				for(OperationOut operationOut:operationOuts.values()){
+					if(operationOut.getMaterialNum()> 0) {
+						operationOut.save();
+					}else if(operationOut.getId()>0 ) {
+						operationOut.remove();
+					}
+				}
+			}
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException
 				| SecurityException | IntrospectionException | SQLException e) {
@@ -365,6 +335,29 @@ public class Plan extends BeanMao {
 				e.printStackTrace();
 			}
 		return operationWorks;
+	}
+
+
+	public static Vector<Plan> loadUnCompletedBySearch(String searchPic) {
+		String search="";
+		if(searchPic!=null&&!searchPic.equals(""))
+			search=" and picid like '%"+searchPic+"%'";
+		Vector<Plan> plans=null;
+		try {
+			plans= Plan.loadAll(Plan.class,"Select a.* from plan a join bill b on a.bill=b.id and not a.completed "+search);
+			for(Plan plan:plans){
+				plan.initOperations();
+			}
+
+		} catch (InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException
+				| IntrospectionException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		}
+
+		return plans;
 	}
 
 

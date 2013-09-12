@@ -25,7 +25,7 @@ public class MaterialTable extends JXTable {
 	private MaterialTableMode mode;
 	public MaterialTable() {
 		super();
-		plans=Plan.loadUnCompletedByOut();
+		plans=Plan.loadUnCompletedByOut(null);
 		setHighlighters(HighlighterFactory.
 				createAlternateStriping());
 		setHorizontalScrollEnabled(true);
@@ -128,5 +128,11 @@ public class MaterialTable extends JXTable {
 			});
 		}
 
+	}
+
+	public void setPlans(Vector<Plan> plans) {
+		this.plans=plans;
+		mode.setPlans(plans);
+		
 	}
 }

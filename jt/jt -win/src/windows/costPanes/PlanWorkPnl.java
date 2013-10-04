@@ -62,7 +62,7 @@ public class PlanWorkPnl extends JPanel {
 				SearchDlg searchDlg=	new SearchDlg();
 				searchDlg.setVisible(true);
 				String sql="select a.* from bill a join plan b on a.id=b.bill where "+searchDlg.getSqlString();
-				System.err.println(sql);
+//				System.err.println(sql);
 				try {
 					billTable.setBeans(Bill.loadAll(Bill.class, sql));
 				} catch (InstantiationException | IllegalAccessException

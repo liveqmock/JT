@@ -255,7 +255,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 		try {
 			Method removeMethod = getSelectBean(row).getClass().getMethod(
 					"remove");
-			System.out.println(removeMethod.getName());
+//			System.out.println(removeMethod.getName());
 			removeMethod.invoke(getSelectBean(row));
 
 		} catch (Exception e2) {

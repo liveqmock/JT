@@ -5,17 +5,16 @@ import java.beans.Transient;
 public class OperationPlan extends BeanMao {
 	private Plan plan;
 	private String name;  
-	private int  num ; 
 	private float cost   ;
 	private String note  ;
 	private float unitUseTime;
+	private float prepareTime;
 	
 	
 	public OperationPlan(Operation operation) {
 		
 		setCost(operation.getCost());
 		setName(operation.getName());
-		setNum(operation.getNum());
 		setPlan(plan);
 	}
 
@@ -43,10 +42,6 @@ public class OperationPlan extends BeanMao {
 	public String getName() {
 		return name;
 	}
-	@ChinaAno(order = 3, str = "设备数量")
-	public int getNum() {
-		return num;
-	}
 	@ChinaAno(order = 4, str = "单件计划用时")
 	public float getUnitUseTime() {
 		return unitUseTime;
@@ -54,7 +49,7 @@ public class OperationPlan extends BeanMao {
 	@Transient
 	@ChinaAno(order = 5, str = "计划总用时")
 	public float getUseTime() {
-		return unitUseTime*plan.getNum();
+		return unitUseTime*plan.getNum()+prepareTime;
 	}
 	
 
@@ -62,10 +57,16 @@ public class OperationPlan extends BeanMao {
 	public float getCost() {
 		return cost;
 	}
+	
+	@ChinaAno(order = 7, str = "调机时间")	
+	public float getPrepareTime() {
+		return prepareTime;
+	}
+	
 	@Transient
-	@ChinaAno(order = 7, str = "计划费用")
+	@ChinaAno(order = 8, str = "计划费用")
 	public float getPlanCost() {
-		return cost*getUnitUseTime();
+		return cost*(getUnitUseTime()*plan.getNum()+prepareTime);
 	}
 
 	@ChinaAno(order =99, str = "备注")
@@ -99,13 +100,14 @@ public class OperationPlan extends BeanMao {
 	public void setNote(String note) {
 		this.note = note;
 	}
-	public void setNum(int num) {
-		this.num = num;
-	}
 	public void setPlan(Plan plan) {
 		this.plan = plan;
 	}
-	
+
+	public void setPrepareTime(float prepareTime) {
+		this.prepareTime = prepareTime;
+	}
+
 	@Override
 	public String toString() {
 		// TODO 自动生成的方法存根

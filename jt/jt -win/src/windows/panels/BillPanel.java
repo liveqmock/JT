@@ -3,6 +3,9 @@ package windows.panels;
 
 
 import java.awt.BorderLayout;
+import java.awt.Checkbox;
+import java.awt.Component;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -89,6 +92,8 @@ public class BillPanel extends JSplitPane {
 	private JFileChooser fileChooser;
 	private File imgFile;
 	private JTextField cost;
+	private JComboBox<String> meterial;
+	private JCheckBox taxCheck;
 
 	public BillPanel(Bill bean) {
 		this.bean = bean;
@@ -103,33 +108,34 @@ public class BillPanel extends JSplitPane {
 	}
 
 	private void outAdminEnable() {
-		billidFld.setEnabled(Userman.loginUser.getLevel() == 0);
-		billNoFld.setEnabled(Userman.loginUser.getLevel() == 0);
-		itemNoFld.setEnabled(Userman.loginUser.getLevel() == 0);
-		billgroup.setEnabled(Userman.loginUser.getLevel() == 0);
-		priceFld.setEnabled(Userman.loginUser.getLevel() == 0);
-		picNoFld.setEnabled(Userman.loginUser.getLevel() == 0);
-		numFld.setEnabled(Userman.loginUser.getLevel() == 0);
-		customCombox.setEnabled(Userman.loginUser.getLevel() == 0);
-		contactManCombox.setEnabled(Userman.loginUser.getLevel() == 0);
-		billcreateDate.setEnabled(Userman.loginUser.getLevel() == 0);
-		requestDate.setEnabled(Userman.loginUser.getLevel() == 0);
-		billedDate.setEnabled(Userman.loginUser.getLevel() == 0);
-		outPriceFld.setEnabled(Userman.loginUser.getLevel() == 0);
-		outBillNoFld.setEnabled(Userman.loginUser.getLevel() == 0);
-		addCustomButton.setEnabled(Userman.loginUser.getLevel() == 0);
-		addOutCustomBt.setEnabled(Userman.loginUser.getLevel() == 0);
+		billidFld.setEnabled(Userman.loginUser.isManager());
+		billNoFld.setEnabled(Userman.loginUser.isManager());
+		itemNoFld.setEnabled(Userman.loginUser.isManager());
+		billgroup.setEnabled(Userman.loginUser.isManager());
+		priceFld.setEnabled(Userman.loginUser.isManager());
+		picNoFld.setEnabled(Userman.loginUser.isManager());
+		numFld.setEnabled(Userman.loginUser.isManager());
+		customCombox.setEnabled(Userman.loginUser.isManager());
+		contactManCombox.setEnabled(Userman.loginUser.isManager());
+		billcreateDate.setEnabled(Userman.loginUser.isManager());
+		requestDate.setEnabled(Userman.loginUser.isManager());
+		billedDate.setEnabled(Userman.loginUser.isManager());
+		outPriceFld.setEnabled(Userman.loginUser.isManager());
+		outBillNoFld.setEnabled(Userman.loginUser.isManager());
+		addCustomButton.setEnabled(Userman.loginUser.isManager());
+		addOutCustomBt.setEnabled(Userman.loginUser.isManager());
+		taxCheck.setEnabled(Userman.loginUser.isManager());
 
 	}
 
 	private void outEnable(boolean b) {
-		outBilledDate.setEnabled(b && Userman.loginUser.getLevel() == 0
+		outBilledDate.setEnabled(b && Userman.loginUser.isManager()
 				&& outBillNoFld.getText() != null
 				&& !outBillNoFld.getText().equals(""));
-		outBillNoFld.setEnabled(b && Userman.loginUser.getLevel() == 0);
+		outBillNoFld.setEnabled(b && Userman.loginUser.isManager());
 		outgetDate.setEnabled(b);
 		outNumFld.setEnabled(b);
-		outPriceFld.setEnabled(b && Userman.loginUser.getLevel() == 0);
+		outPriceFld.setEnabled(b && Userman.loginUser.isManager());
 
 		if (!b) {
 			outBilledDate.setDate(null);
@@ -142,10 +148,10 @@ public class BillPanel extends JSplitPane {
 	}
 
 	private void addValitors() {
-		outBilledDate.setEnabled(Userman.loginUser.getLevel() == 0
+		outBilledDate.setEnabled(Userman.loginUser.isManager()
 				&& outBillNoFld.getText() != null
 				&& !outBillNoFld.getText().equals(""));
-		billedDate.setEnabled(Userman.loginUser.getLevel() == 0
+		billedDate.setEnabled(Userman.loginUser.isManager()
 				&& billNoFld.getText() != null
 				&& !billNoFld.getText().equals(""));
 		outEnable(outCustomCombox.getSelectedItem() != null);
@@ -386,6 +392,8 @@ public class BillPanel extends JSplitPane {
 				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, 
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, }));
 
 		JLabel lblNewLabel = new JLabel("\u8BA2\u5355\u5BA2\u6237\uFF1A");
@@ -582,6 +590,21 @@ public class BillPanel extends JSplitPane {
 		JLabel billgroupLabel = new JLabel("订单组：");
 		billgroup=new JTextField();
 		cost=new JTextField();
+		
+		taxCheck=new JCheckBox("含税折算");
+		taxCheck.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent event) {
+				if(taxCheck.isSelected())
+					priceFld.setText((String.valueOf(Math.round(Float.valueOf(priceFld.getText())*83)/100.0f)));
+				else 
+					priceFld.setText((String.valueOf(Math.round(Float.valueOf(priceFld.getText())/.0083)/100.0f)));
+					
+			}
+		});
+		meterial=new JComboBox<>(new String[] {"自有材料","外部加工"});
+		meterial.setEditable(true);
 		panel.add(lblNewLabel, "2, 2, right, default");
 		panel.add(panel_1, "4, 2, 5, 1, fill, fill");
 		panel.add(lblNewLabel_1, "2, 4, right, default");
@@ -602,30 +625,35 @@ public class BillPanel extends JSplitPane {
 		panel.add(numFld, "8, 10, fill, default");
 		panel.add(lblNewLabel_3, "2, 12, right, default");
 		panel.add(priceFld, "4, 12, fill, default");
-		panel.add(label_2, "6, 12");
-		panel.add(requestDate, "8, 12");
-		panel.add(label_10, "2, 14");
-		panel.add(billgetDate, "4, 14");
-		panel.add(label_9, "6, 14, right, default");
-		panel.add(warehousCheckBox, "8, 14");	
-		panel.add(label_101, "6, 16");
-		panel.add(billedDate, "8, 16");
-		panel.add(label_91, "2, 16, right, default");
-		panel.add(billNoFld, "4, 16");
-		panel.add(label_3, "2, 18");
-		panel.add(panel_3, "4, 18, 5, 1, fill, fill");
-		panel.add(label_6, "2, 20, right, default");
-		panel.add(outPriceFld, "4, 20, fill, default");
-		panel.add(label_7, "6, 20");
-		panel.add(outNumFld, "8, 20, fill, default");
-		panel.add(label_4, "2, 22");
-		panel.add(outgetDate, "4, 22");
-		panel.add(label_5, "2, 24, right, default");
-		panel.add(outBillNoFld, "4, 24, fill, default");
-		panel.add(label_8, "6, 24");
-		panel.add(outBilledDate, "8, 24");
-		panel.add(label_11, "2, 26, right, default");
-		panel.add(noteFld, "4, 26, 5, 1, fill, default");
+		panel.add(new Label("含税折算"), "6, 12, right, default");
+		panel.add(taxCheck, "8, 12, fill, default");		
+		
+		panel.add(label_2, "2, 14");
+		panel.add(requestDate, "4, 14");
+		panel.add(label_10, "6, 14");
+		panel.add(billgetDate, "8, 14");
+		panel.add(label_9, "2, 16, right, default");
+		panel.add(warehousCheckBox, "4, 16");	
+		panel.add(label_101, "6, 18");
+		panel.add(billedDate, "8, 18");
+		panel.add(label_91, "2, 18, right, default");
+		panel.add(billNoFld, "4, 18");
+		panel.add(label_3, "2, 20");
+		panel.add(panel_3, "4, 20, 5, 1, fill, fill");
+		panel.add(label_6, "2, 22, right, default");
+		panel.add(outPriceFld, "4, 22, fill, default");
+		panel.add(label_7, "6, 22");
+		panel.add(outNumFld, "8, 22, fill, default");
+		panel.add(label_4, "2, 24");
+		panel.add(outgetDate, "4, 24");
+		panel.add(label_5, "2, 26, right, default");
+		panel.add(outBillNoFld, "4, 26, fill, default");
+		panel.add(label_8, "6, 26");
+		panel.add(outBilledDate, "8, 26");
+		panel.add(new JLabel("材料费用"), "2, 28");
+		panel.add(meterial, "4, 28,  fill, default");
+		panel.add(label_11, "2, 30, right, default");
+		panel.add(noteFld, "4, 30, 5, 1, fill, default");
 		
 //		billcreateDate.addPropertyChangeListener("date",new PropertyChangeListener() {
 //			
@@ -742,17 +770,17 @@ public class BillPanel extends JSplitPane {
 				BeanProperty.create("billgroup"), billgroup,
 				jTextFieldBeanProperty).bind();
 		//
-		BeanProperty<Bill, Double> billItemBeanProperty_3 = BeanProperty
+		BeanProperty<Bill, Float> billItemBeanProperty_3 = BeanProperty
 				.create("reportPrice");
-		AutoBinding<Bill, Double, JTextField, String> autoBinding_3 = Bindings
+		AutoBinding<Bill, Float, JTextField, String> autoBinding_3 = Bindings
 				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
 						billItemBeanProperty_3, priceFld,
 						jTextFieldBeanProperty);
 		autoBinding_3.bind();
 		//
-		BeanProperty<Bill, Double> billItemBeanProperty_4 = BeanProperty
+		BeanProperty<Bill, Float> billItemBeanProperty_4 = BeanProperty
 				.create("outPrice");
-		AutoBinding<Bill, Double, JTextField, String> autoBinding_4 = Bindings
+		AutoBinding<Bill, Float, JTextField, String> autoBinding_4 = Bindings
 				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
 						billItemBeanProperty_4, outPriceFld,
 						jTextFieldBeanProperty);
@@ -868,6 +896,8 @@ public class BillPanel extends JSplitPane {
 		autoBinding_18.bind();
 		 Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
 				 BeanProperty.create("planCost"), cost, jTextFieldBeanProperty).bind();
+		 Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
+				 BeanProperty.create("meterial"), (JTextField)meterial.getEditor().getEditorComponent(), jTextFieldBeanProperty).bind();
 	}
 
 	public void saveBill() {

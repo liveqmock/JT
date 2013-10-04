@@ -8,6 +8,7 @@ import java.awt.Component;
 import java.awt.Dialog.ModalityType;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
@@ -16,10 +17,15 @@ import java.util.Date;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
@@ -126,8 +132,31 @@ public class PlanTable extends JXTable {
 		final BeanTablePane<Bill> panel= new BeanTablePane<>(bills);
 		final JDialog dialog=new JDialog();
 		dialog.setTitle("Ñ¡Ôñ¶©µ¥");
-		dialog.getContentPane().add(panel,BorderLayout.CENTER);
 		dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBorder(new EmptyBorder(1, 1, 1, 1));
+		dialog.add(panel_2, BorderLayout.NORTH);
+		panel_2.setLayout(new BoxLayout(panel_2, BoxLayout.X_AXIS));
+
+		JLabel label = new JLabel("\u56FE\u53F7\uFF1A");
+		panel_2.add(label);
+
+		final JTextField textField = new JTextField();
+		panel_2.add(textField);
+		textField.setColumns(10);
+
+		JButton searchBt = new JButton("\u67E5\u627E");
+		panel_2.add(searchBt);
+		searchBt.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if(textField.getText()!=null)
+				panel.setBeans( Bill.loadBySearch("picid like '%"+textField.getText()+"'",false));
+				
+			}
+		});
 		
 		panel.getTable().addMouseListener(new MouseAdapter() {
 
@@ -147,6 +176,9 @@ public class PlanTable extends JXTable {
 
 
 		}); 
+
+		dialog.getContentPane().add(panel,BorderLayout.CENTER);
+		dialog.getContentPane().add(panel_2,BorderLayout.NORTH);
 		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 		dialog.setVisible(true);
 

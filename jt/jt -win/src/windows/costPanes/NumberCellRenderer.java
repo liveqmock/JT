@@ -21,7 +21,8 @@ public class NumberCellRenderer extends DefaultTableCellRenderer {
 	  public Component getTableCellRendererComponent(JTable jTable, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
 	      Component c = super.getTableCellRendererComponent(jTable, value, isSelected, hasFocus, row, column);
-
+//	      System.err.println("c:"+(c instanceof JLabel));
+//	      System.err.println("v"+(value instanceof Number));
 	      if (c instanceof JLabel && value instanceof Number) {
 
 	          JLabel label = (JLabel) c;

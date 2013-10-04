@@ -24,6 +24,9 @@ public class BillTable extends BeanTablePane<Bill> {
 		super(beans);
 		getTable().setDefaultRenderer(float.class, new NumberCellRenderer() );
 		getTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		getTable().setDefaultRenderer(float.class, new NumberCellRenderer() );
+		
 		getTable().addHighlighter(
 				new BillColorHighlighter(this, new HighlightPredicate() {
 

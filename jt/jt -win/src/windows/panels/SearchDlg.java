@@ -45,7 +45,7 @@ public class SearchDlg extends JDialog {
 	public SearchDlg() {
 		createContents();
 
-		JButton searBt = new JButton("æŸ¥è¯¢(S)");
+		JButton searBt = new JButton("²éÑ¯(S)");
 		searBt.setMnemonic('s');
 		getContentPane().add(searBt, BorderLayout.SOUTH);
 		
@@ -86,12 +86,12 @@ public class SearchDlg extends JDialog {
 		
 		if(requestDateS.getDate()!=null||requestDateE.getDate()!=null){
 			if(requestDateS.getDate()==null){
-				JOptionPane.showMessageDialog(SearchDlg.this, "è¯·åŒæ—¶æŒ‡å®šå¼€å§‹å’Œç»“æŸæ—¥æœŸ","é”™è¯¯",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SearchDlg.this, "ÇëÍ¬Ê±Ö¸¶¨¿ªÊ¼ºÍ½áÊøÈÕÆÚ","´íÎó",JOptionPane.ERROR_MESSAGE);
 				requestDateS.requestFocus();
 				return;
 			} 
 			if(requestDateE.getDate()==null){
-				JOptionPane.showMessageDialog(SearchDlg.this, "è¯·åŒæ—¶æŒ‡å®šå¼€å§‹å’Œç»“æŸæ—¥æœŸ","é”™è¯¯",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SearchDlg.this, "ÇëÍ¬Ê±Ö¸¶¨¿ªÊ¼ºÍ½áÊøÈÕÆÚ","´íÎó",JOptionPane.ERROR_MESSAGE);
 				requestDateE.requestFocus();
 				return;
 			}
@@ -100,12 +100,12 @@ public class SearchDlg extends JDialog {
 		}
 		if(billDateS.getDate()!=null||billDateE.getDate()!=null){
 			if(billDateS.getDate()==null){
-				JOptionPane.showMessageDialog(SearchDlg.this, "è¯·åŒæ—¶æŒ‡å®šå¼€å§‹å’Œç»“æŸæ—¥æœŸ","é”™è¯¯",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SearchDlg.this, "ÇëÍ¬Ê±Ö¸¶¨¿ªÊ¼ºÍ½áÊøÈÕÆÚ","´íÎó",JOptionPane.ERROR_MESSAGE);
 				billDateS.requestFocus();
 				return;
 			} 
 			if(billDateE.getDate()==null){
-				JOptionPane.showMessageDialog(SearchDlg.this, "è¯·åŒæ—¶æŒ‡å®šå¼€å§‹å’Œç»“æŸæ—¥æœŸ","é”™è¯¯",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SearchDlg.this, "ÇëÍ¬Ê±Ö¸¶¨¿ªÊ¼ºÍ½áÊøÈÕÆÚ","´íÎó",JOptionPane.ERROR_MESSAGE);
 				billDateE.requestFocus();
 				return;
 			}
@@ -114,12 +114,12 @@ public class SearchDlg extends JDialog {
 		}
 		if(outGetDateS.getDate()!=null||outGetDateE.getDate()!=null){
 			if(outGetDateS.getDate()==null){
-				JOptionPane.showMessageDialog(SearchDlg.this, "è¯·åŒæ—¶æŒ‡å®šå¼€å§‹å’Œç»“æŸæ—¥æœŸ","é”™è¯¯",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SearchDlg.this, "ÇëÍ¬Ê±Ö¸¶¨¿ªÊ¼ºÍ½áÊøÈÕÆÚ","´íÎó",JOptionPane.ERROR_MESSAGE);
 				outGetDateS.requestFocus();
 				return;
 			} 
 			if(outGetDateE.getDate()==null){
-				JOptionPane.showMessageDialog(SearchDlg.this, "è¯·åŒæ—¶æŒ‡å®šå¼€å§‹å’Œç»“æŸæ—¥æœŸ","é”™è¯¯",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SearchDlg.this, "ÇëÍ¬Ê±Ö¸¶¨¿ªÊ¼ºÍ½áÊøÈÕÆÚ","´íÎó",JOptionPane.ERROR_MESSAGE);
 				outGetDateE.requestFocus();
 				return;
 			}
@@ -136,7 +136,7 @@ public class SearchDlg extends JDialog {
 	private void createContents() {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SearchDlg.class.getResource("/windows/logo.PNG")));
-		setTitle("é«˜çº§æŸ¥è¯¢");
+		setTitle("¸ß¼¶²éÑ¯");
 		JPanel mainPanel=new JPanel();
 		mainPanel.setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
@@ -168,128 +168,128 @@ public class SearchDlg extends JDialog {
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,}));
-		JLabel lblNewLabel = new JLabel("å®¢æˆ·åç§°ï¼š");
+		JLabel lblNewLabel = new JLabel("¿Í»§Ãû³Æ£º");
 		mainPanel.add(lblNewLabel, "2, 2, right, default");
 
 		customName = new JTextField();
 		mainPanel.add(customName, "4, 2, fill, default");
 		customName.setColumns(10);
 
-		JLabel label = new JLabel("è®¢å•å·ï¼š");
+		JLabel label = new JLabel("¶©µ¥ºÅ£º");
 		mainPanel.add(label, "2, 4, right, default");
 
 		billNo = new JTextField();
 		billNo.setColumns(10);
 		mainPanel.add(billNo, "4, 4, fill, default");
 
-		JLabel label_4 = new JLabel("è®¢å•ç»„ï¼š");
+		JLabel label_4 = new JLabel("¶©µ¥×é£º");
 		mainPanel.add(label_4, "2, 6");
 
 		billgroup = new JTextField();
 		billgroup.setColumns(10);
 		mainPanel.add(billgroup, "4, 6, fill, default");
 
-		JLabel label_1 = new JLabel("é¡¹ç›®å·ï¼š");
+		JLabel label_1 = new JLabel("ÏîÄ¿ºÅ£º");
 		mainPanel.add(label_1, "2, 8, right, default");
 
 		itemNo = new JTextField();
 		itemNo.setColumns(10);
 		mainPanel.add(itemNo, "4, 8, fill, default");
 
-		JLabel label_2 = new JLabel("å›¾å·ï¼š");
+		JLabel label_2 = new JLabel("Í¼ºÅ£º");
 		mainPanel.add(label_2, "2, 10, right, default");
 
 		picNo = new JTextField();
 		picNo.setColumns(10);
 		mainPanel.add(picNo, "4, 10, fill, default");
 
-		JLabel label_5 = new JLabel("å‘ç¥¨å·ç ï¼š");
+		JLabel label_5 = new JLabel("·¢Æ±ºÅÂë£º");
 		mainPanel.add(label_5, "2, 12, right, default");
 
 		fbNo = new JTextField();
 		fbNo.setColumns(10);
 		mainPanel.add(fbNo, "4, 12, fill, default");
 
-		JLabel label_6 = new JLabel("å¤‡æ³¨ï¼š");
+		JLabel label_6 = new JLabel("±¸×¢£º");
 		mainPanel.add(label_6, "2, 14, right, default");
 
 		note = new JTextField();
 		note.setColumns(10);
 		mainPanel.add(note, "4, 14, fill, default");
 
-		JLabel label_7 = new JLabel("è®¢å•æ—¥æœŸï¼š");
+		JLabel label_7 = new JLabel("¶©µ¥ÈÕÆÚ£º");
 		mainPanel.add(label_7, "2, 16");
 
 		JPanel panel_2 = new JPanel();
 		mainPanel.add(panel_2, "4, 16, fill, fill");
 		panel_2.setLayout(new BoxLayout(panel_2, BoxLayout.X_AXIS));
 
-		JLabel label_15 = new JLabel("ä»");
+		JLabel label_15 = new JLabel("´Ó");
 		panel_2.add(label_15);
 
 		billDateS = new JXDatePicker();
-		billDateS.setFormats(new String[] {"yyyyå¹´MMæœˆddæ—¥"});
+		billDateS.setFormats(new String[] {"yyyyÄêMMÔÂddÈÕ"});
 		panel_2.add(billDateS);
 
-		JLabel label_16 = new JLabel("è‡³");
+		JLabel label_16 = new JLabel("ÖÁ");
 		panel_2.add(label_16);
 
 		billDateE = new JXDatePicker();
-		billDateE.setFormats(new String[] {"yyyyå¹´MMæœˆddæ—¥"});
+		billDateE.setFormats(new String[] {"yyyyÄêMMÔÂddÈÕ"});
 		panel_2.add(billDateE);
 
-		JLabel label_8 = new JLabel("è¦æ±‚äº¤è´§æ—¥æœŸï¼š");
+		JLabel label_8 = new JLabel("ÒªÇó½»»õÈÕÆÚ£º");
 		mainPanel.add(label_8, "2, 18");
 
 		JPanel panel = new JPanel();
 		mainPanel.add(panel, "4, 18, fill, default");
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
-		JLabel label_12 = new JLabel("ä»");
+		JLabel label_12 = new JLabel("´Ó");
 		panel.add(label_12);
 
 		requestDateS = new JXDatePicker();
-		requestDateS.setFormats(new String[] {"yyyyå¹´MMæœˆddæ—¥"});
+		requestDateS.setFormats(new String[] {"yyyyÄêMMÔÂddÈÕ"});
 		panel.add(requestDateS);
 
-		JLabel label_3 = new JLabel("è‡³");
+		JLabel label_3 = new JLabel("ÖÁ");
 		panel.add(label_3);
 
 		requestDateE = new JXDatePicker();
-		requestDateE.setFormats(new String[] {"yyyyå¹´MMæœˆddæ—¥"});
+		requestDateE.setFormats(new String[] {"yyyyÄêMMÔÂddÈÕ"});
 		panel.add(requestDateE);
 
-		JLabel label_9 = new JLabel("å¤–åäº¤è´§æ—¥æœŸï¼š");
+		JLabel label_9 = new JLabel("ÍâĞ­½»»õÈÕÆÚ£º");
 		mainPanel.add(label_9, "2, 20");
 
 		JPanel panel_1 = new JPanel();
 		mainPanel.add(panel_1, "4, 20, fill, fill");
 		panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.X_AXIS));
 
-		JLabel label_13 = new JLabel("ä»");
+		JLabel label_13 = new JLabel("´Ó");
 		panel_1.add(label_13);
 
 		outGetDateS = new JXDatePicker();
-		outGetDateS.setFormats(new String[] {"yyyyå¹´MMæœˆddæ—¥"});
+		outGetDateS.setFormats(new String[] {"yyyyÄêMMÔÂddÈÕ"});
 		panel_1.add(outGetDateS);
 
-		JLabel label_14 = new JLabel("è‡³");
+		JLabel label_14 = new JLabel("ÖÁ");
 		panel_1.add(label_14);
 
 		outGetDateE = new JXDatePicker();
-		outGetDateE.setFormats(new String[] {"yyyyå¹´MMæœˆddæ—¥"});
+		outGetDateE.setFormats(new String[] {"yyyyÄêMMÔÂddÈÕ"});
 		panel_1.add(outGetDateE);
 
-		JLabel label_10 = new JLabel("å¼€ç¥¨çŠ¶æ€ï¼š");
+		JLabel label_10 = new JLabel("¿ªÆ±×´Ì¬£º");
 		mainPanel.add(label_10, "2, 22");
 
-		isFp = new JCheckBox("å·²å¼€ç¥¨");
+		isFp = new JCheckBox("ÒÑ¿ªÆ±");
 		mainPanel.add(isFp, "4, 22");
 
-		JLabel label_11 = new JLabel("å…¥åº“çŠ¶æ€ï¼š");
+		JLabel label_11 = new JLabel("Èë¿â×´Ì¬£º");
 		mainPanel.add(label_11, "2, 24");
 
-		isLk = new JCheckBox("å·²å…¥åº“");
+		isLk = new JCheckBox("ÒÑÈë¿â");
 		mainPanel.add(isLk, "4, 24");
 		getContentPane().add(mainPanel);
 

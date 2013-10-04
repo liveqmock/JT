@@ -53,7 +53,7 @@ public class PlanTableMode extends AbstractTableModel {
 			operationNames=new Vector<>();
 			for (Operation oper:operations){
 				columnNames.add("单件用时");
-				columnNames.add("用时");
+				columnNames.add("调机用时");
 				columnNames.add("费用");
 				operationNames.add(oper.getName());
 			}
@@ -142,7 +142,7 @@ public class PlanTableMode extends AbstractTableModel {
 				if(columnIndex%3==0) {
 					return plan.getOperationPlans().get(operationNames.get((columnIndex-9)/3)).getUnitUseTime();
 				}else  if(columnIndex%3==1) {
-					return plan.getOperationPlans().get(operationNames.get((columnIndex-10)/3)).getUseTime();
+					return plan.getOperationPlans().get(operationNames.get((columnIndex-10)/3)).getPrepareTime();
 				}else  if(columnIndex%3==2) {
 					return plan.getOperationPlans().get(operationNames.get((columnIndex-11)/3)).getPlanCost();
 				}
@@ -196,7 +196,7 @@ public class PlanTableMode extends AbstractTableModel {
 		else if(columnIndex>=7 && columnIndex<=8) 
 			return true;
 		else
-			return columnIndex%3==0;
+			return columnIndex%3<2;
 
 	}
 
@@ -212,6 +212,10 @@ public class PlanTableMode extends AbstractTableModel {
 				if(columnIndex%3==0&&aValue!=null){					
 					OperationPlan operationPlan=	plan.getOperationPlans().get(operationNames.get((columnIndex-8)/3));
 					operationPlan.setUnitUseTime( (float) aValue);
+
+				}else if(columnIndex%3==1&&aValue!=null){					
+					OperationPlan operationPlan=	plan.getOperationPlans().get(operationNames.get((columnIndex-8)/3));
+					operationPlan.setPrepareTime( (float) aValue);
 
 				}
 			}

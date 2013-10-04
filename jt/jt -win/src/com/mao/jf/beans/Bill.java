@@ -41,13 +41,13 @@ public class Bill extends BeanMao {
 			if(rs.next()){
 				Bill billItem = new Bill();
 				billItem.setCustom("合计");
-				billItem.setReportPrice(rs.getDouble("reportprice"));
-				billItem.setOutPrice(rs.getDouble("outprice"));
+				billItem.setReportPrice(rs.getFloat("reportprice"));
+				billItem.setOutPrice(rs.getFloat("outprice"));
 				billItem.setNum(rs.getLong("num"));
 				billItem.setOutNum(rs.getLong("outnum"));
 				billItem.setItemCompleteDate(new Date());
-				billItem.setOperCost(rs.getDouble("OperCost"));
-				billItem.setPlanCost(rs.getDouble("PlanCost"));
+				billItem.setOperCost(rs.getFloat("OperCost"));
+				billItem.setPlanCost(rs.getFloat("PlanCost"));
 				billItems.add(billItem);
 			}
 		} catch (SQLException e) {
@@ -70,11 +70,11 @@ public class Bill extends BeanMao {
 	private String billid;
 	private String item;
 	private String picid;
-	private double reportPrice;
+	private float reportPrice;
 	private String imageUrl;
 	private String note;
 	private String outCustom;
-	private double outPrice;
+	private float outPrice;
 	private long outNum;
 	private String billNo;
 	private long num;
@@ -88,14 +88,15 @@ public class Bill extends BeanMao {
 	private String billgroup;
 	private Date itemCompleteDate;
 	private Date billedDate;
+	private String meterial;
 
 	private boolean warehoused;
 
 	private int backRepairNum;
 	private String status;
 
-	private double operCost;
-	private double planCost;
+	private float operCost;
+	private float planCost;
 	public Bill() {
 		custom = "";
 		billid = "";
@@ -187,25 +188,30 @@ public class Bill extends BeanMao {
 		
 		return status;
 	}
+
+	@ChinaAno(order=59,str="材料费用")
+	public String getMeterial() {
+		return meterial;
+	}
 	@Transient
 	@ChinaAno(order=57,str="生产费用")
-	public double getOperCost() {
+	public float getOperCost() {
 
 		return Userman.loginUser.isManager()? operCost:0;
 	}
 	@Transient
 	@ChinaAno(order=58,str="计划费用")
-	public double getPlanCost() {
+	public float getPlanCost() {
 
 		return planCost;
 	}
 
 
 
-	public void setOperCost(double operCost) {
+	public void setOperCost(float operCost) {
 		this.operCost = operCost;
 	}
-	public void setPlanCost(double planCost) {
+	public void setPlanCost(float planCost) {
 		this.planCost = planCost;
 	}
 	@ChinaAno(order = 21, str = "外协订单号")
@@ -225,7 +231,7 @@ public class Bill extends BeanMao {
 
 	@Transient
 	@ChinaAno(order = 24, str = "外协总价")
-	public double getOutMoney() {
+	public float getOutMoney() {
 		// TODO Auto-generated method stub
 		
 		return Userman.loginUser.isManager()? outPrice * outNum:0;
@@ -237,7 +243,7 @@ public class Bill extends BeanMao {
 	}
 
 	@ChinaAno(order = 22, str = "外协单价")
-	public double getOutPrice() {
+	public float getOutPrice() {
 
 		return Userman.loginUser.isManager()? outPrice:0;
 		
@@ -249,13 +255,13 @@ public class Bill extends BeanMao {
 	}
 	@Transient
 	@ChinaAno(order = 12, str = "订单总价")
-	public Double getReportMoney() {
+	public float getReportMoney() {
 
 		return Userman.loginUser.isManager()? reportPrice * num:0;
 	}
 
 	@ChinaAno(order = 11, str = "订单单价")
-	public double getReportPrice() {
+	public float getReportPrice() {
 
 		return Userman.loginUser.isManager()? reportPrice:0;
 	}
@@ -346,7 +352,7 @@ public class Bill extends BeanMao {
 	}
 
 	// @ChinaAno(order=12,str="客户请求总价")
-	// public Double getRequestMoney() {
+	// public float getRequestMoney() {
 	// return requestPrice*num;
 	// }
 
@@ -360,18 +366,18 @@ public class Bill extends BeanMao {
 		String sql = "";
 		if (id == 0) {
 			if (Userman.loginUser.isManager())
-				sql = "insert into bill (billdate,billid ,item,picid ,imageUrl ,note,custom ,outCustom,customMan,billno,billeddate,outgetdate,itemCompleteDate,num,requestDate,outNum,color,warehoused,outBillNo,billgroup,outBillDate,reportPrice ,outPrice,plancost) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				sql = "insert into bill (billdate,billid ,item,picid ,imageUrl ,note,custom ,outCustom,customMan,billno,billeddate,outgetdate,itemCompleteDate,num,requestDate,outNum,color,warehoused,outBillNo,billgroup,outBillDate,meterial,reportPrice ,outPrice,plancost) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			else
-				sql = "billdate,billid ,item,picid ,imageUrl ,note,custom ,outCustom,customMan,billno,billeddate,outgetdate,num,requestDate,itemCompleteDate,outNum,color,warehoused,outBillNo,outBillDate,billgroup) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				sql = "insert into bill (billdate,billid ,item,picid ,imageUrl ,note,custom ,outCustom,customMan,billno,billeddate,outgetdate,num,requestDate,itemCompleteDate,outNum,color,warehoused,outBillNo,billgroup,outBillDate,meterial) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		} else {
 
 			if (Userman.loginUser.isManager())
-				sql = "update  bill set billdate=?,billid=? ,item=?,picid =?,imageUrl =?,note=?,custom =?,outCustom =?,customMan =?,billno=?,billeddate=?,outgetdate=?,itemCompleteDate=?,num=?,requestDate=?,outNum =?,color=?,warehoused=?,outBillNo=?,billgroup=?,outBillDate=?,reportPrice=? ,outPrice =? ,plancost=? where id="
+				sql = "update  bill set billdate=?,billid=? ,item=?,picid =?,imageUrl =?,note=?,custom =?,outCustom =?,customMan =?,billno=?,billeddate=?,outgetdate=?,itemCompleteDate=?,num=?,requestDate=?,outNum =?,color=?,warehoused=?,outBillNo=?,billgroup=?,outBillDate=?,meterial=?,reportPrice=? ,outPrice =? ,plancost=? where id="
 						+ id;
 			else
 
-				sql = "update  bill set billdate=?,billid=? ,item=?,picid =?,imageUrl =?,note=?,custom =?,outCustom =?,customMan =?,billno=?,billeddate=?,outgetdate=?,itemCompleteDate=?,num=?,requestDate=?,outNum =?,color=?,warehoused=?,outBillNo=?,billgroup=?,outBillDate=? where id="
+				sql = "update  bill set billdate=?,billid=? ,item=?,picid =?,imageUrl =?,note=?,custom =?,outCustom =?,customMan =?,billno=?,billeddate=?,outgetdate=?,itemCompleteDate=?,num=?,requestDate=?,outNum =?,color=?,warehoused=?,outBillNo=?,billgroup=?,outBillDate=?,meterial=? where id="
 						+ id;
 		}
 		try (PreparedStatement pst = SessionData.getConnection()
@@ -405,12 +411,13 @@ public class Bill extends BeanMao {
 			pst.setString(20, billgroup);
 			pst.setDate(21, outBillDate == null ? null : new java.sql.Date(
 					outBillDate.getTime()));
+			pst.setString(22, meterial);
 			if (Userman.loginUser.isManager()) {
-				pst.setDouble(22, reportPrice);
-				pst.setDouble(23, outPrice);
-				pst.setDouble(24, planCost);
+				pst.setFloat(23, reportPrice);
+				pst.setFloat(24, outPrice);
+				pst.setFloat(25, planCost);
 			}
-			
+
 			pst.execute();
 			ResultSet rsKey = pst.getGeneratedKeys();
 			if (rsKey != null && rsKey.next())
@@ -494,7 +501,7 @@ public class Bill extends BeanMao {
 		this.outNum = outNum;
 	}
 
-	public void setOutPrice(double outPrice) {
+	public void setOutPrice(float outPrice) {
 		this.outPrice = outPrice;
 	}
 
@@ -502,7 +509,7 @@ public class Bill extends BeanMao {
 		this.picid = picid;
 	}
 
-	public void setReportPrice(double reportPrice) {
+	public void setReportPrice(float reportPrice) {
 		this.reportPrice = reportPrice;
 	}
 
@@ -532,6 +539,9 @@ public class Bill extends BeanMao {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	public void setMeterial(String meterial) {
+		this.meterial = meterial;
 	}
 
 }

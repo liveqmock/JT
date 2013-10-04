@@ -16,6 +16,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import java.util.Vector;
 
@@ -37,6 +40,7 @@ import javax.swing.filechooser.FileFilter;
 
 import jcifs.smb.SmbFileOutputStream;
 
+import org.h2.command.dml.Select;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
@@ -49,6 +53,7 @@ import validation.builtin.Validators;
 import validation.ui.ValidationPanel;
 import windows.MenuAction;
 import windows.MyImageView;
+import windows.customComponet.RsTablePane;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -59,6 +64,7 @@ import com.mao.jf.beans.Bill;
 import com.mao.jf.beans.Custom;
 import com.mao.jf.beans.OutCustom;
 import com.mao.jf.beans.SerialiObject;
+import com.mao.jf.beans.SessionData;
 import com.mao.jf.beans.Userman;
 
 public class BillPanel extends JSplitPane {
@@ -603,7 +609,16 @@ public class BillPanel extends JSplitPane {
 					
 			}
 		});
-		meterial=new JComboBox<>(new String[] {"自有材料","外部加工"});
+		meterial=new JComboBox<>(new String[] {"包工包料","来料加工"});
+		try(Statement st=SessionData.getConnection().createStatement()){
+			ResultSet rs = st.executeQuery("Select distinct meterial from bill");
+			while(rs.next()) {
+				meterial.addItem(rs.getString(1));
+			}
+		} catch (SQLException e1) {
+			// TODO 自动生成的 catch 块
+			e1.printStackTrace();
+		}
 		meterial.setEditable(true);
 		panel.add(lblNewLabel, "2, 2, right, default");
 		panel.add(panel_1, "4, 2, 5, 1, fill, fill");
@@ -650,7 +665,7 @@ public class BillPanel extends JSplitPane {
 		panel.add(outBillNoFld, "4, 26, fill, default");
 		panel.add(label_8, "6, 26");
 		panel.add(outBilledDate, "8, 26");
-		panel.add(new JLabel("材料费用"), "2, 28");
+		panel.add(new JLabel("材料类型"), "2, 28");
 		panel.add(meterial, "4, 28,  fill, default");
 		panel.add(label_11, "2, 30, right, default");
 		panel.add(noteFld, "4, 30, 5, 1, fill, default");

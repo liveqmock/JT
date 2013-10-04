@@ -189,7 +189,7 @@ public class Bill extends BeanMao {
 		return status;
 	}
 
-	@ChinaAno(order=59,str="材料费用")
+	@ChinaAno(order=59,str="材料类型")
 	public String getMeterial() {
 		return meterial;
 	}

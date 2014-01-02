@@ -24,7 +24,7 @@ public class SessionData {
 
 				String url = "jdbc:h2:tcp://192.168.1.103:9092/jt";
 				
-//				String url = "jdbc:h2:/c:/开发工程/jt";
+//				String url = "jdbc:h2:/c:/jt";
 //				String url = "jdbc:h2:/e:/jt";
 				Class.forName("org.h2.Driver");
 				DriverManager.setLoginTimeout(100);

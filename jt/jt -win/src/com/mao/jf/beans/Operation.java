@@ -4,6 +4,8 @@ import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Vector;
 
+import com.mao.jf.beans.annotation.Caption;
+
 public class Operation extends BeanMao {
 	private String name;  
 	private int  num ; 
@@ -14,27 +16,27 @@ public class Operation extends BeanMao {
 
 
 	
-	@ChinaAno(order = 1, str = "工序名称")
+	@Caption(order = 1, value= "工序名称")
 	public String getName() {
 		return name;
 	}
 	
-	@ChinaAno(order = 3, str = "设备数量")
+	@Caption(order = 3, value= "设备数量")
 	public int getNum() {
 		return num;
 	}
-	@ChinaAno(order = 4, str = "外发")
+	@Caption(order = 4, value= "外发")
 	public boolean getOut() {
 		return out;
 	}
 	public boolean isOut() {
 		return out;
 	}
-	@ChinaAno(order = 5, str = "费用")
+	@Caption(order = 5, value= "费用")
 	public float getCost() {
 		return cost;
 	}
-	@ChinaAno(order = 6, str = "备注")
+	@Caption(order = 6, value= "备注")
 	public String getNote() {
 		return note;
 	}

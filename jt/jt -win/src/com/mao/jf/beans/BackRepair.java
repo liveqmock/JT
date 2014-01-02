@@ -1,5 +1,7 @@
 package com.mao.jf.beans;
 
+import java.beans.IntrospectionException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,12 +9,20 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.Vector;
 
+import org.apache.commons.beanutils.PropertyUtils;
+
+import com.mao.jf.beans.annotation.Caption;
+
 public class BackRepair {
 	private int id;
 	private Bill billItem ;
+	@Caption("返修数据")
 	private long backNum ;
+	@Caption("返修日期")
 	private Date backDate;
+	@Caption("返修交货日期")
 	private Date getDate ;
+	@Caption("返修原因")
 	private String note ;
 	public void remove() {
 		try (PreparedStatement pst = SessionData.getConnection()
@@ -82,22 +92,20 @@ public class BackRepair {
 	public void setBillItem(Bill billItem) {
 		this.billItem = billItem;
 	}
-	@ChinaAno(order = 5, str = "返修日期")
 	public Date getBackDate() {
 		return backDate;
 	}
 	public void setBackDate(Date backDate) {
 		this.backDate = backDate;
 	}
-	@ChinaAno(order = 4, str = "返修数据")
 	public long getBackNum() {
 		return backNum;
 	}
-	@ChinaAno(order = 2, str = "订单号")
+	@Caption(order=-2,value="订单号")
 	public String getBillNo() {
 		return billItem.getBillNo();
 	}
-	@ChinaAno(order = 1, str = "订单客户")
+	@Caption(order=-1,value="订单客户")
 	public String getCustom() {
 		return billItem.getCustom();
 	}
@@ -111,14 +119,12 @@ public class BackRepair {
 		this.id = id;
 	}
 
-	@ChinaAno(order =6, str = "返修交货日期")
 	public Date getGetDate() {
 		return getDate;
 	}
 	public void setGetDate(Date getDate) {
 		this.getDate = getDate;
 	}
-	@ChinaAno(order =3, str = "返修原因")
 	public String getNote() {
 		return note;
 	}
@@ -126,5 +132,11 @@ public class BackRepair {
 		this.note = note;
 	}
 
-
+	public static void	main(String[] a) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
+		BackRepair backRepair=new BackRepair();
+		backRepair.setBillItem(Bill.load(Bill.class,100));
+		backRepair.setNote("dd");
+		Object v = PropertyUtils.getSimpleProperty(backRepair,"custom");
+		System.out.println(v);
+	}
 }

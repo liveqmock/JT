@@ -1,5 +1,7 @@
 package com.mao.jf.beans;
 
+import com.mao.jf.beans.annotation.Caption;
+
 
 public class OperationOut extends BeanMao {
 	private Plan plan;
@@ -26,7 +28,7 @@ public class OperationOut extends BeanMao {
 		return materialNum;
 	}
 
-	@ChinaAno(order = 1, str = "工序名称")
+	@Caption(order = 1, value= "工序名称")
 	public String getName() {
 		return name;
 	}

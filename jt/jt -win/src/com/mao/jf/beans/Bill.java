@@ -3,13 +3,17 @@ package com.mao.jf.beans;
 import java.awt.Color;
 import java.beans.IntrospectionException;
 import java.beans.Transient;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.Vector;
+
+import com.mao.jf.beans.annotation.Caption;
 
 public class Bill extends BeanMao {
 
@@ -97,6 +101,13 @@ public class Bill extends BeanMao {
 
 	private float operCost;
 	private float planCost;
+	private String gjh;
+	private String meterialz;
+	private String meterialType;
+	private String techCondition;
+	private String partName;
+	private Vector<Material> materials;
+
 	public Bill() {
 		custom = "";
 		billid = "";
@@ -109,27 +120,27 @@ public class Bill extends BeanMao {
 		billNo = "";
 	}
 
-	@ChinaAno(order = 61, str = "返修记录")
+	@Caption(order = 61, value= "返修记录")
 	public int getBackRepairNum() {
 		return backRepairNum;
 	}
 
-	@ChinaAno(order = 5, str = "订单日期")
+	@Caption(order = 5, value= "订单日期")
 	public Date getBillDate() {
 		return billDate;
 	}
 
-	@ChinaAno(order = 9, str = "开票日期")
+	@Caption(order = 9, value= "开票日期")
 	public Date getBilledDate() {
 		return billedDate;
 	}
 
-	@ChinaAno(order = 1, str = "订单号")
+	@Caption(order = 1, value= "订单号")
 	public String getBillid() {
 		return billid;
 	}
 
-	@ChinaAno(order = 8, str = "发票号")
+	@Caption(order = 8, value= "发票号")
 	public String getBillNo() {
 		return billNo;
 	}
@@ -138,12 +149,12 @@ public class Bill extends BeanMao {
 		return color;
 	}
 
-	@ChinaAno(order = -1, str = "客户名称")
+	@Caption(order = -1, value= "客户名称")
 	public String getCustom() {
 		return custom;
 	}
 
-	@ChinaAno(order = 31, str = "联系人")
+	@Caption(order = 31, value= "联系人")
 	public String getCustomMan() {
 		return customMan;
 	}
@@ -156,32 +167,32 @@ public class Bill extends BeanMao {
 		return imageUrl;
 	}
 
-	@ChinaAno(order = 2, str = "项目号")
+	@Caption(order = 2, value= "项目号")
 	public String getItem() {
 		return item;
 	}
 
-	@ChinaAno(order = 7, str = "订单交货日期")
+	@Caption(order = 7, value= "订单交货日期")
 	public Date getItemCompleteDate() {
 		return itemCompleteDate;
 	}
 
-	@ChinaAno(order = 99, str = "备注")
+	@Caption(order = 99, value= "备注")
 	public String getNote() {
 		return note;
 	}
 
-	@ChinaAno(order = 4, str = "数量")
+	@Caption(order = 4, value= "数量")
 	public long getNum() {
 		return num;
 	}
 
-	@ChinaAno(order = 25, str = "外协订单日期")
+	@Caption(order = 25, value= "外协订单日期")
 	public Date getOutBillDate() {
 		return outBillDate;
 	}
 	@Transient
-	//@ChinaAno(order=56,str="生产状态")
+	//@Caption(order=56,value="生产状态")
 	public String getStatus() {
 		if(status!=null) return status;
 		status="";
@@ -189,23 +200,43 @@ public class Bill extends BeanMao {
 		return status;
 	}
 
-	@ChinaAno(order=59,str="材料类型")
-	public String getMeterial() {
-		return meterial;
-	}
+	
 	@Transient
-	@ChinaAno(order=57,str="生产费用")
+	@Caption(order=57,value="生产费用")
 	public float getOperCost() {
 
 		return Userman.loginUser.isManager()? operCost:0;
 	}
 	@Transient
-	@ChinaAno(order=58,str="计划费用")
+	@Caption(order=58,value="计划费用")
 	public float getPlanCost() {
 
 		return planCost;
 	}
-
+	@Caption(order=59,value="材料类型")
+	public String getMeterial() {
+		return meterial;
+	}
+	@Caption(order=70,value="材质")
+	public String getMeterialz() {
+		return meterialz;
+	}
+	@Caption(order=71,value="材料规格")
+	public String getMeterialType() {
+		return meterialType;
+	}
+	@Caption(order=72,value="技术条件")
+	public String getTechCondition() {
+		return techCondition;
+	}
+	@Caption(order=73,value="零件名称")
+	public String getPartName() {
+		return partName;
+	}
+	@Caption(order=74,value="工件号")
+	public String getGjh() {
+		return gjh;
+	}
 
 
 	public void setOperCost(float operCost) {
@@ -214,59 +245,59 @@ public class Bill extends BeanMao {
 	public void setPlanCost(float planCost) {
 		this.planCost = planCost;
 	}
-	@ChinaAno(order = 21, str = "外协订单号")
+	@Caption(order = 21, value= "外协订单号")
 	public String getOutBillNo() {
 		return outBillNo;
 	}
 
-	@ChinaAno(order = 22, str = "外协客户名称")
+	@Caption(order = 22, value= "外协客户名称")
 	public String getOutCustom() {
 		return outCustom;
 	}
 
-	@ChinaAno(order = 26, str = "外协交货日期")
+	@Caption(order = 26, value= "外协交货日期")
 	public Date getOutGetDate() {
 		return outGetDate;
 	}
 
 	@Transient
-	@ChinaAno(order = 24, str = "外协总价")
+	@Caption(order = 24, value= "外协总价")
 	public float getOutMoney() {
 		// TODO Auto-generated method stub
 		
 		return Userman.loginUser.isManager()? outPrice * outNum:0;
 	}
 
-	@ChinaAno(order = 23, str = "外协数量")
+	@Caption(order = 23, value= "外协数量")
 	public long getOutNum() {
 		return outNum;
 	}
 
-	@ChinaAno(order = 22, str = "外协单价")
+	@Caption(order = 22, value= "外协单价")
 	public float getOutPrice() {
 
 		return Userman.loginUser.isManager()? outPrice:0;
 		
 	}
 
-	@ChinaAno(order = 3, str = "图号")
+	@Caption(order = 3, value= "图号")
 	public String getPicid() {
 		return picid;
 	}
 	@Transient
-	@ChinaAno(order = 12, str = "订单总价")
+	@Caption(order = 12, value= "订单总价")
 	public float getReportMoney() {
 
 		return Userman.loginUser.isManager()? reportPrice * num:0;
 	}
 
-	@ChinaAno(order = 11, str = "订单单价")
+	@Caption(order = 11, value= "订单单价")
 	public float getReportPrice() {
 
 		return Userman.loginUser.isManager()? reportPrice:0;
 	}
 
-	@ChinaAno(order = 6, str = "要求交货日期")
+	@Caption(order = 6, value= "要求交货日期")
 	public Date getRequestDate() {
 		return requestDate;
 	}
@@ -296,24 +327,24 @@ public class Bill extends BeanMao {
 		return tableColor;
 	}
 	@Transient
-	@ChinaAno(order = 51, str = "入库状态")
+	@Caption(order = 51, value= "入库状态")
 	public String getWarehousedStr() {
 		return warehoused ? "已入库" : "未入库";
 	}
 	@Transient
-	@ChinaAno(order = 52, str = "开票状态")
+	@Caption(order = 52, value= "开票状态")
 	public String getIsBilled() {
 		return isBilled() ? "已开票" : "未开票";
 	}
 
 	@Transient
-	@ChinaAno(order = 53, str = "订单交货状态")
+	@Caption(order = 53, value= "订单交货状态")
 	public String getIsItemComplete() {
 		return isItemComplete() ? "已交货" : "未交货";
 	}
 
 	@Transient
-	@ChinaAno(order = 54, str = "外协交货状态")
+	@Caption(order = 54, value= "外协交货状态")
 	public String getIsOutComplete() {
 		if(outNum==0) 
 			return "无外协加工";
@@ -322,7 +353,7 @@ public class Bill extends BeanMao {
 	}
 
 	@Transient
-	@ChinaAno(order = 55, str = "外协开票状态")
+	@Caption(order = 55, value= "外协开票状态")
 	public String getIsOutBilled() {
 		if(outNum==0) 
 			return "无外协加工";
@@ -351,7 +382,7 @@ public class Bill extends BeanMao {
 		return outGetDate != null;
 	}
 
-	// @ChinaAno(order=12,str="客户请求总价")
+	// @Caption(order=12,value="客户请求总价")
 	// public float getRequestMoney() {
 	// return requestPrice*num;
 	// }
@@ -366,19 +397,30 @@ public class Bill extends BeanMao {
 		String sql = "";
 		if (id == 0) {
 			if (Userman.loginUser.isManager())
-				sql = "insert into bill (billdate,billid ,item,picid ,imageUrl ,note,custom ,outCustom,customMan,billno,billeddate,outgetdate,itemCompleteDate,num,requestDate,outNum,color,warehoused,outBillNo,billgroup,outBillDate,meterial,reportPrice ,outPrice,plancost) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				sql = "insert into bill (billdate,billid ,item,picid ,imageUrl ,note,custom ," +
+						"outCustom,customMan,billno,billeddate,outgetdate,itemCompleteDate,num," +
+						"requestDate,outNum,color,warehoused,outBillNo,billgroup,outBillDate,meterial," +
+						"meterialz,meterialType,techCondition,partName,gjh,reportPrice ,outPrice,plancost)" +
+						" values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			else
-				sql = "insert into bill (billdate,billid ,item,picid ,imageUrl ,note,custom ,outCustom,customMan,billno,billeddate,outgetdate,num,requestDate,itemCompleteDate,outNum,color,warehoused,outBillNo,billgroup,outBillDate,meterial) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				sql = "insert into bill (billdate,billid ,item,picid ,imageUrl ,note,custom ,outCustom," +
+						"customMan,billno,billeddate,outgetdate,num,requestDate,itemCompleteDate,outNum," +
+						"color,warehoused,outBillNo,billgroup,outBillDate,meterial,meterialz,meterialType," +
+						"techCondition,partName,gjh) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		} else {
 
 			if (Userman.loginUser.isManager())
-				sql = "update  bill set billdate=?,billid=? ,item=?,picid =?,imageUrl =?,note=?,custom =?,outCustom =?,customMan =?,billno=?,billeddate=?,outgetdate=?,itemCompleteDate=?,num=?,requestDate=?,outNum =?,color=?,warehoused=?,outBillNo=?,billgroup=?,outBillDate=?,meterial=?,reportPrice=? ,outPrice =? ,plancost=? where id="
-						+ id;
+				sql = "update  bill set billdate=?,billid=? ,item=?,picid =?,imageUrl =?,note=?,custom =?,outCustom =?," +
+						"customMan =?,billno=?,billeddate=?,outgetdate=?,itemCompleteDate=?,num=?,requestDate=?,outNum =?," +
+						"color=?,warehoused=?,outBillNo=?,billgroup=?,outBillDate=?,meterial=?,meterialz=? ,meterialType=? ," +
+						"techCondition=? ,partName=? ,gjh=? ,reportPrice=? ,outPrice =? ,plancost=? where id="+ id;
 			else
 
-				sql = "update  bill set billdate=?,billid=? ,item=?,picid =?,imageUrl =?,note=?,custom =?,outCustom =?,customMan =?,billno=?,billeddate=?,outgetdate=?,itemCompleteDate=?,num=?,requestDate=?,outNum =?,color=?,warehoused=?,outBillNo=?,billgroup=?,outBillDate=?,meterial=? where id="
-						+ id;
+				sql = "update  bill set billdate=?,billid=? ,item=?,picid =?,imageUrl =?,note=?,custom =?,outCustom =?," +
+						"customMan =?,billno=?,billeddate=?,outgetdate=?,itemCompleteDate=?,num=?,requestDate=?,outNum =?," +
+						"color=?,warehoused=?,outBillNo=?,billgroup=?,outBillDate=?,meterial=? ,meterialz=? ,meterialType=? ," +
+						"techCondition=? ,partName=? ,gjh=? where id="+ id;
 		}
 		try (PreparedStatement pst = SessionData.getConnection()
 				.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);) {
@@ -412,10 +454,15 @@ public class Bill extends BeanMao {
 			pst.setDate(21, outBillDate == null ? null : new java.sql.Date(
 					outBillDate.getTime()));
 			pst.setString(22, meterial);
+			pst.setString(23, meterialz);
+			pst.setString(24, meterialType);
+			pst.setString(25, techCondition);
+			pst.setString(26, partName);
+			pst.setString(27, gjh);
 			if (Userman.loginUser.isManager()) {
-				pst.setFloat(23, reportPrice);
-				pst.setFloat(24, outPrice);
-				pst.setFloat(25, planCost);
+				pst.setFloat(28, reportPrice);
+				pst.setFloat(29, outPrice);
+				pst.setFloat(30, planCost);
 			}
 
 			pst.execute();
@@ -520,7 +567,7 @@ public class Bill extends BeanMao {
 	public void setWarehoused(boolean warehoused) {
 		this.warehoused = warehoused;
 	}
-	@ChinaAno(order=0,str="订单组")
+	@Caption(order=0,value="订单组")
 	public String getBillgroup() {
 		return billgroup;
 	}
@@ -542,6 +589,51 @@ public class Bill extends BeanMao {
 	}
 	public void setMeterial(String meterial) {
 		this.meterial = meterial;
+	}
+	
+	public void setGjh(String gjh) {
+		this.gjh = gjh;
+	}
+	public void setMeterialz(String meterialz) {
+		this.meterialz = meterialz;
+	}
+	public void setMeterialType(String meterialType) {
+		this.meterialType = meterialType;
+	}
+	public void setTechCondition(String techCondition) {
+		this.techCondition = techCondition;
+	}
+	public void setPartName(String partName) {
+		this.partName = partName;
+	}
+	public Vector<Material> getmaterials() {
+		if(materials==null)
+			try {	
+			materials=new Vector<Material>();
+	
+			materials=Material.loadAll(Material.class,"select * from material where bill="+this.id);
+			for(Material material:materials)material.setBill(this);
+		} catch (InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException
+				| IntrospectionException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		}
+		return materials;
+	}
+	public Material getFirstMaterial() {
+		try{
+			return getmaterials().firstElement();
+		}catch(NoSuchElementException e){
+			return new Material(this);
+		}
+	}
+	@Override
+	public void remove() throws SQLException {
+		// TODO 自动生成的方法存根
+		super.remove();
+		if(this.imageUrl!=null) new File(this.imageUrl).delete();
 	}
 
 }

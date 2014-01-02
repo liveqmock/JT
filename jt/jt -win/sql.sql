@@ -107,6 +107,19 @@ select * from operationwork
  MaterialCost float,
  Plan int );
 
+ drop table material;
+ create table material(
+	id int AUTO_INCREMENT,
+	bill int,
+	name varchar(50),
+	unitName varchar(10),
+	unitCost float,
+	num float,
+	enterEmployee int,
+	createDate TIMESTAMP default CURRENT_TIMESTAMP
+);
+ 
+ 
 alter table operationwork alter column preparecost decimal(18,2);
 alter table employee alter column wage decimal(18,2);
 alter table operationplan add column preparetime int;
@@ -117,5 +130,7 @@ alter table operationwork add column planCost decimal(18,2);
 
 update operationwork a set workcost=(select a.worktime*wage from employee b where b.id=a.employee);
 
-update operationwork a set planCost=(select b.unitusetime*num*cost from operationplan b where b.id=a.operationplan);
+update operationplan a set num=(select num from plan b where b.id=a.plan)
+
+update operationwork a set planCost=(select (b.unitusetime*num+preparetime)*cost from operationplan b where b.id=a.operationplan);
 

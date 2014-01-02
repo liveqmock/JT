@@ -1,28 +1,38 @@
 package com.mao.jf.beans;
 
 import java.beans.IntrospectionException;
+import java.beans.Transient;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Vector;
 
+import com.mao.jf.beans.annotation.Caption;
+
 public class Employee extends BeanMao {
+	private static float convert=60*8*26;
 	private String name;
 	private Operation operation ;
 	private float wage;
 	private String employeeType;
 	
-	@ChinaAno(order = 1, str = "姓名")
+	@Caption(order = 1, value= "姓名")
 	public String getName() {
 		return name;
 	}
-	@ChinaAno(order = 2, str = "操作工序")
+	@Caption(order = 2, value= "操作工序")
 	public Operation getOperation() {
 		return operation;
 	}
-	@ChinaAno(order = 3, str = "工资")
+	@Caption(order = 3, value= "分工资")
 	public float getWage() {
 		return wage;
 	}
-	@ChinaAno(order = 4, str = "类型")
+	
+	@Transient
+	@Caption(order = 4, value= "月工资")
+	public float getMonWage() {
+		return (int)(wage*convert);
+	}
+	@Caption(order = 5, value= "类型")
 	public String getEmployeeType() {
 		return employeeType;
 	}
@@ -34,6 +44,9 @@ public class Employee extends BeanMao {
 	}
 	public void setOperation(Operation operation) {
 		this.operation = operation;
+	}
+	public void setMonWage(float wage) {
+		this.wage = wage/convert;
 	}
 	public void setWage(float wage) {
 		this.wage = wage;

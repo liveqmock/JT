@@ -12,11 +12,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import com.mao.jf.beans.annotation.Caption;
+
 public class BeanMao implements Serializable {
 	protected int id;
 
 
-	@ChinaAno(order = 0, str = "ID")
+	@Caption(order = 0, value= "ID")
 	public int getId() {
 		return id;
 	}
@@ -24,9 +26,9 @@ public class BeanMao implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public void remove() throws SQLException {
-	
+
 		removeBySql(this.getClass(), "delete "+this.getClass().getSimpleName()+" where id="+this.id);
 	}
 	public static void removeBySql(Class cls,String sql) throws SQLException {
@@ -96,7 +98,7 @@ public class BeanMao implements Serializable {
 				){
 			Vector<T> objects=new Vector<>(); 
 			while(rs.next()){
-				
+
 				objects.add(createObject(rs, cls));
 			}
 			return objects;
@@ -114,53 +116,57 @@ public class BeanMao implements Serializable {
 			Object dbObject = rs.getObject(c);
 			if(dbObject!=null){
 				String cName=rs.getMetaData().getColumnName(c);
-				aaa:for(Method m:methods){
+				Method setMethod=null;
+				for(Method m:methods)
 					if(m.getName().toLowerCase().equals(("set"+cName).toLowerCase())){
-						Class<?>[] rtnClasses = m.getParameterTypes();
-						
-						if(rtnClasses.length>0){
-							Class<?> rtnClass = rtnClasses[0];
+						setMethod=m;
+						break;	
+					}
+				if(setMethod!=null){
 
-							if(rtnClass.getSuperclass()!=null&&rtnClass.getSuperclass().equals(BeanMao.class)){
-								Method sMethod = rtnClass.getMethod("load", new Class[] {Class.class,Integer.class});
-								Object sObject = sMethod.invoke(null, new Object[]{rtnClass,rs.getInt(c)});
-								m.invoke(object,sObject );
-							}else{
-//								System.out.println(m.getName()+":"+rtnClass.getSimpleName()+":"+dbObject);
-								switch (rtnClass.getSimpleName()) {
-								case "byte":
-									m.invoke(object, rs.getByte(c));
-									break;
-								case "int":
-									m.invoke(object, rs.getInt(c));
-									break;
-								case "char":
-									m.invoke(object, (char)dbObject);
-									break;
-								case "long":
-									m.invoke(object, rs.getLong(c));
-									break;
-								case "float":
-									m.invoke(object, rs.getFloat(c));
-									break;
-								case "boolean":
-									m.invoke(object, rs.getBoolean(c));
-									break;
+					Class<?>[] rtnClasses = setMethod.getParameterTypes();
 
-								case "double":
-									m.invoke(object,rs.getDouble(c));
-									break;
+					if(rtnClasses.length>0){
+						Class<?> rtnClass = rtnClasses[0];
 
-								case "short":
-									m.invoke(object,rs.getShort(c));
-									break;
+						if(rtnClass.getSuperclass()!=null&&rtnClass.getSuperclass().equals(BeanMao.class)){
+							Method sMethod = rtnClass.getMethod("load", new Class[] {Class.class,Integer.class});
+							Object sObject = sMethod.invoke(null, new Object[]{rtnClass,rs.getInt(c)});
+							setMethod.invoke(object,sObject );
+						}else{
+							//								System.out.println(m.getName()+":"+rtnClass.getSimpleName()+":"+dbObject);
+							switch (rtnClass.getSimpleName()) {
+							case "byte":
+								setMethod.invoke(object, rs.getByte(c));
+								break;
+							case "int":
+								setMethod.invoke(object, rs.getInt(c));
+								break;
+							case "char":
+								setMethod.invoke(object, (char)dbObject);
+								break;
+							case "long":
+								setMethod.invoke(object, rs.getLong(c));
+								break;
+							case "float":
+								setMethod.invoke(object, rs.getFloat(c));
+								break;
+							case "boolean":
+								setMethod.invoke(object, rs.getBoolean(c));
+								break;
 
-								default:
-									m.invoke(object, dbObject);
-									break;
-								}
+							case "double":
+								setMethod.invoke(object,rs.getDouble(c));
+								break;
+
+							case "short":
+								setMethod.invoke(object,rs.getShort(c));
+								break;
+
+							default:
+								setMethod.invoke(object, dbObject);
+								break;
 							}
-							break aaa;
 						}
 					}
 				}
@@ -173,7 +179,7 @@ public class BeanMao implements Serializable {
 		return load(cls, sql);
 	}
 	public static  <T> T load(Class <T> cls,String sql) throws InstantiationException, IllegalAccessException, IntrospectionException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		
+
 		try(Statement st=SessionData.getConnection().createStatement();
 				ResultSet rs=st.executeQuery(sql);
 				){

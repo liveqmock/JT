@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import javax.swing.JTextField;
+import com.mao.jf.beans.annotation.Caption;
 
 public class Plan extends BeanMao {
 
@@ -35,7 +35,7 @@ public class Plan extends BeanMao {
 	public static Vector<Plan> loadallNew() {
 		Vector<Plan> plans=new Vector<>();
 		try {
-			Vector<Bill> bills=Bill.loadAll(Bill.class, "select * from bill where  warehoused=false and id not in (select bill from plan)");
+			Vector<Bill> bills=Bill.loadAll(Bill.class, "select * from bill where  warehoused=false and id not in (select bill from plan)   order by  custom");
 			Vector<Operation> operations;
 			operations = Operation.loadAll(Operation.class,"select * from operation where not out");
 			for(Bill bill:bills){
@@ -71,6 +71,11 @@ public class Plan extends BeanMao {
 	}
 	public static Vector<Plan> loadUnCompleted() {
 		return loadUnCompletedBySearch(null);
+
+	}
+
+	public static Vector<Plan> loadUnCompleted(String search) {
+		return loadUnCompletedBySearch(search);
 
 	}
 	public static Vector<Plan> loadUnCompletedByNotOut(String search) {
@@ -132,7 +137,7 @@ public class Plan extends BeanMao {
 	public Date getProduceDate() {
 		return produceDate;
 	}
-	@ChinaAno(order=2,str="ÐòºÅ")
+	@Caption(order=2,value="ÐòºÅ")
 	public int getSequenceNum() {
 		if(sequenceNum==0) {
 			try(Statement st=SessionData.getConnection().createStatement();
@@ -337,14 +342,20 @@ public class Plan extends BeanMao {
 		return operationWorks;
 	}
 
+	public static Vector<Plan> loadUnCompletedByPicId(String search) {
+		
+		if(search!=null&&!search.equals(""))
+			return loadUnCompletedBySearch(" and picid like '%"+search+"%'");
+		else
+			return loadUnCompletedBySearch(null);
+	}
 
-	public static Vector<Plan> loadUnCompletedBySearch(String searchPic) {
-		String search="";
-		if(searchPic!=null&&!searchPic.equals(""))
-			search=" and picid like '%"+searchPic+"%'";
+	public static Vector<Plan> loadUnCompletedBySearch(String search) {
+		if(search==null)
+			search="";
 		Vector<Plan> plans=null;
 		try {
-			plans= Plan.loadAll(Plan.class,"Select a.* from plan a join bill b on a.bill=b.id and not a.completed "+search);
+			plans= Plan.loadAll(Plan.class,"Select distinct a.*,b.custom from plan a join bill b on a.bill=b.id and b.itemCompleteDate is null "+search+" order by b.custom");
 			for(Plan plan:plans){
 				plan.initOperations();
 			}

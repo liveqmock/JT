@@ -3,6 +3,8 @@ package com.mao.jf.beans;
 import java.beans.Transient;
 import java.util.Date;
 
+import com.mao.jf.beans.annotation.Caption;
+
 public class OperationWork extends BeanMao {
 	
 	
@@ -30,31 +32,31 @@ public class OperationWork extends BeanMao {
 		
 		setOperationPlan(operationPlan);
 	}
-	@ChinaAno(str="工序名",order=1)
+	@Caption(value="工序名",order=1)
 	@Transient
 	public String getOperationName() {
 		return operationPlan.getName();
 	}
-	@ChinaAno(str="检验员",order=17)
+	@Caption(value="检验员",order=17)
 	public Employee getChecker() {
 		return checker;
 	}
-	@ChinaAno(str="操作员",order=4)
+	@Caption(value="操作员",order=4)
 	public Employee getEmployee() {
 		return employee;
 	}
 
-	@ChinaAno(str="完工日期",order=18)
+	@Caption(value="完工日期",order=18)
 	public Date getFinishDate() {
 		return finishDate;
 	}
 
 
-	@ChinaAno(str="实发数",order=4)
+	@Caption(value="实发数",order=4)
 	public int getGetNum() {
 		return getNum;
 	}
-	@ChinaAno(order =99, str = "备注")
+	@Caption(order =99, value= "备注")
 	public String getNote() {
 		return note;
 	}
@@ -64,7 +66,7 @@ public class OperationWork extends BeanMao {
 	public Plan getPlan() {
 		return getOperationPlan().getPlan();
 	}
-	@ChinaAno(order = 7, str = "计划费用")
+	@Caption(order = 7, value= "计划费用")
 	public float getPlanCost() {
 		return planCost==0?getOperationPlan().getPlanCost():planCost;
 	}
@@ -73,7 +75,7 @@ public class OperationWork extends BeanMao {
 	}
 
 
-	@ChinaAno(str="加工费用",order=11)
+	@Caption(value="加工费用",order=11)
 	public float getWorkCost() {
 		return workCost==0?(employee==null?0: workTime*employee.getWage()):workCost;
 	}
@@ -82,36 +84,36 @@ public class OperationWork extends BeanMao {
 	}
 
 
-	@ChinaAno(str="调机费用",order=14)
+	@Caption(value="调机费用",order=14)
 	public float getPrepareCost() {
 		return prepareCost==0?(prepareEmployee==null?0: prepareTime*prepareEmployee.getWage()):prepareCost;
 	}
-	@ChinaAno(str="调机人",order=12)
+	@Caption(value="调机人",order=12)
 	public Employee getPrepareEmployee() {
 		return prepareEmployee;
 	}
-	@ChinaAno(str="调机时间",order=13)
+	@Caption(value="调机时间",order=13)
 	public float getPrepareTime() {
 		return prepareTime;
 	}
 
 
-	@ChinaAno(str="成品数",order=6)
+	@Caption(value="成品数",order=6)
 	public int getProductNum() {
 		return productNum;
 	}
-	@ChinaAno(str="报废数",order=7)
+	@Caption(value="报废数",order=7)
 	public int getScrapNum() {
 		return scrapNum;
 	}
 
-	@ChinaAno(str="报废原因",order=8)
+	@Caption(value="报废原因",order=8)
 	public String getScrapReason() {
 		return scrapReason;
 	}
 	
 	@Transient
-	@ChinaAno(str="未完工数量",order=9)
+	@Caption(value="未完工数量",order=9)
 	public int getUncompletedNum() {
 		return getNum-productNum-scrapNum;
 	}
@@ -121,13 +123,13 @@ public class OperationWork extends BeanMao {
 
 
 	@Transient
-	@ChinaAno(order = 15, str = "实际费用")
+	@Caption(order = 15, value= "实际费用")
 	public float getCost() {
 		return getWorkCost()+getPrepareCost();
 	}
 	
 
-	@ChinaAno(order = 10, str = "加工用时")
+	@Caption(order = 10, value= "加工用时")
 	public float getWorkTime() {
 		return workTime;
 	}

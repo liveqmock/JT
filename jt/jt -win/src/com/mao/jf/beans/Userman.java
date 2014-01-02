@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.mao.jf.beans.annotation.Caption;
+
 public class Userman extends BeanMao {
 	public static Userman Load(String name) {
 		try (PreparedStatement pst = SessionData.getConnection()
@@ -66,7 +68,7 @@ public class Userman extends BeanMao {
 	}
 
 	@Transient
-	@ChinaAno(str="级别",order=2)
+	@Caption(value="级别",order=2)
 	public String getLevelStr() {
 
 		switch (level) {
@@ -85,7 +87,7 @@ public class Userman extends BeanMao {
 
 	}
 
-	@ChinaAno(str="姓名",order=1)
+	@Caption(value="姓名",order=1)
 	public String getName() {
 		return name;
 	}
@@ -154,6 +156,12 @@ public class Userman extends BeanMao {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	@Override
+	public String toString() {
+		// TODO 自动生成的方法存根
+		return name;
 	}
 
 }

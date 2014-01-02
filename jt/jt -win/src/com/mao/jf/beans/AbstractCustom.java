@@ -5,17 +5,26 @@ import java.util.Vector;
 
 import javax.naming.NamingException;
 
+import com.mao.jf.beans.annotation.Caption;
+
 public abstract class AbstractCustom {
 	protected int sysId;
+	@Caption("姓名")
 	protected String name;
+	@Caption("电话")
 	protected String tel;
+	@Caption("地址")
 	protected String address;
+	@Caption("传真")
 	protected String fax;
+	@Caption("联系人")
 	protected String contact;
+	@Caption("Email")
 	protected String email;
 
 	public AbstractCustom() {
 		super();
+
 		this.name = "";
 		this.tel = "";
 		this.address = "";
@@ -26,27 +35,21 @@ public abstract class AbstractCustom {
 
 	public abstract AbstractCustom clone();
 
-	@ChinaAno(order = 2, str = "地址")
 	public String getAddress() {
 		return address;
 	}
 
-	@ChinaAno(order = 3, str = "联系人")
 	public String getContact() {
 		return contact;
 	}
 
-	@ChinaAno(order = 6, str = "Email")
 	public String getEmail() {
 		return email;
 	}
-
-	@ChinaAno(order = 5, str = "传真")
 	public String getFax() {
 		return fax;
 	}
 
-	@ChinaAno(order =1, str = "客户名称")
 	public String getName() {
 		return name;
 	}
@@ -55,7 +58,6 @@ public abstract class AbstractCustom {
 		return sysId;
 	}
 
-	@ChinaAno(order =4, str = "电话")
 	public String getTel() {
 		return tel;
 	}

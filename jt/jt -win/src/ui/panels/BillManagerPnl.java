@@ -1,4 +1,4 @@
-package ui;
+package ui.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -32,7 +32,7 @@ import javax.swing.event.ListSelectionListener;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXList;
 
-import ui.panels.SearchDlg;
+import ui.tables.BillTable;
 
 import com.mao.jf.beans.Bill;
 import com.mao.jf.beans.Custom;

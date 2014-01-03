@@ -1,4 +1,4 @@
-package ui;
+package ui.panels;
 
 import java.awt.Color;
 import java.awt.Dialog.ModalExclusionType;
@@ -34,8 +34,6 @@ import org.icepdf.ri.common.MyAnnotationCallback;
 import org.icepdf.ri.common.SwingController;
 import org.icepdf.ri.common.SwingViewBuilder;
 import org.jdesktop.swingx.JXImageView;
-
-import ui.panels.ImagePanel;
 
 public class MyImageView extends JScrollPane {
 

@@ -38,7 +38,7 @@ public abstract class BeanDialog<T> extends JDialog {
 		this.bean = null;
 		setTitle(title);
 		getContentPane().setLayout(new BorderLayout());
-		setIconImage(Toolkit.getDefaultToolkit().getImage(BeanDialog.class.getResource("/windows/logo.PNG")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(BeanDialog.class.getResource("/ui/logo.PNG")));
 		contentPanel3.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel3, BorderLayout.CENTER);
 		{
@@ -93,7 +93,7 @@ public abstract class BeanDialog<T> extends JDialog {
 		this.contentPanel = panel;
 		this.bean = (T) contentPanel.getBean();
 		setTitle(title);
-		setIconImage(Toolkit.getDefaultToolkit().getImage(BeanDialog.class.getResource("/windows/logo.PNG")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(BeanDialog.class.getResource("/ui/logo.PNG")));
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel.getvPanel(), BorderLayout.CENTER);
@@ -140,7 +140,7 @@ public abstract class BeanDialog<T> extends JDialog {
 		this.contentPanel2 = panel;
 		this.beans = panel.getBean();
 		setTitle(title);
-		setIconImage(Toolkit.getDefaultToolkit().getImage(BeanDialog.class.getResource("/windows/logo.PNG")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(BeanDialog.class.getResource("/ui/logo.PNG")));
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel2.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel2, BorderLayout.CENTER);

@@ -4,6 +4,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPopupMenu;
 
+import ui.tables.BillTable;
+
 import com.mao.jf.beans.Userman;
 
 public class MainMenu extends JMenuBar {

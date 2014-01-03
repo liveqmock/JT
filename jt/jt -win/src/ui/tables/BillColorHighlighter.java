@@ -1,4 +1,4 @@
-package ui;
+package ui.tables;
 
 import static org.jdesktop.swingx.util.PaintUtils.blend;
 

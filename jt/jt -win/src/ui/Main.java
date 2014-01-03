@@ -20,6 +20,8 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
 import ui.customComponet.BeanDialog;
+import ui.frames.About;
+import ui.panels.BillManagerPnl;
 import ui.panels.LoginPanel;
 
 import com.mao.jf.beans.SerialiObject;
@@ -39,7 +41,7 @@ public class Main extends JFrame {
 	public Main() {
 		setBounds(100, 100, 700, 400);
 		setTitle("津田精密机构订单管理系统");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(About.class.getResource("/windows/logo.PNG")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(About.class.getResource("/ui/logo.PNG")));
 		final BillManagerPnl billManagerPnl=new BillManagerPnl();
 		setJMenuBar(new MainMenu(billManagerPnl.getTable()));
 		setContentPane(billManagerPnl);

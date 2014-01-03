@@ -20,9 +20,9 @@ public class SessionData {
 				String passwd = "780205";
 				// String url = "jdbc:h2:file:" +
 				// SessionData.class.getResource("").toURI().getPath() + "jt";
-//				 String url = "jdbc:h2:tcp://183.249.185.2:9092/jt";
+				 String url = "jdbc:h2:tcp://183.249.185.2:9092/jt";
 
-				String url = "jdbc:h2:tcp://192.168.1.103:9092/jt";
+//				String url = "jdbc:h2:tcp://192.168.1.103:9092/jt";
 				
 //				String url = "jdbc:h2:/c:/jt";
 //				String url = "jdbc:h2:/e:/jt";

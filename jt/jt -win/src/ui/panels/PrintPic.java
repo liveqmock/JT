@@ -1,4 +1,4 @@
-package ui;
+package ui.panels;
 import java.awt.print.PrinterJob;
 import java.io.FileNotFoundException;
 import java.io.InputStream;

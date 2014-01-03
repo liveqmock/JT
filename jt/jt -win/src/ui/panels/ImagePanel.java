@@ -19,8 +19,6 @@ import javax.swing.event.ChangeListener;
 
 import org.jdesktop.swingx.JXImageView;
 
-import ui.MyImageView;
-
 public class ImagePanel extends JPanel {
 	private JXImageView imageView;
 	private JSlider slider;

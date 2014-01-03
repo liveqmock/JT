@@ -1,4 +1,4 @@
-package ui;
+package ui.frames;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -14,6 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import ui.Main;
+
 public class About extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
@@ -21,7 +23,7 @@ public class About extends JDialog {
 		createContents();
 	}
 	private void createContents() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(About.class.getResource("/windows/logo.PNG")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(About.class.getResource("/ui/logo.PNG")));
 		setBounds(100, 100, 411, 286);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -43,7 +45,7 @@ public class About extends JDialog {
 		contentPanel.add(lblNewLabel_2);
 		
 		JLabel lblNewLabel_1 = new JLabel("");
-		lblNewLabel_1.setIcon(new ImageIcon(About.class.getResource("/windows/logo.PNG")));
+		lblNewLabel_1.setIcon(new ImageIcon(About.class.getResource("/ui/logo.PNG")));
 		lblNewLabel_1.setBounds(152, 10, 171, 82);
 		contentPanel.add(lblNewLabel_1);
 		{

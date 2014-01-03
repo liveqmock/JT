@@ -135,7 +135,7 @@ public class SearchDlg extends JDialog {
 	}
 	private void createContents() {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setIconImage(Toolkit.getDefaultToolkit().getImage(SearchDlg.class.getResource("/windows/logo.PNG")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(SearchDlg.class.getResource("/ui/logo.PNG")));
 		setTitle("∏ﬂº∂≤È—Ø");
 		JPanel mainPanel=new JPanel();
 		mainPanel.setLayout(new FormLayout(new ColumnSpec[] {

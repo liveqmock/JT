@@ -47,7 +47,7 @@ public class Bill extends BeanMao {
 				billItem.setCustom("合计");
 				billItem.setReportPrice(rs.getFloat("reportprice"));
 				billItem.setOutPrice(rs.getFloat("outprice"));
-				billItem.setNum(rs.getLong("num"));
+				billItem.setNum(rs.getInt("num"));
 				billItem.setOutNum(rs.getLong("outnum"));
 				billItem.setItemCompleteDate(new Date());
 				billItem.setOperCost(rs.getFloat("OperCost"));
@@ -81,7 +81,7 @@ public class Bill extends BeanMao {
 	private float outPrice;
 	private long outNum;
 	private String billNo;
-	private long num;
+	private int num;
 	private String customMan;
 	private String color;
 	private String outBillNo;
@@ -183,7 +183,7 @@ public class Bill extends BeanMao {
 	}
 
 	@Caption(order = 4, value= "数量")
-	public long getNum() {
+	public int getNum() {
 		return num;
 	}
 
@@ -443,7 +443,7 @@ public class Bill extends BeanMao {
 					outGetDate.getTime()));
 			pst.setDate(13, itemCompleteDate == null ? null
 					: new java.sql.Date(itemCompleteDate.getTime()));
-			pst.setLong(14, num);
+			pst.setInt(14, num);
 			pst.setDate(15, requestDate == null ? null : new java.sql.Date(
 					requestDate.getTime()));
 			pst.setLong(16, outNum);
@@ -524,7 +524,7 @@ public class Bill extends BeanMao {
 		this.note = note;
 	}
 
-	public void setNum(long num) {
+	public void setNum(int num) {
 		this.num = num;
 	}
 

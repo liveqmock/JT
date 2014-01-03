@@ -1,4 +1,4 @@
-package ui;
+package ui.tables;
 
 import java.awt.Component;
 import java.io.File;
@@ -12,6 +12,8 @@ import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.jdesktop.swingx.table.TableColumnModelExt;
 
+import ui.MainMenu;
+import ui.MenuAction;
 import ui.costPanes.NumberCellRenderer;
 import ui.customComponet.BeanTablePane;
 

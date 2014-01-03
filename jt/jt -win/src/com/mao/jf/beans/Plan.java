@@ -115,6 +115,7 @@ public class Plan extends BeanMao {
 		return cost;
 	}
 	public int getNum() {
+		if(num==0)return getBill().getNum();
 		return num;
 	}
 	@Transient

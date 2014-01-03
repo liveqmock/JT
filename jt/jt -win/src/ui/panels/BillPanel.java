@@ -45,7 +45,6 @@ import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingx.JXDatePicker;
 
 import ui.MenuAction;
-import ui.MyImageView;
 import validation.Problem;
 import validation.Severity;
 import validation.builtin.Validators;

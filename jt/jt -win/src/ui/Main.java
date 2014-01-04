@@ -36,7 +36,7 @@ public class Main extends JFrame {
 	 */
 
 	public  static int ver=40;
-
+ 
 
 	public Main() {
 		setBounds(100, 100, 700, 400);

@@ -20,7 +20,6 @@ public class Plan extends BeanMao {
 	private Date produceDate;
 	private int num;
 	private TreeMap<String,OperationPlan> operationPlans;
-	private TreeMap<String,OperationOut> operationOuts;
 	private boolean completed;
 	private float MaterialNum;
 	private float MaterialPrice;
@@ -89,20 +88,7 @@ public class Plan extends BeanMao {
 
 		return plans;
 	}
-	public static Vector<Plan> loadUnCompletedByOut(String search) {
-
-
-		Vector<Plan> plans=null;
-		plans= loadUnCompletedBySearch(search);
-		for(Plan plan:plans){
-			plan.initOperationOuts();
-		}
-
-
-
-		return plans;
-	}
-
+	
 	public boolean getCompleted() {
 		return completed;
 	}
@@ -121,10 +107,6 @@ public class Plan extends BeanMao {
 	@Transient
 	public TreeMap<String,OperationPlan> getOperationPlans() {
 		return operationPlans;
-	}
-	@Transient
-	public TreeMap<String,OperationOut> getOperationOuts() {
-		return operationOuts;
 	}
 	@Transient
 	public int  getPlanTime() {
@@ -213,30 +195,7 @@ public class Plan extends BeanMao {
 		}
 		setOperationPlans(operationPlans);
 	}
-	public void initOperationOuts(){
-		operationOuts=new TreeMap<>();;
-
-		try {
-			for(OperationOut operationOut:OperationOut.loadAll(OperationOut.class,"select * from OperationOut where plan="+getId())){
-
-				operationOuts.put(operationOut.getName(), operationOut);
-			}
-			for(Operation operation :Operation.loadAll(Operation.class,"select * from operation where out")){
-
-				if(!operationOuts.containsKey(operation .getName())) {
-					OperationOut operationOut=new OperationOut(operation);
-					operationOut.setPlan(this);
-					operationOuts.put(operation.getName(),operationOut );
-				}
-			}
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException
-				| IntrospectionException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
-	}
+	
 	public boolean isBig() {
 		// TODO 自动生成的方法存根
 		return getPlanCost()>bill.getPlanCost();
@@ -256,16 +215,7 @@ public class Plan extends BeanMao {
 					}
 				}
 			}
-			if(operationOuts!=null) {
-				super.save();
-				for(OperationOut operationOut:operationOuts.values()){
-					if(operationOut.getMaterialNum()> 0) {
-						operationOut.save();
-					}else if(operationOut.getId()>0 ) {
-						operationOut.remove();
-					}
-				}
-			}
+			
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException
 				| SecurityException | IntrospectionException | SQLException e) {
@@ -322,10 +272,6 @@ public class Plan extends BeanMao {
 
 
 
-
-	public void setOperationOuts(TreeMap<String,OperationOut> operationOuts) {
-		this.operationOuts = operationOuts;
-	}
 
 
 	@Transient

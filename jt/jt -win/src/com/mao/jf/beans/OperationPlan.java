@@ -1,17 +1,19 @@
 package com.mao.jf.beans;
 
 import java.beans.Transient;
+import java.util.Date;
 
 import com.mao.jf.beans.annotation.Caption;
 
 public class OperationPlan extends BeanMao {
+	private int sequence;
 	private Plan plan;
 	private String name;  
 	private float cost   ;
 	private String note  ;
 	private float unitUseTime;
 	private float prepareTime;
-	
+	private Date planDate;
 	
 	public OperationPlan(Operation operation) {
 		
@@ -114,6 +116,22 @@ public class OperationPlan extends BeanMao {
 	public String toString() {
 		// TODO 自动生成的方法存根
 		return name;
+	}
+
+	public Date getPlanDate() {
+		return planDate;
+	}
+
+	public void setPlanDate(Date planDate) {
+		this.planDate = planDate;
+	}
+
+	public int getSequence() {
+		return sequence;
+	}
+
+	public void setSequence(int sequence) {
+		this.sequence = sequence;
 	}
 	
 

@@ -1,4 +1,4 @@
-package mutiHeadTable;
+package ui.mutiHeadTable;
 /* (swing1.1beta3)
  *example from 
  http://www.crionics.com/products/opensource/faq/swing_ex/SwingExamples.html 

@@ -66,7 +66,7 @@ public class Operation extends BeanMao {
 
 	public static Vector<Operation> loadOutAll() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
 		// TODO 自动生成的方法存根
-		return loadAll(Operation.class, "select * from Operation where out ");
+		return loadAll(Operation.class, "select * from Operation where out=1 ");
 	}
 
 	

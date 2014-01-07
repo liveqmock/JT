@@ -1,4 +1,4 @@
-package mutiHeadTable;
+package ui.mutiHeadTable;
 
 import java.awt.Component;
 import java.awt.Dimension;

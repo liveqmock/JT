@@ -29,9 +29,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
-import mutiHeadTable.ColumnGroup;
-import mutiHeadTable.GroupableTableHeader;
-
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
@@ -40,6 +37,8 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.table.DatePickerCellEditor;
 
 import ui.customComponet.BeanTablePane;
+import ui.mutiHeadTable.ColumnGroup;
+import ui.mutiHeadTable.GroupableTableHeader;
 import ui.tableModes.PlanTableMode;
 
 import com.mao.jf.beans.Bill;

@@ -448,7 +448,7 @@ public class Bill extends BeanMao {
 					requestDate.getTime()));
 			pst.setLong(16, outNum);
 			pst.setString(17, color);
-			pst.setBoolean(18, warehoused);
+			pst.setInt(18, warehoused?1:0);
 			pst.setString(19, outBillNo);
 			pst.setString(20, billgroup);
 			pst.setDate(21, outBillDate == null ? null : new java.sql.Date(

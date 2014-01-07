@@ -1,4 +1,4 @@
-package mutiHeadTable;
+package ui.mutiHeadTable;
 
 /*
  * (swing1.1beta3)

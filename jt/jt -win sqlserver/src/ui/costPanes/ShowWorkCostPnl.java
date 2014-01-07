@@ -7,17 +7,11 @@ import java.sql.Statement;
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetFactory;
 import javax.sql.rowset.RowSetProvider;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.text.TabableView;
-
-import org.jdesktop.swingx.JXTable;
-
-import com.mao.jf.beans.SessionData;
 
 import ui.customComponet.RsTableModel;
-import ui.customComponet.RsTablePane;
 import ui.panels.BillShowPnl;
+
+import com.mao.jf.beans.SessionData;
 
 public class ShowWorkCostPnl extends BillShowPnl {
 

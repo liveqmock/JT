@@ -2,7 +2,6 @@ package com.mao.jf.beans;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
 

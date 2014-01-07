@@ -1,54 +1,25 @@
 package ui.costPanes;
 
-import static org.jdesktop.swingx.util.PaintUtils.blend;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dialog.ModalityType;
-import java.awt.GraphicsEnvironment;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.Vector;
 
-import javax.swing.AbstractAction;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumnModel;
-
-import mutiHeadTable.ColumnGroup;
-import mutiHeadTable.GroupableTableHeader;
 
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.decorator.AbstractHighlighter;
-import org.jdesktop.swingx.decorator.ComponentAdapter;
-import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.table.DatePickerCellEditor;
 
-import ui.customComponet.BeanTablePane;
+import ui.mutiHeadTable.GroupableTableHeader;
 import ui.tableModes.BillTimeTableMode;
-import ui.tableModes.PlanTableMode;
 
 import com.mao.jf.beans.BeanMao;
-import com.mao.jf.beans.Bill;
 import com.mao.jf.beans.BillTime;
-import com.mao.jf.beans.Plan;
 
 public class BillTimeTable extends JXTable {
 

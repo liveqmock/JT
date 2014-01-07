@@ -1,6 +1,5 @@
 package ui.costPanes;
 
-import java.util.Date;
 import java.util.TreeMap;
 
 import javax.swing.JComboBox;

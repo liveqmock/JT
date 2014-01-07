@@ -6,13 +6,10 @@ import java.util.Date;
 import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
-import javax.xml.ws.handler.MessageContext.Scope;
 
-import com.mao.jf.beans.Bill;
 import com.mao.jf.beans.BillTime;
 import com.mao.jf.beans.Operation;
 import com.mao.jf.beans.OperationTime;
-import com.mao.jf.beans.Plan;
 
 public class BillTimeTableMode extends AbstractTableModel {
 

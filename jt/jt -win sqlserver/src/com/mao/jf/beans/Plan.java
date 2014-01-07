@@ -36,7 +36,7 @@ public class Plan extends BeanMao {
 		try {
 			Vector<Bill> bills=Bill.loadAll(Bill.class, "select * from bill where  warehoused=false and id not in (select bill from plan)   order by  custom");
 			Vector<Operation> operations;
-			operations = Operation.loadAll(Operation.class,"select * from operation where not out");
+			operations = Operation.loadAll(Operation.class,"select * from operation where out=0");
 			for(Bill bill:bills){
 				Plan plan=new Plan();
 				plan.setBill(bill);
@@ -178,7 +178,7 @@ public class Plan extends BeanMao {
 
 				operationPlans.put(operationPlan.getName(), operationPlan);
 			}
-			for(Operation operation :Operation.loadAll(Operation.class,"select * from operation where not out")){
+			for(Operation operation :Operation.loadAll(Operation.class,"select * from operation where out=0")){
 
 				if(!operationPlans.containsKey(operation .getName())) {
 					OperationPlan operationPlan=new OperationPlan(operation);

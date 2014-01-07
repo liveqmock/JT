@@ -29,7 +29,7 @@ public class BeanMao implements Serializable {
 
 	public void remove() throws SQLException {
 
-		removeBySql(this.getClass(), "delete "+this.getClass().getSimpleName()+" where id="+this.id);
+		removeBySql(this.getClass(), "delete \""+this.getClass().getSimpleName()+"\" where id="+this.id);
 	}
 	public static void removeBySql(Class cls,String sql) throws SQLException {
 		try(Statement st=SessionData.getConnection().createStatement();
@@ -43,7 +43,7 @@ public class BeanMao implements Serializable {
 		String sql = null;
 		ArrayList<Method> methodList=new ArrayList<>();
 		if(id==0){
-			sql="insert into "+this.getClass().getSimpleName()+"( ";
+			sql="insert into \""+this.getClass().getSimpleName()+"\"( ";
 			String endString=" )values(";
 			for(Method m:methods){
 				String methodName = m.getName();
@@ -57,7 +57,7 @@ public class BeanMao implements Serializable {
 			sql=sql.substring(0,sql.length()-1)+endString.substring(0,endString.length()-1)+")";
 
 		}else{
-			sql="update "+this.getClass().getSimpleName()+" set ";
+			sql="update \""+this.getClass().getSimpleName()+"\" set ";
 			for(Method m:methods){
 				String methodName = m.getName();
 				Transient isTransient = m.getAnnotation(Transient.class);
@@ -78,6 +78,9 @@ public class BeanMao implements Serializable {
 				if(object!=null&&object instanceof BeanMao){
 					object=((BeanMao)object).getId();
 				}
+				if(object instanceof Boolean){
+					object=((Boolean)object)?1:0;
+				}
 				pst.setObject(i, object);
 
 			}
@@ -90,7 +93,7 @@ public class BeanMao implements Serializable {
 
 
 	public static <T> Vector<T> loadAll(Class<T> cls) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
-		return loadAll(cls, "select * from "+cls.getSimpleName());
+		return loadAll(cls, "select * from \""+cls.getSimpleName()+"\"");
 	}
 	public static <T> Vector<T> loadAll(Class<T> cls,String sql) throws InstantiationException, IllegalAccessException, IntrospectionException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		try(Statement st=SessionData.getConnection().createStatement();
@@ -152,7 +155,7 @@ public class BeanMao implements Serializable {
 								setMethod.invoke(object, rs.getFloat(c));
 								break;
 							case "boolean":
-								setMethod.invoke(object, rs.getBoolean(c));
+								setMethod.invoke(object, rs.getInt(c)==1);
 								break;
 
 							case "double":
@@ -175,7 +178,7 @@ public class BeanMao implements Serializable {
 		return cls.cast(object);
 	}
 	public static <T> T load(Class<T> cls,Integer id) throws InstantiationException, IllegalAccessException, IntrospectionException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		String sql="select * from "+cls.getSimpleName()+" where id="+id;
+		String sql="select * from \""+cls.getSimpleName()+"\" where id="+id;
 		return load(cls, sql);
 	}
 	public static  <T> T load(Class <T> cls,String sql) throws InstantiationException, IllegalAccessException, IntrospectionException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {

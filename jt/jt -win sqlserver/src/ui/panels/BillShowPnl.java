@@ -4,11 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
-import java.util.Vector;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -36,9 +34,7 @@ import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 import ui.costPanes.NumberCellRenderer;
-import ui.customComponet.BeanTablePane;
 
-import com.mao.jf.beans.Bill;
 import com.mao.jf.beans.Custom;
 
 public abstract class BillShowPnl extends JPanel{

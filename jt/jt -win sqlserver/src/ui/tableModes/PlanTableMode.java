@@ -50,7 +50,7 @@ public class PlanTableMode extends AbstractTableModel {
 		Vector<Operation> operations;
 
 		try {
-			operations = Operation.loadAll(Operation.class,"select * from operation where not out");
+			operations = Operation.loadAll(Operation.class,"select * from operation where  out=0");
 			operationNames=new Vector<>();
 			for (Operation oper:operations){
 				columnNames.add("单件用时");

@@ -1,4 +1,4 @@
-package ui;
+package windows;
 
 import java.awt.Dialog;
 import java.awt.EventQueue;
@@ -19,6 +19,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
+import ui.MainMenu;
 import ui.customComponet.BeanDialog;
 import ui.frames.About;
 import ui.panels.BillManagerPnl;

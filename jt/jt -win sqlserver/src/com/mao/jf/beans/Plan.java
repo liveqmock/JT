@@ -34,7 +34,7 @@ public class Plan extends BeanMao {
 	public static Vector<Plan> loadallNew() {
 		Vector<Plan> plans=new Vector<>();
 		try {
-			Vector<Bill> bills=Bill.loadAll(Bill.class, "select * from bill where  warehoused=false and id not in (select bill from plan)   order by  custom");
+			Vector<Bill> bills=Bill.loadAll(Bill.class, "select * from bill where  warehoused=0 and id not in (select bill from \"plan\")   order by  custom");
 			Vector<Operation> operations;
 			operations = Operation.loadAll(Operation.class,"select * from operation where out=0");
 			for(Bill bill:bills){
@@ -124,7 +124,7 @@ public class Plan extends BeanMao {
 	public int getSequenceNum() {
 		if(sequenceNum==0) {
 			try(Statement st=SessionData.getConnection().createStatement();
-					ResultSet rs=st.executeQuery("select max(sequenceNum) from plan where bill="+bill.getId());
+					ResultSet rs=st.executeQuery("select max(sequenceNum) from \"plan\" where bill="+bill.getId());
 
 					){
 				if(rs.next()) {
@@ -149,7 +149,7 @@ public class Plan extends BeanMao {
 		TreeMap<String,OperationPlan> operationPlans=new TreeMap<>();;
 
 		try {
-			for(OperationPlan operationPlan:OperationPlan.loadAll(OperationPlan.class,"select * from OperationPlan where plan="+getId())){
+			for(OperationPlan operationPlan:OperationPlan.loadAll(OperationPlan.class,"select * from OperationPlan where \"plan\"="+getId())){
 
 				operationPlans.put(operationPlan.getName(), operationPlan);
 			}
@@ -174,7 +174,7 @@ public class Plan extends BeanMao {
 		TreeMap<String,OperationPlan> operationPlans=new TreeMap<>();;
 
 		try {
-			for(OperationPlan operationPlan:OperationPlan.loadAll(OperationPlan.class,"select * from OperationPlan where plan="+getId())){
+			for(OperationPlan operationPlan:OperationPlan.loadAll(OperationPlan.class,"select * from OperationPlan where \"plan\"="+getId())){
 
 				operationPlans.put(operationPlan.getName(), operationPlan);
 			}
@@ -278,7 +278,7 @@ public class Plan extends BeanMao {
 	public Vector<OperationWork> getOperationWorks() {
 		if(operationWorks==null)
 			try {
-				operationWorks=OperationWork.loadAll(OperationWork.class, "select a.* from OperationWork a join Operationplan b on a.Operationplan =b.id join plan c on c.id=b.plan and c.id= "+getId());
+				operationWorks=OperationWork.loadAll(OperationWork.class, "select a.* from OperationWork a join Operationplan b on a.Operationplan =b.id join \"plan\" c on c.id=b.\"plan\" and c.id= "+getId());
 			} catch (InstantiationException | IllegalAccessException
 					| IllegalArgumentException | InvocationTargetException
 					| NoSuchMethodException | SecurityException
@@ -302,7 +302,7 @@ public class Plan extends BeanMao {
 			search="";
 		Vector<Plan> plans=null;
 		try {
-			plans= Plan.loadAll(Plan.class,"Select distinct a.*,b.custom from plan a join bill b on a.bill=b.id and b.itemCompleteDate is null "+search+" order by b.custom");
+			plans= Plan.loadAll(Plan.class,"Select distinct a.*,b.custom from \"plan\" a join bill b on a.bill=b.id and b.itemCompleteDate is null "+search+" order by b.custom");
 			for(Plan plan:plans){
 				plan.initOperations();
 			}

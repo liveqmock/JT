@@ -61,7 +61,7 @@ public class PlanWorkPnl extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				SearchDlg searchDlg=	new SearchDlg();
 				searchDlg.setVisible(true);
-				String sql="select a.* from bill a join plan b on a.id=b.bill where "+searchDlg.getSqlString();
+				String sql="select a.* from bill a join \"plan\" b on a.id=b.bill where "+searchDlg.getSqlString();
 //				System.err.println(sql);
 				try {
 					billTable.setBeans(Bill.loadAll(Bill.class, sql));
@@ -92,7 +92,7 @@ public class PlanWorkPnl extends JPanel {
 
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				String sql="select * from operationplan where plan="+planTable.getSelectBean().getId();
+				String sql="select * from operationplan where \"plan\"="+planTable.getSelectBean().getId();
 				try {
 					operationPlanPane.setRs(SessionData.getRwoSet(sql));
 				} catch (SQLException e1) {

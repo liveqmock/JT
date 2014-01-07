@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import ui.Main;
+import windows.Main;
 
 public class About extends JDialog {
 

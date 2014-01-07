@@ -18,7 +18,7 @@ public class SessionData {
 			if (connection == null || connection.isClosed()) {
 				Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 				String connectionUrl = "jdbc:sqlserver://localhost:1433;" +
-						   "databaseName=AdventureWorks;user=rdp;password=mao564864;";
+						   "databaseName=bill;user=rdp;password=mao564864;";
 				connection = DriverManager.getConnection(connectionUrl);
 				
 //				String user = "mao";

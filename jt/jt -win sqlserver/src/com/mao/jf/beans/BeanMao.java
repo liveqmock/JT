@@ -49,20 +49,20 @@ public class BeanMao implements Serializable {
 				String methodName = m.getName();
 				Transient isTransient = m.getAnnotation(Transient.class);
 				if(methodName.startsWith("get")&&!methodName.equals("getId")&&!methodName.equals("getClass")&&isTransient==null){
-					sql+=methodName.substring(3,methodName.length())+",";
+					sql+="\""+methodName.substring(3,methodName.length())+"\",";
 					endString+="?,";
 					methodList.add(m);
 				}
 			}
 			sql=sql.substring(0,sql.length()-1)+endString.substring(0,endString.length()-1)+")";
-
+//			System.err.println(sql);
 		}else{
 			sql="update \""+this.getClass().getSimpleName()+"\" set ";
 			for(Method m:methods){
 				String methodName = m.getName();
 				Transient isTransient = m.getAnnotation(Transient.class);
 				if(methodName.startsWith("get")&&!methodName.equals("getId")&&!methodName.equals("getClass")&&isTransient==null){
-					sql+=methodName.substring(3,methodName.length())+"=?,";
+					sql+="\""+methodName.substring(3,methodName.length())+"\"=?,";
 					methodList.add(m);
 				}
 

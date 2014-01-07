@@ -101,7 +101,9 @@ public class RsTablePane extends JPanel {
 
 	public void setRs(CachedRowSet rs) {
 		this.rs = rs;
-		model.setRs(rs);
+		model=new RsTableModel(rs);
+		table.setModel(model);
+		
 	}
 
 

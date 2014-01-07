@@ -36,12 +36,18 @@ public class Bill extends BeanMao {
 			// TODO 自动生成的 catch 块
 			e1.printStackTrace();
 		}
+		
+		String sql="select sum(outprice*outnum)/(case when sum(outnum)>0 then sum(outnum) else 1 end) outprice,"
+						+ " sum(reportprice*num)/(case when sum(num)>0 then sum(num) else 1 end) reportprice,sum(outnum) outnum,"
+						+ " sum(num) num,sum(plancost) plancost,sum( opercost ) opercost"
+						+ " from (select outprice,outnum,reportprice,num, "
+						+ " (select sum(workcost) from operationwork  b join \"plan\"  c on b.\"plan\"=c.id and c.bill=a.id  ) opercost,"
+						+ " (select sum(cost*(unitusetime*b.num+preparetime)) from operationplan b join \"plan\"  c on b.\"plan\"=c.id and c.bill=a.id ) plancost"
+						+ " from bill a where "+searchString+ ") as a ";
+		
 		try(Statement st=SessionData.getConnection().createStatement();
-				ResultSet rs=st.executeQuery("select sum(outprice*outnum)/casewhen(sum(outnum)>0,sum(outnum),1) outprice,sum(reportprice*num)/casewhen(sum(num)>0,sum(num),1) reportprice,sum(outnum) outnum,sum(num) num,sum(plancost) plancost,sum(opercost) opercost "+ 
-					" from (select outprice,outnum,reportprice,num, "+
-					"(select sum(unitcost*operationNum) from opercost  where bill=a.id ) opercost,"+
-					"plancost plancost"+
-					" from bill a where "+searchString+ ")");){
+				
+				ResultSet rs=st.executeQuery(sql);){
 			if(rs.next()){
 				Bill billItem = new Bill();
 				billItem.setCustom("合计");
@@ -56,6 +62,7 @@ public class Bill extends BeanMao {
 			}
 		} catch (SQLException e) {
 			// TODO 自动生成的 catch 块
+			System.err.println(sql);
 			e.printStackTrace();
 		}
 		return billItems;

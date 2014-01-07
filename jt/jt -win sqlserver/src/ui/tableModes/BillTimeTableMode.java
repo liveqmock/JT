@@ -32,7 +32,7 @@ public class BillTimeTableMode extends AbstractTableModel {
 		Vector<Operation> operations;
 
 		try {
-			operations = Operation.loadAll(Operation.class,"select * from operation where not out");
+			operations = Operation.loadAll(Operation.class,"select * from operation where  out=0");
 			for (Operation oper:operations){
 				columnNames.add(oper.getName());
 			}

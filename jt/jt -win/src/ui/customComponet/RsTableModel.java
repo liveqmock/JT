@@ -31,6 +31,8 @@ public class RsTableModel extends AbstractTableModel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private CachedRowSet rs;
+	private int rows;
+	private int cols;
 
 	public CachedRowSet getRs() {
 		return rs;
@@ -38,12 +40,27 @@ public class RsTableModel extends AbstractTableModel {
 
 	public void setRs(CachedRowSet rs) {
 		this.rs = rs;
-		fireTableDataChanged();
+		try {
 
+			rs.last();
+			cols=rs.getMetaData().getColumnCount();
+			rows=rs.getRow();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		fireTableDataChanged();
+		fireTableStructureChanged();
 	}
 
 	public RsTableModel(CachedRowSet rs) {
-		this.rs = rs;
+		this.rs = rs;	
+		try {
+			rs.last();
+			rows=rs.getRow();
+			cols=rs.getMetaData().getColumnCount();
+		} catch (SQLException e) {
+
+		}
 	}
 	@Override
 	public Class<?> getColumnClass(int c) {
@@ -96,29 +113,19 @@ public class RsTableModel extends AbstractTableModel {
 
 	@Override
 	public int getColumnCount() {
-		// TODO Auto-generated method stub
-		try {
-			return rs.getMetaData().getColumnCount();
-		} catch (Exception e) {
-			return 0;
-		}
+		return cols;
 	}
 
 	@Override
 	public int getRowCount() {
-		try {
-			rs.last();
-			return rs.getRow();
-		} catch (Exception e) {
-		}
-		return 0;
+		return rows;
 	}
 
 	@Override
 	public Object getValueAt(int r, int c) {
 		try {
-			if(getRowCount()<=r)return null;
-			if(getColumnCount()<=r)return null;
+//			if(getRowCount()<=r)return null;
+//			if(getColumnCount()<=r)return null;
 			rs.absolute(r + 1);
 			return rs.getObject(c + 1);
 		} catch (Exception e) {

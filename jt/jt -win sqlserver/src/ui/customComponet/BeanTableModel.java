@@ -210,7 +210,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 				int c = 0;
 				row= sheet.createRow(rowNo++);
 				for (BeanTableModelHeader header : heads) {
-					Cell cell = row.createCell(c++);
+					Cell cell = row.createCell(c);
 					try {
 						Object object =  PropertyUtils.getSimpleProperty(bean, heads[c].getField());
 						if (object != null) {
@@ -243,7 +243,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 						cell.setCellValue("");
 						cell.setCellStyle(style);
 					}
-
+					c++;
 				}
 			}
 

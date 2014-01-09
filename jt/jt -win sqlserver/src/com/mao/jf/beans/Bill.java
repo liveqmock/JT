@@ -18,11 +18,11 @@ import com.mao.jf.beans.annotation.Caption;
 public class Bill extends BeanMao {
 
 	public static Vector<Bill> loadByGrp(String billGrp) {
-		
+
 		return loadBySearch(" billgroup='"+billGrp+"'",true);
 	}
 	public static Vector<Bill> loadBySearch(String searchString,boolean isShowCompelete) {
-		
+
 		Vector<Bill> billItems=null;
 		if(!Userman.loginUser.isManager()&& !isShowCompelete) searchString+=" and itemCompleteDate is null ";
 		try {
@@ -36,17 +36,17 @@ public class Bill extends BeanMao {
 			// TODO 自动生成的 catch 块
 			e1.printStackTrace();
 		}
-		
+
 		String sql="select sum(outprice*outnum)/(case when sum(outnum)>0 then sum(outnum) else 1 end) outprice,"
-						+ " sum(reportprice*num)/(case when sum(num)>0 then sum(num) else 1 end) reportprice,sum(outnum) outnum,"
-						+ " sum(num) num,sum(plancost) plancost,sum( opercost ) opercost"
-						+ " from (select outprice,outnum,reportprice,num, "
-						+ " (select sum(workcost) from operationwork  b join \"plan\"  c on b.\"plan\"=c.id and c.bill=a.id  ) opercost,"
-						+ " (select sum(cost*(unitusetime*b.num+preparetime)) from operationplan b join \"plan\"  c on b.\"plan\"=c.id and c.bill=a.id ) plancost"
-						+ " from bill a where "+searchString+ ") as a ";
-		
+				+ " sum(reportprice*num)/(case when sum(num)>0 then sum(num) else 1 end) reportprice,sum(outnum) outnum,"
+				+ " sum(num) num,sum(plancost) plancost,sum( opercost ) opercost"
+				+ " from (select outprice,outnum,reportprice,num, "
+				+ " (select sum(workcost) from operationwork  b join \"plan\"  c on b.\"plan\"=c.id and c.bill=a.id  ) opercost,"
+				+ " (select sum(cost*(unitusetime*b.num+preparetime)) from operationplan b join \"plan\"  c on b.\"plan\"=c.id and c.bill=a.id ) plancost"
+				+ " from bill a where "+searchString+ ") as a ";
+
 		try(Statement st=SessionData.getConnection().createStatement();
-				
+
 				ResultSet rs=st.executeQuery(sql);){
 			if(rs.next()){
 				Bill billItem = new Bill();
@@ -166,10 +166,6 @@ public class Bill extends BeanMao {
 		return customMan;
 	}
 
-	public int getId() {
-		return id;
-	}
-
 	public String getImageUrl() {
 		return imageUrl;
 	}
@@ -203,11 +199,11 @@ public class Bill extends BeanMao {
 	public String getStatus() {
 		if(status!=null) return status;
 		status="";
-		
+
 		return status;
 	}
 
-	
+
 	@Transient
 	@Caption(order=57,value="生产费用")
 	public float getOperCost() {
@@ -271,7 +267,7 @@ public class Bill extends BeanMao {
 	@Caption(order = 24, value= "外协总价")
 	public float getOutMoney() {
 		// TODO Auto-generated method stub
-		
+
 		return Userman.loginUser.isManager()? outPrice * outNum:0;
 	}
 
@@ -284,7 +280,7 @@ public class Bill extends BeanMao {
 	public float getOutPrice() {
 
 		return Userman.loginUser.isManager()? outPrice:0;
-		
+
 	}
 
 	@Caption(order = 3, value= "图号")
@@ -429,6 +425,7 @@ public class Bill extends BeanMao {
 						"color=?,warehoused=?,outBillNo=?,billgroup=?,outBillDate=?,meterial=? ,meterialz=? ,meterialType=? ," +
 						"techCondition=? ,partName=? ,gjh=? where id="+ id;
 		}
+		System.err.println(getId()+"\t"+ sql);
 		try (PreparedStatement pst = SessionData.getConnection()
 				.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);) {
 			pst.setDate(
@@ -473,9 +470,11 @@ public class Bill extends BeanMao {
 			}
 
 			pst.execute();
-			ResultSet rsKey = pst.getGeneratedKeys();
-			if (rsKey != null && rsKey.next())
-				this.id = rsKey.getInt(1);
+			if(getId()==0){
+				ResultSet rsKey = pst.getGeneratedKeys();
+				if (rsKey != null && rsKey.next())
+					this.id = rsKey.getInt(1);
+			}
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -597,7 +596,7 @@ public class Bill extends BeanMao {
 	public void setMeterial(String meterial) {
 		this.meterial = meterial;
 	}
-	
+
 	public void setGjh(String gjh) {
 		this.gjh = gjh;
 	}
@@ -616,17 +615,17 @@ public class Bill extends BeanMao {
 	public Vector<Material> getmaterials() {
 		if(materials==null)
 			try {	
-			materials=new Vector<Material>();
-	
-			materials=Material.loadAll(Material.class,"select * from material where bill="+this.id);
-			for(Material material:materials)material.setBill(this);
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException
-				| IntrospectionException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
+				materials=new Vector<Material>();
+
+				materials=Material.loadAll(Material.class,"select * from material where bill="+this.id);
+				for(Material material:materials)material.setBill(this);
+			} catch (InstantiationException | IllegalAccessException
+					| IllegalArgumentException | InvocationTargetException
+					| NoSuchMethodException | SecurityException
+					| IntrospectionException e) {
+				// TODO 自动生成的 catch 块
+				e.printStackTrace();
+			}
 		return materials;
 	}
 	public Material getFirstMaterial() {

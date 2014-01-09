@@ -68,7 +68,6 @@ public class BillFrame extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				if(billPanel.isValide()){
 					billPanel.saveBill();
-					billPanel.getBean().save();
 					BillFrame.this.dispose();
 				}
 			}

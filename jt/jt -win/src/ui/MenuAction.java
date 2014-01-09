@@ -359,7 +359,7 @@ public class MenuAction extends AbstractAction {
 	}
 	private void showWorkCostPanel(){
 		JDialog dialog=new JDialog();
-		dialog.setTitle("工序管理");
+		dialog.setTitle("成本与计划对比");
 		dialog.setContentPane(new ShowWorkCostPnl());
 		dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
 		dialog.setLocationRelativeTo(null);

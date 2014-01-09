@@ -11,6 +11,7 @@ import javax.sql.RowSet;
 import javax.sql.rowset.CachedRowSet;
 import javax.swing.JFileChooser;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableColumnModel;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -30,6 +31,8 @@ public class RsTableModel extends AbstractTableModel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private CachedRowSet rs;
+	private int rows;
+	private int cols;
 
 	public CachedRowSet getRs() {
 		return rs;
@@ -37,12 +40,26 @@ public class RsTableModel extends AbstractTableModel {
 
 	public void setRs(CachedRowSet rs) {
 		this.rs = rs;
-		fireTableDataChanged();
+		try {
+			rs.last();
+			rows=rs.getRow();
+			cols=rs.getMetaData().getColumnCount();
+		} catch (SQLException e) {
 
+		}
+		fireTableDataChanged();
+		fireTableStructureChanged();
 	}
 
 	public RsTableModel(CachedRowSet rs) {
 		this.rs = rs;
+		try {
+			rs.last();
+			rows=rs.getRow();
+			cols=rs.getMetaData().getColumnCount();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	@Override
 	public Class<?> getColumnClass(int c) {
@@ -95,29 +112,19 @@ public class RsTableModel extends AbstractTableModel {
 
 	@Override
 	public int getColumnCount() {
-		// TODO Auto-generated method stub
-		try {
-			return rs.getMetaData().getColumnCount();
-		} catch (Exception e) {
-			return 0;
-		}
+		return cols;
 	}
 
 	@Override
 	public int getRowCount() {
-		try {
-			rs.last();
-			return rs.getRow();
-		} catch (Exception e) {
-		}
-		return 0;
+		return rows;
 	}
 
 	@Override
 	public Object getValueAt(int r, int c) {
 		try {
 			if(getRowCount()<=r)return null;
-			if(getColumnCount()<=r)return null;
+			if(getColumnCount()<=c)return null;
 			rs.absolute(r + 1);
 			return rs.getObject(c + 1);
 		} catch (Exception e) {
@@ -144,9 +151,10 @@ public class RsTableModel extends AbstractTableModel {
 			FileOutputStream os=new FileOutputStream(new File(filename));
 			createXls(rs, os);
 			Desktop.getDesktop().open(new File(filename));
-
+			
 		}
 	}
+	
 	public static void createXls(RowSet crs,OutputStream os) throws IOException, SQLException {
 
 		Workbook wb = new HSSFWorkbook();

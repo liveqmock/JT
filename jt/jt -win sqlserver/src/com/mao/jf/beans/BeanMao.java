@@ -85,8 +85,11 @@ public class BeanMao implements Serializable {
 
 			}
 			pst.executeUpdate();
-			ResultSet rs = pst.getGeneratedKeys();
-			if(rs.next())this.id=rs.getInt(1);
+			if(getId()==0){
+				ResultSet rsKey = pst.getGeneratedKeys();
+				if (rsKey != null && rsKey.next())
+					this.id = rsKey.getInt(1);
+			}
 		}
 
 	}

@@ -1,1 +1,0 @@
-alter table 查询表 add column "组合条件" smallint not null default 0;

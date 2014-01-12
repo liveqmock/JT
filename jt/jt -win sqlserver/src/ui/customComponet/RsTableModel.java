@@ -53,6 +53,7 @@ public class RsTableModel extends AbstractTableModel {
 
 	public RsTableModel(CachedRowSet rs) {
 		this.rs = rs;
+		if(rs==null)return;
 		try {
 			rs.last();
 			rows=rs.getRow();
@@ -126,12 +127,17 @@ public class RsTableModel extends AbstractTableModel {
 			if(getRowCount()<=r)return null;
 			if(getColumnCount()<=c)return null;
 			rs.absolute(r + 1);
+
+			if(getColumnClass(c)==String.class)
+				System.err.println("S-"+rs.getString(c+1));
+			else
+				System.err.println(rs.getObject(c+1));
 			return rs.getObject(c + 1);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return "error";
 		}
-		return null;
 	}
 
 	public void exportToExl(String title) throws IOException,

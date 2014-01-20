@@ -28,6 +28,7 @@ public class ShowWorkCostPnl extends BillShowPnl {
 +"select  bill, sum(unitcost*num) material from material group by bill"
 +") c on a.bill=c.bill join bill d on a.bill=d.id";
 	private RsTableModel model;
+	
 	@Override
 	public void searchAction(String search) {
 		try(Statement st=SessionData.getConnection().createStatement()){
@@ -35,9 +36,10 @@ public class ShowWorkCostPnl extends BillShowPnl {
 			RowSetFactory rowSetFactory = RowSetProvider.newFactory();
 			CachedRowSet crs = rowSetFactory.createCachedRowSet();
 			crs.populate(rs);
+			
 		    if(model==null){
 		    	model=new RsTableModel(crs);
-		    	table.setModel(model);
+//		    	table.setModel(model);
 		    }
 		    else
 		    	model.setRs(crs);
@@ -50,11 +52,6 @@ public class ShowWorkCostPnl extends BillShowPnl {
 		
 	}
 
-	@Override
-	public void itemSelectAction() {
-		
-		
-	}
 	
 
 

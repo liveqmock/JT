@@ -11,7 +11,6 @@ import javax.sql.RowSet;
 import javax.sql.rowset.CachedRowSet;
 import javax.swing.JFileChooser;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableColumnModel;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;

@@ -9,7 +9,6 @@ import com.mao.jf.beans.annotation.Caption;
 public class Operation extends BeanMao {
 	private String name;  
 	private int  num ; 
-	private boolean out  ;
 	private float cost   ;
 	private String note  ;
 	
@@ -24,13 +23,6 @@ public class Operation extends BeanMao {
 	@Caption(order = 3, value= "设备数量")
 	public int getNum() {
 		return num;
-	}
-	@Caption(order = 4, value= "外发")
-	public boolean getOut() {
-		return out;
-	}
-	public boolean isOut() {
-		return out;
 	}
 	@Caption(order = 5, value= "费用")
 	public float getCost() {
@@ -51,10 +43,6 @@ public class Operation extends BeanMao {
 	public void setNote(String note) {
 		this.note = note;
 	}
-	public void setOut(boolean out) {
-		this.out = out;
-	}
-
 	@Override
 	public String toString() {
 		return name;

@@ -6,6 +6,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.text.SimpleDateFormat;
 
 import javax.swing.Box;
@@ -17,30 +19,19 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
+import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXDatePicker;
-import org.jdesktop.swingx.JXList;
-import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
-
-import ui.costPanes.NumberCellRenderer;
 
 import com.mao.jf.beans.Custom;
 
 public abstract class BillShowPnl extends JPanel{
 
-	private JXList cstlist;
-	protected JXTable table;
+	private JXComboBox cstlist;
 	private JTextField textField;
 	private JComboBox<String> dateBox;
 	private JComboBox<String> txtBox;
@@ -54,15 +45,12 @@ public abstract class BillShowPnl extends JPanel{
 
 	public abstract void searchAction(String search);
 
-	public abstract void itemSelectAction();
 
 	public BillShowPnl() {
 
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout(0, 0));
-		cstlist = new JXList(Custom.LoadNames());
-		cstlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		JScrollPane scrollPane = new JScrollPane(cstlist);
+		cstlist = new JXComboBox(Custom.LoadNames());
 
 		
 
@@ -124,30 +112,14 @@ public abstract class BillShowPnl extends JPanel{
 			
 		});
 		panel.add(Box.createHorizontalGlue());
-		add(panel, BorderLayout.NORTH);
+
+		JPanel searchPanel=new JPanel();
+
+		new BoxLayout(panel, BoxLayout.Y_AXIS);
+		searchPanel.add(panel);
+		searchPanel.add(cstlist);
+		add(searchPanel, BorderLayout.NORTH);
 		
-		table = new JXTable();
-		table.setDefaultRenderer(float.class, new NumberCellRenderer() );
-		table.setDefaultRenderer(double.class, new NumberCellRenderer() );
-		table.setDefaultRenderer(Number.class, new NumberCellRenderer() );
-		
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table.setHorizontalScrollEnabled(true);
-		table.setHighlighters(HighlighterFactory.createAlternateStriping());
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table.setColumnControlVisible(true);
-		table.setGridColor(Color.gray);
-		table.setShowGrid(true);
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		table.packTable(10);
-		table.packAll();
-		table.setHorizontalScrollEnabled(true);
-		JScrollPane jScrollPane = new JScrollPane(table);
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				scrollPane, jScrollPane);
-		splitPane.setOneTouchExpandable(true);
-		add(splitPane);
-		splitPane.setDividerLocation(200);
 		actions();
 		setVisible(true);
 		requestFocus();
@@ -159,7 +131,7 @@ public abstract class BillShowPnl extends JPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String searchString = " true ";
+				String searchString = " 0=0 ";
 				if (txtBox.getSelectedItem() != null
 						&& !txtBox.getSelectedItem().equals("")) {
 					if (textField.getText() == null
@@ -240,29 +212,13 @@ public abstract class BillShowPnl extends JPanel{
 
 			}
 		});
-		table.getSelectionModel()
-		.addListSelectionListener(new ListSelectionListener() {
-
+		
+		cstlist.addItemListener(new ItemListener() {
+			
 			@Override
-			public void valueChanged(final ListSelectionEvent arg0) {
-				if (arg0.getValueIsAdjusting()) {
-					itemSelectAction();
-				}
-
-			}
-
-		});
-		cstlist.addListSelectionListener(new ListSelectionListener() {
-
-			@Override
-			public void valueChanged(ListSelectionEvent arg0) {
-
-				if (arg0.getValueIsAdjusting()) {
-
-					loadData("custom='"+cstlist.getSelectedValue()	+ "'");
-
-				}
-
+			public void itemStateChanged(ItemEvent e) {
+				loadData("custom='"+e.getItem()	+ "'");
+				
 			}
 		});
 	}
@@ -283,7 +239,7 @@ public abstract class BillShowPnl extends JPanel{
 
 				}
 				try {
-					dialog.setLocationRelativeTo(table);
+					dialog.setLocationRelativeTo(BillShowPnl.this);
 					dialog.setVisible(true);
 					searchAction(search);
 					dialog.setVisible(false);

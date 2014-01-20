@@ -5,7 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Vector;
+import java.util.Collection;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -16,23 +16,23 @@ import javax.swing.JPanel;
 
 import org.apache.commons.beanutils.BeanUtils;
 
-public abstract class BeansPanel<T> extends BeanPanel<Vector<T>> {
+public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
 	private BeanTablePane<T> tablePane;
 	private BeanPanel<T> beanPanel;
 	private String[] filterColumns;
 	private boolean vertical=false;
 	private Class<T> class1;
-	public BeansPanel(Vector<T> beans, BeanPanel<T> beanPanel,Class<T> class1) {
+	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1) {
 		this(beans, beanPanel,class1, null,false);
 	}
-	public BeansPanel(Vector<T> beans, BeanPanel<T> beanPanel,Class<T> class1,boolean vertical) {
+	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1,boolean vertical) {
 		this(beans, beanPanel,class1, null,vertical);
 	}
-	public BeansPanel(Vector<T> beans, BeanPanel<T> beanPanel,Class<T> class1,
+	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1,
 			String filterColumns[]) {
 		this(beans, beanPanel,class1, filterColumns,false);
 	}
-	public BeansPanel(Vector<T> beans, BeanPanel<T> beanPanel,Class<T> class1,
+	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1,
 			String filterColumns[],boolean vertical) {
 		super(beans,1);
 		this.beanPanel=beanPanel;
@@ -80,8 +80,8 @@ public abstract class BeansPanel<T> extends BeanPanel<Vector<T>> {
 		JPanel panel_1 = new JPanel();
 		JButton submitBt= new JButton("提交(S)");
 		submitBt.setMnemonic('s');
-		JButton resetBt=new JButton("重置(R)");
-		resetBt.setMnemonic('r');
+		JButton resetBt=new JButton("新建(N)");
+		resetBt.setMnemonic('n');
 		JPanel submitPnl = new JPanel();
 		submitPnl.setLayout(new BoxLayout(submitPnl, BoxLayout.LINE_AXIS));
 		submitPnl.add(resetBt);
@@ -96,14 +96,11 @@ public abstract class BeansPanel<T> extends BeanPanel<Vector<T>> {
 		});
 		resetBt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					BeansPanel.this.beanPanel.setBean((T) beanPanel.getBean().getClass().newInstance());
-				} catch (InstantiationException | IllegalAccessException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
+				reset();
 
 			}
+
+			
 		});
 		panel.add(this.beanPanel.getvPanel(),vertical? BorderLayout.NORTH:BorderLayout.CENTER);
 		
@@ -159,10 +156,19 @@ public abstract class BeansPanel<T> extends BeanPanel<Vector<T>> {
 	 * @see com.mao.beanAdapter.BeanPanel#setBean(java.lang.Object)
 	 */
 	@Override
-	public void setBean(Vector<T> bean) {
+	public void setBean(Collection<T> bean) {
 		// TODO Auto-generated method stub
 		super.setBean(bean);
 		tablePane.setBeans(bean);
+		if(bean!=null&&bean.size()>0)
+			beanPanel.setBean(bean.iterator().next());
+		else{
+			try {
+				beanPanel.setBean(class1.newInstance());
+			} catch (InstantiationException | IllegalAccessException e) {
+				
+			}
+		}
 	}
 
 	public void setPanelBean(T t) {
@@ -196,7 +202,13 @@ public abstract class BeansPanel<T> extends BeanPanel<Vector<T>> {
 		this.tablePane = tablePane;
 	}
 
-	/**
-	 * Create the panel.
-	 */
+	public void reset() {
+		try {
+			BeansPanel.this.beanPanel.setBean((T) beanPanel.getBean().getClass().newInstance());
+		} catch (InstantiationException | IllegalAccessException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		}
+		
+	}
 }

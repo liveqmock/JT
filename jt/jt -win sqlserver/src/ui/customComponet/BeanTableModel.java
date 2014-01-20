@@ -8,9 +8,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Date;
 import java.util.TreeSet;
-import java.util.Vector;
 
 import javax.swing.JFileChooser;
 import javax.swing.table.AbstractTableModel;
@@ -30,13 +30,13 @@ import org.apache.poi.ss.usermodel.Workbook;
 import com.mao.jf.beans.annotation.Caption;
 import com.mao.jf.beans.annotation.Hidden;
 public class BeanTableModel<T> extends AbstractTableModel  {
-	private Vector<T> beans;
+	private Collection<T> beans;
 	private BeanTableModelHeader[] heads;
-	public BeanTableModel(Vector<T> beans,Class<T> class1) {
+	public BeanTableModel(Collection<T> beans,Class<T> class1) {
 		this(beans,class1,null);
 
 	}
-	public BeanTableModel(Vector<T> beans,Class<T> class1, String [] header) {
+	public BeanTableModel(Collection<T> beans,Class<T> class1, String [] header) {
 		super();
 		TreeSet<BeanTableModelHeader> headers = new TreeSet<BeanTableModelHeader>();
 		for(Field fld:class1.getDeclaredFields()){
@@ -82,11 +82,6 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 			setBeans(beans);
 
 	}
-	public void move(int from,int to) {
-		T bean = beans.remove(from);
-		beans.add(to,bean);
-		this.fireTableDataChanged();
-	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -99,7 +94,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	}
 
 	public T getSelectBean(int i) {
-		return (T) beans.elementAt(i);
+		return (T) beans.toArray()[i];
 	}
 
 	@Override
@@ -119,7 +114,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 
 		try {
 
-			return PropertyUtils.getSimpleProperty(beans.elementAt(r), heads[c].getField());
+			return PropertyUtils.getSimpleProperty(beans.toArray()[r], heads[c].getField());
 
 		} catch (InvocationTargetException | NoSuchMethodException|IllegalArgumentException | IllegalAccessException e) {
 
@@ -130,7 +125,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	/**
 	 * @return the beans
 	 */
-	public Vector<T> getBeans() {
+	public Collection<T> getBeans() {
 		return beans;
 	}
 
@@ -141,7 +136,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	 * @param beans
 	 *            the beans to set
 	 */
-	public void setBeans(Vector<T> beans) {
+	public void setBeans(Collection<T> beans) {
 
 		this.beans=beans;
 		fireTableDataChanged();

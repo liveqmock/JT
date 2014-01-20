@@ -583,7 +583,7 @@ public class Bill extends BeanMao {
 	public Vector<Plan> getPlans() {
 		// TODO 自动生成的方法存根
 		try {
-			return Plan.loadAll(Plan.class, "select * from plan where bill="+getId());
+			return Plan.loadAll(Plan.class, "select * from \"plan\" where bill="+getId());
 		} catch (InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException

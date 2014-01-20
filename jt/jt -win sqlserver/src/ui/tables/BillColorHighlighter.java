@@ -58,7 +58,7 @@ public class BillColorHighlighter extends AbstractHighlighter {
 	protected void applyBackground(Component renderer, ComponentAdapter adapter) {
 
 		Color color = adapter.isSelected() ? getSelectedBackground()
-				: ((Bill) table.getBeans().elementAt(adapter.row))
+				: ((Bill) table.getBeans().toArray()[adapter.row])
 						.getTableColor();
 
 		renderer.setBackground(blend(renderer.getBackground(), color));

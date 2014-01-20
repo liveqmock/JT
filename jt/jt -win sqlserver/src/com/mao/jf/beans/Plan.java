@@ -6,8 +6,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.TreeMap;
+import java.util.HashMap;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import com.mao.jf.beans.annotation.Caption;
@@ -15,79 +17,41 @@ import com.mao.jf.beans.annotation.Caption;
 public class Plan extends BeanMao {
 
 
+	
+	private int num;
+	
 	private int sequenceNum;
 	private Bill bill;
 	private Date produceDate;
-	private int num;
-	private TreeMap<String,OperationPlan> operationPlans;
+	private TreeSet<OperationPlan> operationPlans;
 	private boolean completed;
-	private float MaterialNum;
-	private float MaterialPrice;
 	private Vector<OperationWork> operationWorks;
+	private WpCompare wpCompare=new WpCompare();
+
+	public Plan(Bill bill) {
+		this.bill=bill;
+	}
+
+	public Plan() {
+	}
+
 
 
 	public Bill getBill() {
+		
 		return bill;
+		
 	}
-
-
-	public static Vector<Plan> loadallNew() {
-		Vector<Plan> plans=new Vector<>();
-		try {
-			Vector<Bill> bills=Bill.loadAll(Bill.class, "select * from bill where  warehoused=0 and id not in (select bill from \"plan\")   order by  custom");
-			Vector<Operation> operations;
-			operations = Operation.loadAll(Operation.class,"select * from operation where out=0");
-			for(Bill bill:bills){
-				Plan plan=new Plan();
-				plan.setBill(bill);
-				TreeMap<String,OperationPlan> operationPlans=new TreeMap<>();;
-				for(Operation oper:operations){
-					OperationPlan operationPlan=new OperationPlan(oper);
-					operationPlan.setPlan(plan);
-					operationPlans.put(oper.getName(),operationPlan);
-				}
-				plan.setOperationPlans(operationPlans);
-				plans.add(plan );
-			}
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException
-				| IntrospectionException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
-		return plans;
+	
+	
+	
+	public HashMap<OperationPlan, Date> getPlanLastDate() {
+		HashMap<OperationPlan, Date> lastDateMap = null;
+		
+		
+		return lastDateMap;
 	}
-	public static Vector<Plan> loadAllUnCompletedByNotOut(String search) {       
-		Vector<Plan> plans=loadUnCompletedByNotOut(search);
-		Vector<Plan> newPlans = loadallNew();
-		if(plans!=null)
-			plans.addAll(newPlans);
-		else 
-			plans=newPlans;
-
-		return plans;
-	}
-	public static Vector<Plan> loadUnCompleted() {
-		return loadUnCompletedBySearch(null);
-
-	}
-
-	public static Vector<Plan> loadUnCompleted(String search) {
-		return loadUnCompletedBySearch(search);
-
-	}
-	public static Vector<Plan> loadUnCompletedByNotOut(String search) {
-
-
-		Vector<Plan> plans=null;
-		plans= loadUnCompletedBySearch(search);
-		for(Plan plan:plans){
-			plan.initOperationsByNotOut();
-		}
-
-		return plans;
-	}
+	
 	
 	public boolean getCompleted() {
 		return completed;
@@ -95,7 +59,7 @@ public class Plan extends BeanMao {
 	@Transient
 	public float  getPlanCost() {
 		float cost = 0;
-		for(OperationPlan operationPlan:operationPlans.values()){
+		for(OperationPlan operationPlan:operationPlans){
 			cost+=operationPlan.getPlanCost();
 		}
 		return cost;
@@ -105,22 +69,39 @@ public class Plan extends BeanMao {
 		return num;
 	}
 	@Transient
-	public TreeMap<String,OperationPlan> getOperationPlans() {
+	public TreeSet<OperationPlan> getOperationPlans() {
+		if(operationPlans==null){
+			operationPlans=new TreeSet<OperationPlan>(wpCompare);
+			try {
+				operationPlans.addAll( OperationPlan.loadAll(OperationPlan.class,"select * from OperationPlan where \"plan\"="+getId()));
+					
+			} catch (InstantiationException | IllegalAccessException
+					| IllegalArgumentException | InvocationTargetException
+					| NoSuchMethodException | SecurityException
+					| IntrospectionException e) {
+				// TODO 自动生成的 catch 块
+//				e.printStackTrace();
+			}
+		}
 		return operationPlans;
 	}
 	@Transient
 	public int  getPlanTime() {
 		int time = 0;
-		for(OperationPlan operationPlan:operationPlans.values()){
+		for(OperationPlan operationPlan:operationPlans){
 			time+=operationPlan.getUseTime();
 		}
 		return time;
 	}
-
+	@Caption(order = 3, value= "图号")
+	public String getPic() {
+		return bill.getPicid();
+	}
+	@Caption(order = 2, value= "创建时间")
 	public Date getProduceDate() {
 		return produceDate;
 	}
-	@Caption(order=2,value="序号")
+	@Caption(order=1,value="序号")
 	public int getSequenceNum() {
 		if(sequenceNum==0) {
 			try(Statement st=SessionData.getConnection().createStatement();
@@ -140,61 +121,13 @@ public class Plan extends BeanMao {
 	@Transient
 	public int  getUserTime() {
 		int time = 0;
-		for(OperationPlan operationPlan:operationPlans.values()){
+		for(OperationPlan operationPlan:operationPlans){
 			time+=operationPlan.getUseTime();
 		}
 		return time;
 	}
-	public void initOperations(){
-		TreeMap<String,OperationPlan> operationPlans=new TreeMap<>();;
+	
 
-		try {
-			for(OperationPlan operationPlan:OperationPlan.loadAll(OperationPlan.class,"select * from OperationPlan where \"plan\"="+getId())){
-
-				operationPlans.put(operationPlan.getName(), operationPlan);
-			}
-			for(Operation operation :Operation.loadAll(Operation.class,"select * from operation")){
-				if(!operationPlans.containsKey(operation .getName())) {
-					OperationPlan operationPlan=new OperationPlan(operation);
-					operationPlan.setPlan(this);
-					operationPlans.put(operation.getName(),operationPlan );
-				}
-			}
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException
-				| IntrospectionException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
-		setOperationPlans(operationPlans);
-	}
-
-	public void initOperationsByNotOut(){
-		TreeMap<String,OperationPlan> operationPlans=new TreeMap<>();;
-
-		try {
-			for(OperationPlan operationPlan:OperationPlan.loadAll(OperationPlan.class,"select * from OperationPlan where \"plan\"="+getId())){
-
-				operationPlans.put(operationPlan.getName(), operationPlan);
-			}
-			for(Operation operation :Operation.loadAll(Operation.class,"select * from operation where out=0")){
-
-				if(!operationPlans.containsKey(operation .getName())) {
-					OperationPlan operationPlan=new OperationPlan(operation);
-					operationPlan.setPlan(this);
-					operationPlans.put(operation.getName(),operationPlan );
-				}
-			}
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException
-				| IntrospectionException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
-		setOperationPlans(operationPlans);
-	}
 	
 	public boolean isBig() {
 		// TODO 自动生成的方法存根
@@ -207,7 +140,7 @@ public class Plan extends BeanMao {
 			if(operationPlans!=null) {
 				if(getUserTime()>0||getId()>0)
 					super.save();
-				for(OperationPlan operationPlan:operationPlans.values()){
+				for(OperationPlan operationPlan:operationPlans){
 					if(operationPlan.getUnitUseTime()> 0) {
 						operationPlan.save();
 					}else if(operationPlan.getId()>0 ) {
@@ -236,7 +169,7 @@ public class Plan extends BeanMao {
 	public void setNum(int num) {
 		this.num = num;
 	}
-	public void setOperationPlans(TreeMap<String,OperationPlan> operationPlans) {
+	public void setOperationPlans(TreeSet<OperationPlan> operationPlans) {
 		this.operationPlans = operationPlans;
 	}
 
@@ -247,31 +180,6 @@ public class Plan extends BeanMao {
 	public void setSequenceNum(int sequenceNum) {
 		this.sequenceNum = sequenceNum;
 	}
-
-
-
-	public float getMaterialNum() {
-		return MaterialNum;
-	}
-
-
-	public void setMaterialNum(float materialNum) {
-		MaterialNum = materialNum;
-	}
-
-
-	public float getMaterialPrice() {
-		return MaterialPrice;
-	}
-
-
-	public void setMaterialPrice(float materialPrice) {
-		MaterialPrice = materialPrice;
-	}
-
-
-
-
 
 
 	@Transient
@@ -289,37 +197,16 @@ public class Plan extends BeanMao {
 		return operationWorks;
 	}
 
-	public static Vector<Plan> loadUnCompletedByPicId(String search) {
-		
-		if(search!=null&&!search.equals(""))
-			return loadUnCompletedBySearch(" and picid like '%"+search+"%'");
-		else
-			return loadUnCompletedBySearch(null);
-	}
 
-	public static Vector<Plan> loadUnCompletedBySearch(String search) {
-		if(search==null)
-			search="";
-		Vector<Plan> plans=null;
-		try {
-			plans= Plan.loadAll(Plan.class,"Select distinct a.*,b.custom from \"plan\" a join bill b on a.bill=b.id and b.itemCompleteDate is null "+search+" order by b.custom");
-			for(Plan plan:plans){
-				plan.initOperations();
-			}
 
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException
-				| IntrospectionException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
+	private class WpCompare implements Comparator<OperationPlan>{
+
+		@Override
+		public int compare(OperationPlan o1, OperationPlan o2) {
+			// TODO 自动生成的方法存根
+			return Integer.compare(o1.getSequence(), o2.getSequence());
 		}
-
-		return plans;
+		
 	}
-
-
-
-
 
 }

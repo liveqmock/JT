@@ -1,7 +1,5 @@
 package ui.costPanes;
 
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -141,19 +139,6 @@ public class PlanCostPnl extends BeanPanel<Plan> {
 		note.setColumns(10);
 		add(note, "4, 16, 5, 1, fill, default");
 		
-		operation.addItemListener(new ItemListener() {
-			
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				unit.setText(((Operation)e.getItem()).getName());
-				if(((Operation)e.getItem()).getOut())
-					unitCost.setText(String.valueOf(((Operation)e.getItem()).getCost()));
-				else {
-					unitCost.setText("0");
-				}
-				unitCost.setEnabled(((Operation)e.getItem()).getOut());
-			}
-		});
 		
 		planDate.setName("排产时间");
 		operation.setName("工序");

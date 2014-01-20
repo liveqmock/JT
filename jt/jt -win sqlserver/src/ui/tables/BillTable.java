@@ -2,6 +2,7 @@ package ui.tables;
 
 import java.awt.Component;
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -40,8 +41,8 @@ public class BillTable extends BeanTablePane<Bill> {
 						if (BillTable.this.getBeans() == null)
 							return false;
 						try{
-							return BillTable.this.getBeans().elementAt(
-									adapter.row).getTableColor() != null;
+							return ((Bill)BillTable.this.getBeans().toArray()[
+									adapter.row]).getTableColor() != null;
 						}catch(Exception e){
 							return false;
 						}
@@ -52,7 +53,7 @@ public class BillTable extends BeanTablePane<Bill> {
 		MainMenu.setPopMenus(getPopupMenu(), new MenuAction(this));
 	}
 	@Override
-	public void setBeans(Vector<Bill> beans) {
+	public void setBeans(Collection<Bill> beans) {
 		// TODO 自动生成的方法存根
 		super.setBeans(beans);
 		if(!columnInit){

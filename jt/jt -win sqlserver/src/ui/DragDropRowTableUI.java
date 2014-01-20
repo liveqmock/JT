@@ -8,8 +8,6 @@ import javax.swing.JComponent;
 import javax.swing.event.MouseInputListener;
 import javax.swing.plaf.basic.BasicTableUI;
 
-import ui.customComponet.BeanTableModel;
-
 public class DragDropRowTableUI<T> extends BasicTableUI {
 	private boolean draggingRow = false;
 	private int startDragPoint;
@@ -65,9 +63,7 @@ public class DragDropRowTableUI<T> extends BasicTableUI {
 	        		toRow = fromRow + 1;
 	        	}
 	        	if (toRow >= 0 && toRow < table.getRowCount()) {
-	        		 BeanTableModel<T> model = (BeanTableModel<T>) table.getModel();
-	        		model.move(fromRow, toRow);
-		    		table.setRowSelectionInterval(toRow, toRow);
+	        		table.setRowSelectionInterval(toRow, toRow);
 		    		sRow=toRow;
 		    		startDragPoint = yMousePoint;
 	        	}

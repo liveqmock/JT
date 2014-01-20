@@ -1,6 +1,6 @@
 package ui.costPanes;
 
-import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -170,9 +170,9 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		
 		
 	}
-	public void setOperationPlans(TreeMap<String, OperationPlan> operationPlans) {
+	public void setOperationPlans(TreeSet< OperationPlan> operationPlans) {
 		operationPlan.removeAllItems();
-		for(OperationPlan operation:operationPlans.values()){
+		for(OperationPlan operation:operationPlans){
 			if(operation.getUseTime()>0){
 				operationPlan.addItem(operation);
 			}

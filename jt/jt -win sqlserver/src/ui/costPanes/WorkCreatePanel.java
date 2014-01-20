@@ -96,7 +96,7 @@ public class WorkCreatePanel extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				table.changeData(Plan.loadUnCompletedBySearch(" and picid like '%"+textField.getText()+"%'"));
+//				table.changeData(Plan.loadUnCompletedBySearch(" and picid like '%"+textField.getText()+"%'"));
 				
 			}
 		});

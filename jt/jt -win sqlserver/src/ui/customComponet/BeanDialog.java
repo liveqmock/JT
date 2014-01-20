@@ -6,7 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
+import java.util.Collection;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -24,7 +24,7 @@ public abstract class BeanDialog<T> extends JDialog {
 	private BeansPanel<T> contentPanel2;
 	private BeanTablePane<T> contentPanel3;
 	private T bean;
-	private Vector<T> beans;
+	private Collection<T> beans;
 
 	/**
 	 * @return the contentPanel
@@ -198,7 +198,7 @@ public abstract class BeanDialog<T> extends JDialog {
 		return bean;
 	}
 
-	public Vector<T> getBeans() {
+	public Collection<T> getBeans() {
 		return beans;
 	}
 }

@@ -35,7 +35,7 @@ import org.jdesktop.swingx.JXList;
 import ui.tables.BillTable;
 
 import com.mao.jf.beans.Bill;
-import com.mao.jf.beans.Custom;
+import com.mao.jf.beans.CustomBill;
 
 public class BillManagerPnl extends JPanel{
 
@@ -59,7 +59,7 @@ public class BillManagerPnl extends JPanel{
 
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout(0, 0));
-		cstlist = new JXList(Custom.LoadNames());
+		cstlist = new JXList(CustomBill.LoadNames());
 		cstlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollPane = new JScrollPane(cstlist);
 

@@ -3,12 +3,14 @@ package com.mao.jf.beans;
 import java.beans.IntrospectionException;
 import java.beans.Transient;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 import com.mao.jf.beans.annotation.Caption;
 
 public class OperationPlan extends BeanMao {
+	private static SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	private int sequence;
 	private Plan plan;
 	private String name;  
@@ -25,49 +27,44 @@ public class OperationPlan extends BeanMao {
 		setPlan(plan);
 	}
 
-	@Transient
-	@Caption(value="客户",order=1)
-	public String getCustom() {
-		return plan.getBill().getCustom();
+	@Caption(order =1, value= "流程序号")
+	public int getSequence() {
+		System.err.println(getPlan().getOperationPlans().size());
+		return getPlan().getOperationPlans().indexOf(this)+1;
 	}
-	@Transient
-	@Caption(value="订单组",order=2)
-	public String getBillgroup() {
-		return plan.getBill().getBillgroup();
-	}
-	@Transient
-	@Caption(value="订单号",order=3)
-	public String getBillid() {
-		return plan.getBill().getBillid();
-	}
-	@Transient
-	@Caption(value="图号",order=4)
-	public String getPiclid() {
-		return plan.getBill().getPicid();
-	}
-	@Caption(order = 5, value= "工序名称")
+
+	@Caption(order = 2, value= "工序名称")
 	public String getName() {
 		return name;
+	}
+	@Transient
+	@Caption(order =3, value= "排产时间")
+	public String getPlanDateStr() {
+		try{
+		return df.format(getPlanDate());
+		}catch(Exception e){
+			return null;
+		}
 	}
 	@Caption(order = 4, value= "单件计划用时")
 	public float getUnitUseTime() {
 		return unitUseTime;
 	}
+
+	@Caption(order = 5, value= "调机时间")	
+	public float getPrepareTime() {
+		return prepareTime;
+	}
 	@Transient
-	@Caption(order = 5, value= "计划总用时")
+	@Caption(order = 6, value= "计划总用时")
 	public float getUseTime() {
 		return unitUseTime*plan.getNum()+prepareTime;
 	}
 
 
-	@Caption(order = 6, value= "单位费用")
+	@Caption(order = 7, value= "单位费用")
 	public float getCost() {
 		return cost;
-	}
-
-	@Caption(order = 7, value= "调机时间")	
-	public float getPrepareTime() {
-		return prepareTime;
 	}
 
 	@Transient
@@ -125,39 +122,41 @@ public class OperationPlan extends BeanMao {
 		if(planDate==null){
 			long planDatetime=0;
 			long lastDate=getLastPlanDate();
-			OperationPlan lower = getPlan().getOperationPlans().lower(this);
-			if(lower==null) {
-				planDatetime=lastDate;
-			}else{
+			int point = getPlan().getOperationPlans().indexOf(this);
+			if(point>0){
+				OperationPlan lower = getPlan().getOperationPlans().get(point-1);
 				long lowerPlanDate = lower.getPlanDate().getTime()+Math.round( lower.getUseTime()*60000);
 				planDatetime=lastDate>lowerPlanDate?lastDate:lowerPlanDate;
+			}else{
+				planDatetime=lastDate;
 			}
+			planDate=new Date(lastDate);
 			Calendar calendar= Calendar.getInstance();	
 			calendar.setTimeInMillis(planDatetime+Math.round( getUseTime()*60000));
-			int hour = calendar.get(Calendar.HOUR_OF_DAY);
-			if(hour>17){
+			
+			if( calendar.get(Calendar.HOUR_OF_DAY)>17||calendar.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY){
 				calendar.add(Calendar.DAY_OF_MONTH, 1);
 				calendar.set(Calendar.HOUR_OF_DAY, 8);
 				calendar.set(Calendar.MINUTE, 0);
+				planDatetime=calendar.getTimeInMillis();
+				planDate=calendar.getTime();
 			}
-			if(calendar.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY){
-				calendar.add(Calendar.DAY_OF_MONTH, 1);
-				calendar.set(Calendar.HOUR_OF_DAY, 8);
-				calendar.set(Calendar.MINUTE, 0);
-			}
+			
 
 		}
+		
 		return planDate;
 	}
+	@Transient
 	public long getLastPlanDate() {
 		long lastDate=0;
 		try {
-			OperationPlan operationPlan=OperationPlan.load(OperationPlan.class, "select * from OperationPlan where plandate=(select max(plandate) from OperationPlan where name='"+getName()+"')");
+			OperationPlan operationPlan=OperationPlan.load(OperationPlan.class, "select top 1 * from OperationPlan where plandate=(select max(plandate) from OperationPlan where name='"+getName()+"')");
 			lastDate=operationPlan.getPlanDate()==null?new Date().getTime(): 
 								(operationPlan.getPlanDate().getTime())								
 						         +Math.round( operationPlan.getUseTime()*60000);;
+			
 		} catch (Exception e) {
-			// TODO 自动生成的 catch 块
 			lastDate=new Date().getTime();
 		}
 
@@ -168,14 +167,10 @@ public class OperationPlan extends BeanMao {
 		this.planDate = planDate;
 	}
 
-	public int getSequence() {
-		return sequence;
-	}
-
 	public void setSequence(int sequence) {
 		this.sequence = sequence;
 	}
-
+	@Transient
 	public Operation getOperation() {
 		try {
 			return Operation.load(Operation.class, "select * from operation where name='"+name+"'");
@@ -190,4 +185,25 @@ public class OperationPlan extends BeanMao {
 		this.name=operation.getName();
 		this.cost=operation.getCost();
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (getClass() != obj.getClass())
+			return false;
+		OperationPlan other = (OperationPlan) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (plan == null) {
+			if (other.plan != null)
+				return false;
+		} else if (!plan.equals(other.plan))
+			return false;
+		return true;
+	}
+	
 }

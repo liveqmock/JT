@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class Plan extends BeanMao {
 	private int sequenceNum;
 	private Bill bill;
 	private Date produceDate;
-	private TreeSet<OperationPlan> operationPlans;
+	private ArrayList<OperationPlan> operationPlans;
 	private boolean completed;
 	private Vector<OperationWork> operationWorks;
 	private WpCompare wpCompare=new WpCompare();
@@ -69,9 +70,9 @@ public class Plan extends BeanMao {
 		return num;
 	}
 	@Transient
-	public TreeSet<OperationPlan> getOperationPlans() {
+	public ArrayList<OperationPlan> getOperationPlans() {
 		if(operationPlans==null){
-			operationPlans=new TreeSet<OperationPlan>(wpCompare);
+			operationPlans=new ArrayList<OperationPlan>();
 			try {
 				operationPlans.addAll( OperationPlan.loadAll(OperationPlan.class,"select * from OperationPlan where \"plan\"="+getId()));
 					
@@ -99,6 +100,7 @@ public class Plan extends BeanMao {
 	}
 	@Caption(order = 2, value= "创建时间")
 	public Date getProduceDate() {
+		if(produceDate==null)produceDate=new Date();
 		return produceDate;
 	}
 	@Caption(order=1,value="序号")
@@ -110,7 +112,7 @@ public class Plan extends BeanMao {
 					){
 				if(rs.next()) {
 					sequenceNum = rs.getInt(1)+1;
-				}
+				}else sequenceNum=1;
 			} catch (SQLException e) {
 				// TODO 自动生成的 catch 块
 				e.printStackTrace();
@@ -169,7 +171,7 @@ public class Plan extends BeanMao {
 	public void setNum(int num) {
 		this.num = num;
 	}
-	public void setOperationPlans(TreeSet<OperationPlan> operationPlans) {
+	public void setOperationPlans(ArrayList<OperationPlan> operationPlans) {
 		this.operationPlans = operationPlans;
 	}
 
@@ -204,7 +206,10 @@ public class Plan extends BeanMao {
 		@Override
 		public int compare(OperationPlan o1, OperationPlan o2) {
 			// TODO 自动生成的方法存根
-			return Integer.compare(o1.getSequence(), o2.getSequence());
+			int a = Integer.compare(o1.getSequence(), o2.getSequence());
+			try{return a==0?o1.getName().compareTo(o2.getName()):a;}catch (Exception e){
+				return 0;
+			}
 		}
 		
 	}

@@ -8,7 +8,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Date;
 import java.util.TreeSet;
 
@@ -30,13 +31,13 @@ import org.apache.poi.ss.usermodel.Workbook;
 import com.mao.jf.beans.annotation.Caption;
 import com.mao.jf.beans.annotation.Hidden;
 public class BeanTableModel<T> extends AbstractTableModel  {
-	private Collection<T> beans;
+	private List<T> beans;
 	private BeanTableModelHeader[] heads;
-	public BeanTableModel(Collection<T> beans,Class<T> class1) {
+	public BeanTableModel(List<T> beans,Class<T> class1) {
 		this(beans,class1,null);
 
 	}
-	public BeanTableModel(Collection<T> beans,Class<T> class1, String [] header) {
+	public BeanTableModel(List<T> beans,Class<T> class1, String [] header) {
 		super();
 		TreeSet<BeanTableModelHeader> headers = new TreeSet<BeanTableModelHeader>();
 		for(Field fld:class1.getDeclaredFields()){
@@ -125,7 +126,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	/**
 	 * @return the beans
 	 */
-	public Collection<T> getBeans() {
+	public List<T> getBeans() {
 		return beans;
 	}
 
@@ -136,7 +137,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	 * @param beans
 	 *            the beans to set
 	 */
-	public void setBeans(Collection<T> beans) {
+	public void setBeans(List<T> beans) {
 
 		this.beans=beans;
 		fireTableDataChanged();
@@ -271,12 +272,15 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 		
 		return heads[arg0].getFldClass();
 	}
-	public void insertRow(int row, T t) {
-
-		if(beans.contains(t)) {
-			beans.remove(t);
+	public void insertRow( T t) {
+		int row = beans.indexOf(t);
+		System.err.println("row:"+row);
+		if(row>-1) {
+			beans.set(row, t);
+		}else{
+			row=beans.size();
+			beans.add(t);
 		}
-		beans.add(t);
 		fireTableRowsInserted(row, row);
 	}
 

@@ -29,15 +29,18 @@ public abstract class BeanPanel<T> extends JPanel {
 
 	public BeanPanel(T bean) {
 		super();
-		this.bean = bean;
-		vPanel = new ValidationPanel();
-		vPanel.setInnerComponent(this);
-		setValidationGroup(vPanel.getValidationGroup());
-		bindingGroup=new BindingGroup();
-		createContents();
-		setBean(bean);
-		
-		
+		try{
+			this.bean = bean;
+			vPanel = new ValidationPanel();
+			vPanel.setInnerComponent(this);
+			setValidationGroup(vPanel.getValidationGroup());
+			bindingGroup=new BindingGroup();
+			createContents();
+			setBean(bean);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
 	}
 	public BeanPanel(T bean,int beans) {
 		super();
@@ -46,7 +49,7 @@ public abstract class BeanPanel<T> extends JPanel {
 		vPanel.setInnerComponent(this);
 		setValidationGroup(vPanel.getValidationGroup());
 		bindingGroup=new BindingGroup();
-		
+
 	}
 	public boolean isValide() {
 		boolean validate = false;
@@ -73,12 +76,16 @@ public abstract class BeanPanel<T> extends JPanel {
 	 *            the bean to set
 	 */
 	public void setBean(T bean) {
-		bindingGroup.unbind();
-		for(Binding<?, ?, ?, ?> binding: bindingGroup.getBindings())
-			bindingGroup.removeBinding(binding);
-		this.bean = bean;
-		dataBinding();
-		bindingGroup.bind();
+		try{
+			bindingGroup.unbind();
+			for(Binding<?, ?, ?, ?> binding: bindingGroup.getBindings())
+				bindingGroup.removeBinding(binding);
+			this.bean = bean;
+			dataBinding();
+			bindingGroup.bind();
+		}catch(Exception e){
+
+		}
 	}
 
 	public void setValidationGroup(ValidationGroup validationGroup) {

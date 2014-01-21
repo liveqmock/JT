@@ -14,16 +14,16 @@ import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
-import com.mao.jf.beans.AbstractCustom;
+import com.mao.jf.beans.Custom;
 
-public class CustomPanel extends BeanPanel<AbstractCustom> {
+public class CustomPanel extends BeanPanel<Custom> {
 	private JTextField nameFld;
 	private JTextField telFld;
 	private JTextField addressFld;
 	private JTextField faxFld;
 	private JTextField contactFld;
 	private JTextField emailFld;
-	public CustomPanel(AbstractCustom bean) {
+	public CustomPanel(Custom bean) {
 		super(bean);
 	}
 	@Override

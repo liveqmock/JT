@@ -54,10 +54,10 @@ import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
-import com.mao.jf.beans.AbstractCustom;
-import com.mao.jf.beans.Bill;
 import com.mao.jf.beans.Custom;
-import com.mao.jf.beans.OutCustom;
+import com.mao.jf.beans.Bill;
+import com.mao.jf.beans.CustomBill;
+import com.mao.jf.beans.CustomOut;
 import com.mao.jf.beans.SerialiObject;
 import com.mao.jf.beans.SessionData;
 import com.mao.jf.beans.Userman;
@@ -409,14 +409,14 @@ public class BillPanel extends JSplitPane {
 		JPanel panel_1 = new JPanel();
 		panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.X_AXIS));
 
-		customCombox = new JComboBox<>(Custom.LoadNames());
+		customCombox = new JComboBox<>(CustomBill.LoadNames());
 		customCombox.setName("\u8BA2\u5355\u5BA2\u6237");
 		panel_1.add(customCombox);
 		customCombox.addItemListener(new ItemListener() {
 
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				contactManCombox.setModel(new DefaultComboBoxModel<>(Custom
+				contactManCombox.setModel(new DefaultComboBoxModel<>(CustomBill
 						.LoadContacts((String) e.getItem())));
 
 			}
@@ -430,8 +430,8 @@ public class BillPanel extends JSplitPane {
 			public void actionPerformed(ActionEvent e) {
 
 
-				Vector<AbstractCustom> customs =new Custom().LoadAll();
-				if(customs.size()==0) customs.add(new Custom());
+				Vector<Custom> customs =new CustomBill().LoadAll();
+				if(customs.size()==0) customs.add(new CustomBill());
 				MenuAction.adminCustom(customs);
 
 			}
@@ -440,7 +440,7 @@ public class BillPanel extends JSplitPane {
 				"\u7ECF\u529E\u4EBA(\u8BA2\u5355\u65B9)\uFF1A");
 
 		contactManCombox = new JComboBox<>(
-				Custom.LoadContacts((String) customCombox.getSelectedItem()));
+				CustomBill.LoadContacts((String) customCombox.getSelectedItem()));
 		contactManCombox.setName("\u7ECF\u529E\u4EBA");
 
 
@@ -509,7 +509,7 @@ public class BillPanel extends JSplitPane {
 		JLabel label_3 = new JLabel("\u5916\u534F\u5BA2\u6237\uFF1A");
 		panel_3.setLayout(new BoxLayout(panel_3, BoxLayout.X_AXIS));
 
-		outCustomCombox = new JComboBox<>(OutCustom.LoadNames());
+		outCustomCombox = new JComboBox<>(CustomOut.LoadNames());
 		panel_3.add(outCustomCombox);
 
 		addOutCustomBt = new JButton("\u65B0\u589E\u5BA2\u6237");
@@ -518,8 +518,8 @@ public class BillPanel extends JSplitPane {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				Vector<AbstractCustom> customs =new OutCustom().LoadAll();
-				if(customs.size()==0) customs.add(new Custom());
+				Vector<Custom> customs =new CustomOut().LoadAll();
+				if(customs.size()==0) customs.add(new CustomBill());
 				MenuAction.adminCustom(customs);
 
 			}

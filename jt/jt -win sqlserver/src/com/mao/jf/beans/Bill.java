@@ -13,8 +13,13 @@ import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
-import com.mao.jf.beans.annotation.Caption;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
+import com.mao.jf.beans.annotation.Caption;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
+@Entity
 public class Bill extends BeanMao {
 
 	public static Vector<Bill> loadByGrp(String billGrp) {
@@ -77,6 +82,10 @@ public class Bill extends BeanMao {
 		return loadBySearch("true",true);
 
 	}
+	
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	private int id;
 	private String custom;
 	private String billid;
 	private String item;

@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Vector;
 
 import com.mao.jf.beans.annotation.Caption;
@@ -80,6 +81,9 @@ public class BeanMao implements Serializable {
 				}
 				if(object instanceof Boolean){
 					object=((Boolean)object)?1:0;
+				}
+				if(object instanceof Date){
+					object=new java.sql.Date(((Date)object).getTime());
 				}
 				pst.setObject(i, object);
 

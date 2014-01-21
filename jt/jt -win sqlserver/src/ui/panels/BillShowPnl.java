@@ -27,7 +27,7 @@ import javax.swing.border.LineBorder;
 import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXDatePicker;
 
-import com.mao.jf.beans.Custom;
+import com.mao.jf.beans.CustomBill;
 
 public abstract class BillShowPnl extends JPanel{
 
@@ -50,7 +50,7 @@ public abstract class BillShowPnl extends JPanel{
 
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout(0, 0));
-		cstlist = new JXComboBox(Custom.LoadNames());
+		cstlist = new JXComboBox(CustomBill.LoadNames());
 
 		
 

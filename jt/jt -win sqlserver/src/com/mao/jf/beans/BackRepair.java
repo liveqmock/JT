@@ -9,11 +9,19 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.Vector;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 import org.apache.commons.beanutils.PropertyUtils;
 
 import com.mao.jf.beans.annotation.Caption;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 
+@Entity
 public class BackRepair {
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
 	private int id;
 	private Bill billItem ;
 	@Caption("·µÐÞÊý¾Ý")

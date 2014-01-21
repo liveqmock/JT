@@ -5,7 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -16,23 +16,23 @@ import javax.swing.JPanel;
 
 import org.apache.commons.beanutils.BeanUtils;
 
-public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
+public abstract class BeansPanel<T> extends BeanPanel<List<T>> {
 	private BeanTablePane<T> tablePane;
 	private BeanPanel<T> beanPanel;
 	private String[] filterColumns;
 	private boolean vertical=false;
 	private Class<T> class1;
-	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1) {
+	public BeansPanel(List<T> beans, BeanPanel<T> beanPanel,Class<T> class1) {
 		this(beans, beanPanel,class1, null,false);
 	}
-	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1,boolean vertical) {
+	public BeansPanel(List<T> beans, BeanPanel<T> beanPanel,Class<T> class1,boolean vertical) {
 		this(beans, beanPanel,class1, null,vertical);
 	}
-	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1,
+	public BeansPanel(List<T> beans, BeanPanel<T> beanPanel,Class<T> class1,
 			String filterColumns[]) {
 		this(beans, beanPanel,class1, filterColumns,false);
 	}
-	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1,
+	public BeansPanel(List<T> beans, BeanPanel<T> beanPanel,Class<T> class1,
 			String filterColumns[],boolean vertical) {
 		super(beans,1);
 		this.beanPanel=beanPanel;
@@ -156,18 +156,13 @@ public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
 	 * @see com.mao.beanAdapter.BeanPanel#setBean(java.lang.Object)
 	 */
 	@Override
-	public void setBean(Collection<T> bean) {
+	public void setBean(List<T> bean) {
 		// TODO Auto-generated method stub
 		super.setBean(bean);
 		tablePane.setBeans(bean);
-		if(bean!=null&&bean.size()>0)
-			beanPanel.setBean(bean.iterator().next());
-		else{
-			try {
+		try {
 				beanPanel.setBean(class1.newInstance());
 			} catch (InstantiationException | IllegalAccessException e) {
-				
-			}
 		}
 	}
 

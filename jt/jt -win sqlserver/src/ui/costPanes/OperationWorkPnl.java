@@ -1,5 +1,6 @@
 package ui.costPanes;
 
+import java.util.ArrayList;
 import java.util.TreeSet;
 
 import javax.swing.JComboBox;
@@ -170,7 +171,7 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		
 		
 	}
-	public void setOperationPlans(TreeSet< OperationPlan> operationPlans) {
+	public void setOperationPlans(ArrayList< OperationPlan> operationPlans) {
 		operationPlan.removeAllItems();
 		for(OperationPlan operation:operationPlans){
 			if(operation.getUseTime()>0){

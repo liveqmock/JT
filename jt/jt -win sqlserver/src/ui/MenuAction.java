@@ -44,13 +44,13 @@ import ui.panels.MaterialsPanel;
 import ui.panels.UsermanPnl;
 import ui.tables.BillTable;
 
-import com.mao.jf.beans.AbstractCustom;
+import com.mao.jf.beans.Custom;
 import com.mao.jf.beans.BackRepair;
 import com.mao.jf.beans.Bill;
-import com.mao.jf.beans.Custom;
+import com.mao.jf.beans.CustomBill;
 import com.mao.jf.beans.Employee;
 import com.mao.jf.beans.Operation;
-import com.mao.jf.beans.OutCustom;
+import com.mao.jf.beans.CustomOut;
 import com.mao.jf.beans.SessionData;
 import com.mao.jf.beans.Userman;
 
@@ -133,13 +133,13 @@ public class MenuAction extends AbstractAction {
 				break;
 
 			case "订单客户管理":
-				Vector<AbstractCustom> customs =new Custom().LoadAll();
-				if(customs.size()==0) customs.add(new Custom());
+				Vector<Custom> customs =new CustomBill().LoadAll();
+				if(customs.size()==0) customs.add(new CustomBill());
 				adminCustom(customs);
 				break;
 			case "外协客户管理":
-				Vector<AbstractCustom> outCustoms =new OutCustom().LoadAll();
-				if(outCustoms.size()==0) outCustoms.add(new OutCustom());
+				Vector<Custom> outCustoms =new CustomOut().LoadAll();
+				if(outCustoms.size()==0) outCustoms.add(new CustomOut());
 				adminCustom(outCustoms);
 				break;
 			case "生产计划与实际成本对照":
@@ -423,6 +423,7 @@ public class MenuAction extends AbstractAction {
 	private void planProduct() {
 		JDialog dialog=new JDialog();
 		dialog.add(new PlanCreatePanel());
+		dialog.setModal(true);
 		dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
 		dialog.setLocationRelativeTo(null);
 		dialog.setVisible(true);
@@ -578,19 +579,19 @@ public class MenuAction extends AbstractAction {
 
 	}
 
-	public static void adminCustom(Vector<AbstractCustom>customs) {
-		BeansPanel<AbstractCustom> beansPanel2=new BeansPanel<AbstractCustom>(customs.firstElement().LoadAll(),new CustomPanel(customs.firstElement()),AbstractCustom.class,true) {
+	public static void adminCustom(Vector<Custom>customs) {
+		BeansPanel<Custom> beansPanel2=new BeansPanel<Custom>(customs.firstElement().LoadAll(),new CustomPanel(customs.firstElement()),Custom.class,true) {
 
 			@Override
-			public AbstractCustom saveBean() {
+			public Custom saveBean() {
 				try {
-					AbstractCustom custom = getPanelBean();
+					Custom custom = getPanelBean();
 
 					custom.save();
-					if(custom instanceof Custom){
-						setPanelBean(new Custom());
-					}else if(custom instanceof OutCustom){
-						setPanelBean(new OutCustom());
+					if(custom instanceof CustomBill){
+						setPanelBean(new CustomBill());
+					}else if(custom instanceof CustomOut){
+						setPanelBean(new CustomOut());
 					}
 					return custom;
 				} catch (ClassNotFoundException | SQLException
@@ -601,7 +602,7 @@ public class MenuAction extends AbstractAction {
 			}
 		};
 
-		BeanDialog<AbstractCustom> dialog=new BeanDialog<AbstractCustom>(beansPanel2,"订单客户管理") {
+		BeanDialog<Custom> dialog=new BeanDialog<Custom>(beansPanel2,"订单客户管理") {
 
 			@Override
 			public boolean okButtonAction() {

@@ -12,7 +12,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -44,14 +44,14 @@ public class BeanTablePane<T> extends JPanel {
 	private String filterColoums[];
 
 
-	public BeanTablePane(Collection<T> beans,Class<T> class1) {
+	public BeanTablePane(List<T> beans,Class<T> class1) {
 		this(beans,class1, null);
 	}
-	public BeanTablePane(Collection<T> beans,Class<T> class1,String[] headers) {
+	public BeanTablePane(List<T> beans,Class<T> class1,String[] headers) {
 		this(beans,class1, headers,null);
 	}
 
-	public BeanTablePane(Collection<T> beans,Class<T> class1,String[] headers, String filterColoums[]) {
+	public BeanTablePane(List<T> beans,Class<T> class1,String[] headers, String filterColoums[]) {
 		super();
 		this.beans = beans;
 		this.filterColoums = filterColoums;
@@ -247,7 +247,7 @@ public class BeanTablePane<T> extends JPanel {
 	/**
 	 * @return the beans
 	 */
-	public Collection<T> getBeans() {
+	public List<T> getBeans() {
 		return beans;
 	}
 
@@ -259,7 +259,7 @@ public class BeanTablePane<T> extends JPanel {
 
 	@SuppressWarnings("unchecked")
 	public void addNew(T t) {
-		((BeanTableModel<T>) getTable().getModel()).insertRow(0, t);
+		((BeanTableModel<T>) getTable().getModel()).insertRow(t);
 	}
 
 	/**
@@ -267,7 +267,7 @@ public class BeanTablePane<T> extends JPanel {
 	 *            the beans to set
 	 */
 	@SuppressWarnings("unchecked")
-	public void setBeans(Collection<T> beans) {
+	public void setBeans(List<T> beans) {
 		this.beans = beans;
 		((BeanTableModel<T>) table.getModel()).setBeans(beans);
 		table.packTable(10);
@@ -290,6 +290,6 @@ public class BeanTablePane<T> extends JPanel {
 		this.popupMenu = popupMenu;
 	}
 
-	private Collection<T> beans;
+	private List<T> beans;
 
 }

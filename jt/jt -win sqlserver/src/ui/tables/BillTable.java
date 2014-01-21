@@ -2,7 +2,7 @@ package ui.tables;
 
 import java.awt.Component;
 import java.io.File;
-import java.util.Collection;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -53,7 +53,7 @@ public class BillTable extends BeanTablePane<Bill> {
 		MainMenu.setPopMenus(getPopupMenu(), new MenuAction(this));
 	}
 	@Override
-	public void setBeans(Collection<Bill> beans) {
+	public void setBeans(List<Bill> beans) {
 		// TODO 自动生成的方法存根
 		super.setBeans(beans);
 		if(!columnInit){

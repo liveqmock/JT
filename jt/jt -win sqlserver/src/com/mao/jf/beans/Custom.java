@@ -1,195 +1,99 @@
 package com.mao.jf.beans;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Vector;
 
 import javax.naming.NamingException;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
-public class Custom extends AbstractCustom {
+import com.mao.jf.beans.annotation.Caption;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 
-	@Override
-	public void save() throws ClassNotFoundException, SQLException,
-			NamingException {
-		String sql = "";
-		if (sysId == 0) {
-			sql = "insert into Custom (name,tel ,address,fax ,contact,email) values(?,?,?,?,?,?)";
+@Entity
+public  class Custom {
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	protected int id;
+	@Caption("姓名")
+	protected String name;
+	@Caption("电话")
+	protected String tel;
+	@Caption("地址")
+	protected String address;
+	@Caption("传真")
+	protected String fax;
+	@Caption("联系人")
+	protected String contact;
+	@Caption("Email")
+	protected String email;
 
-		} else {
-			sql = "update  Custom set name=?,tel=?,address=? ,fax=?,contact =? ,email=? where id="
-					+ sysId;
-		}
-		try (PreparedStatement pst = SessionData.getConnection()
-				.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);) {
-			pst.setString(1, name);
-			pst.setString(2, tel);
-			pst.setString(3, address);
-			pst.setString(4, fax);
-			pst.setString(5, contact);
-			pst.setString(6, email);
-			pst.execute();
-			ResultSet rsKey = pst.getGeneratedKeys();
-			if (rsKey != null && rsKey.next())
-				this.sysId = rsKey.getInt(1);
-		}
+	public Custom() {
+		super();
+
+		this.name = "";
+		this.tel = "";
+		this.address = "";
+		this.fax = "";
+		this.contact = "";
+		this.email = "";
 	}
 
-	public static Custom Load(String name) {
-		try (PreparedStatement pst = SessionData.getConnection()
-				.prepareStatement("select * from Custom where name=?")) {
-			pst.setString(1, name);
-			ResultSet rs = pst.executeQuery();
-			Custom custom = null;
-			if (rs.next()) {
-
-				custom = new Custom();
-				custom.setName(name);
-				custom.setSysId(rs.getInt("id"));
-				custom.setTel(rs.getString("Tel"));
-				custom.setAddress(rs.getString("Address"));
-				custom.setContact(rs.getString("Contact"));
-				custom.setFax(rs.getString("Fax"));
-				custom.setEmail(rs.getString("email"));
-
-			}
-
-			return custom;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-
-	}
-	public static Vector<Custom> LoadAlls() {
-		Vector<Custom> customs=new Vector<>();
-		try (Statement st = SessionData.getConnection().createStatement();
-				ResultSet rs = st.executeQuery("select * from Custom ")) {
-			while (rs.next()) {
-				Custom custom;			
-				custom = new Custom();
-				custom.setName(rs.getString("name"));
-				custom.setSysId(rs.getInt("id"));
-				custom.setTel(rs.getString("Tel"));
-				custom.setAddress(rs.getString("Address"));
-				custom.setContact(rs.getString("Contact"));
-				custom.setFax(rs.getString("Fax"));
-				custom.setEmail(rs.getString("email"));
-				customs.add(custom);
-
-			}
-
-			return customs;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-
-	}
-	public static Vector<String> LoadNames() {
-		Vector<String> names = new Vector<>();
-		names.add(null);
-		try (Statement st = SessionData.getConnection().createStatement();
-				ResultSet rs = st
-						.executeQuery("select distinct name from custom");) {
-			while (rs.next()) {
-				names.add(rs.getString(1));
-
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-		return names;
-
+	public int getId() {
+		return id;
 	}
 
-	public static Vector<String> LoadContacts(String name) {
-		Vector<String> contacts = new Vector<>();
-		try (PreparedStatement pst = SessionData.getConnection()
-				.prepareStatement("select contact from custom where name=?")) {
-			pst.setString(1, name);
-			ResultSet rs = pst.executeQuery();
-			while (rs.next()) {
-				contacts.add(rs.getString(1));
-
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-		return contacts;
-
+	public void setId(int id) {
+		this.id = id;
 	}
 
-	@Override
-	public Vector<AbstractCustom> LoadAll() {
-		Vector<AbstractCustom> customs = new Vector<>();
-		try (PreparedStatement pst = SessionData.getConnection()
-				.prepareStatement("select * from Custom")) {
-			ResultSet rs = pst.executeQuery();
-			while (rs.next()) {
-
-				Custom custom = new Custom();
-				custom.setName(rs.getString("name"));
-				custom.setSysId(rs.getInt("id"));
-				custom.setTel(rs.getString("Tel"));
-				custom.setAddress(rs.getString("Address"));
-				custom.setContact(rs.getString("Contact"));
-				custom.setFax(rs.getString("Fax"));
-				custom.setEmail(rs.getString("email"));
-				customs.add(custom);
-
-			}
-
-			return customs;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
+	public String getAddress() {
+		return address;
 	}
 
-	@Override
-	public void remove() {
-		try (PreparedStatement pst = SessionData.getConnection()
-				.prepareStatement("delete custom where id=?");) {
-			pst.setInt(1, sysId);
-			pst.execute();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+	public String getContact() {
+		return contact;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		boolean isEqual = false;
-		isEqual = super.equals(obj);
-		if (isEqual)
-			return isEqual;
-		if (obj instanceof Userman) {
-			return this.sysId == ((Custom) obj).getSysId();
-		} else
-			return false;
-
+	public String getEmail() {
+		return email;
+	}
+	public String getFax() {
+		return fax;
 	}
 
-	@Override
-	public AbstractCustom clone()  {
-		Custom custom=new Custom();
-		custom.setName(name);
-		custom.setTel(tel);
-		custom.setAddress(address);
-		custom.setContact(contact);
-		custom.setFax(fax);
-		custom.setEmail(tel);
-		return custom;
+	public String getName() {
+		return name;
 	}
+
+
+	public String getTel() {
+		return tel;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public void setContact(String contact) {
+		this.contact = contact;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public void setFax(String fax) {
+		this.fax = fax;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
 }

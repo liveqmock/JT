@@ -8,7 +8,7 @@ import java.util.Vector;
 
 import javax.naming.NamingException;
 
-public class OutCustom extends AbstractCustom {
+public class CustomOut extends Custom {
 
 	@Override
 	public void save() throws ClassNotFoundException, SQLException,
@@ -36,14 +36,14 @@ public class OutCustom extends AbstractCustom {
 		}
 	}
 
-	public static OutCustom Load(String name) {
+	public static CustomOut Load(String name) {
 		try (PreparedStatement pst = SessionData.getConnection()
 				.prepareStatement("select * from outCustom where name=?")) {
 			pst.setString(1, name);
 			ResultSet rs = pst.executeQuery();
-			OutCustom custom = null;
+			CustomOut custom = null;
 			if (rs.next()) {
-				custom = new OutCustom();
+				custom = new CustomOut();
 				custom.setName(name);
 				custom.setSysId(rs.getInt("id"));
 				custom.setTel(rs.getString("Tel"));
@@ -83,14 +83,14 @@ public class OutCustom extends AbstractCustom {
 	}
 
 	@Override
-	public Vector<AbstractCustom> LoadAll() {
-		Vector<AbstractCustom> customs = new Vector<>();
+	public Vector<Custom> LoadAll() {
+		Vector<Custom> customs = new Vector<>();
 		try (PreparedStatement pst = SessionData.getConnection()
 				.prepareStatement("select * from outCustom")) {
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
 
-				OutCustom custom = new OutCustom();
+				CustomOut custom = new CustomOut();
 				custom.setName(rs.getString("name"));
 				custom.setSysId(rs.getInt("id"));
 				custom.setTel(rs.getString("Tel"));
@@ -124,8 +124,8 @@ public class OutCustom extends AbstractCustom {
 	}
 
 	@Override
-	public AbstractCustom clone()  {
-		OutCustom custom=new OutCustom();
+	public Custom clone()  {
+		CustomOut custom=new CustomOut();
 		custom.setName(name);
 		custom.setTel(tel);
 		custom.setAddress(address);

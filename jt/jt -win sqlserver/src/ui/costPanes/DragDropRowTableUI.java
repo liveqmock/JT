@@ -1,12 +1,17 @@
-package ui;
+package ui.costPanes;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.JComponent;
 import javax.swing.event.MouseInputListener;
 import javax.swing.plaf.basic.BasicTableUI;
+
+import com.mao.jf.beans.OperationPlan;
+
+import ui.customComponet.BeanTableModel;
 
 public class DragDropRowTableUI<T> extends BasicTableUI {
 	private boolean draggingRow = false;
@@ -62,7 +67,11 @@ public class DragDropRowTableUI<T> extends BasicTableUI {
 	        		// Move row down
 	        		toRow = fromRow + 1;
 	        	}
-	        	if (toRow >= 0 && toRow < table.getRowCount()) {
+	        	if (toRow >= 0 && toRow < table.getRowCount()&&toRow!=fromRow) {
+	        		ArrayList<OperationPlan> beans = (((ArrayList<OperationPlan>)((BeanTableModel<OperationPlan>)table.getModel()).getBeans()	)
+        	);
+	        		OperationPlan moveBean = beans.remove(fromRow);
+	        		beans.add(toRow, moveBean);
 	        		table.setRowSelectionInterval(toRow, toRow);
 		    		sRow=toRow;
 		    		startDragPoint = yMousePoint;
@@ -76,9 +85,11 @@ public class DragDropRowTableUI<T> extends BasicTableUI {
         public void mouseReleased(MouseEvent e){
         	super.mouseReleased(e);
         	if (sRow >= 0 && sRow < table.getRowCount() && table.getSelectedRow()!=sRow) 
-    		table.setRowSelectionInterval(sRow, sRow);
+    		table.setRowSelectionInterval(sRow, sRow);        	
         	draggingRow = false;
         	table.repaint();
+//        	for(int row=0;row<table.getRowCount();row++)
+//        	((BeanTableModel<OperationPlan>)table.getModel()).getSelectBean(table.convertRowIndexToModel(row)).setSequence(row+1);
         }
     }
 }

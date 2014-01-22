@@ -1,8 +1,11 @@
 package ui.customComponet;
 
+import java.lang.reflect.InvocationTargetException;
+
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
 
@@ -17,34 +20,34 @@ public abstract class BeanPanel<T> extends JPanel {
 	/**
 	 * 
 	 */
-	protected T bean;
+	private T origBean;
 	protected BindingGroup bindingGroup;
-
+	protected T editBean;
 	/**
-	 * @return the bean
+	 * @return the origBean
 	 */
 	public T getBean() {
-		return bean;
+		 
+		 return origBean;
 	}
 
-	public BeanPanel(T bean) {
+	public BeanPanel(T origBean) {
 		super();
 		try{
-			this.bean = bean;
 			vPanel = new ValidationPanel();
 			vPanel.setInnerComponent(this);
 			setValidationGroup(vPanel.getValidationGroup());
 			bindingGroup=new BindingGroup();
 			createContents();
-			setBean(bean);
+			setBean(origBean);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 
 	}
-	public BeanPanel(T bean,int beans) {
+	public BeanPanel(T origBean,int beans) {
 		super();
-		this.bean = bean;
+		this.origBean = origBean;
 		vPanel = new ValidationPanel();
 		vPanel.setInnerComponent(this);
 		setValidationGroup(vPanel.getValidationGroup());
@@ -67,24 +70,31 @@ public abstract class BeanPanel<T> extends JPanel {
 				JOptionPane.showMessageDialog(null, p2.getMessage(), "错误",
 						JOptionPane.ERROR_MESSAGE);
 		}
-
+		if(validate)
+		try {
+			BeanUtils.copyProperties(origBean, editBean);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		}
 		return validate;
 	}
 	protected abstract void  dataBinding();
 	/**
-	 * @param bean
-	 *            the bean to set
+	 * @param origBean
+	 *            the origBean to set
 	 */
-	public void setBean(T bean) {
+	public void setBean(T origBean) {
 		try{
 			bindingGroup.unbind();
 			for(Binding<?, ?, ?, ?> binding: bindingGroup.getBindings())
 				bindingGroup.removeBinding(binding);
-			this.bean = bean;
+			this.origBean = origBean;
+			this.editBean=(T) BeanUtils.cloneBean(origBean);
 			dataBinding();
 			bindingGroup.bind();
 		}catch(Exception e){
-
+			e.printStackTrace();
 		}
 	}
 
@@ -111,6 +121,7 @@ public abstract class BeanPanel<T> extends JPanel {
 		this.vPanel = vPanel;
 	}
 
+	
 	protected abstract void createContents();
 
 }

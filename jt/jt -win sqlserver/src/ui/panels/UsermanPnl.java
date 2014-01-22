@@ -18,8 +18,8 @@ import com.jgoodies.forms.layout.RowSpec;
 import com.mao.jf.beans.Userman;
 
 public class UsermanPnl extends BeanPanel<Userman> {
-	public UsermanPnl(Userman bean) {
-		super(bean);
+	public UsermanPnl(Userman editBean) {
+		super(editBean);
 		// TODO 自动生成的构造函数存根
 	}
 
@@ -57,8 +57,8 @@ public class UsermanPnl extends BeanPanel<Userman> {
 	@Override
 	protected void dataBinding() {
 		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("name"), name, jTextFieldBeanProperty));
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("levelStr"), levelStr,  BeanProperty.create("selectedItem")));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean, BeanProperty.create("name"), name, jTextFieldBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean, BeanProperty.create("levelStr"), levelStr,  BeanProperty.create("selectedItem")));
 		
 	}
 

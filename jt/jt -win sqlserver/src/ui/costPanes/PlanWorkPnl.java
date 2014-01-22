@@ -18,7 +18,7 @@ import ui.customComponet.RsTablePane;
 import ui.panels.SearchDlg;
 
 import com.mao.jf.beans.Bill;
-import com.mao.jf.beans.Plan;
+import com.mao.jf.beans.BillPlan;
 import com.mao.jf.beans.SessionData;
 
 public class PlanWorkPnl extends JPanel {
@@ -27,7 +27,7 @@ public class PlanWorkPnl extends JPanel {
 	 * Create the panel.
 	 */
 	private BeanTablePane<Bill> billTable=new BeanTablePane<>(null,Bill.class);
-	private BeanTablePane<Plan> planTable=new BeanTablePane<>(null,Plan.class);
+	private BeanTablePane<BillPlan> planTable=new BeanTablePane<>(null,BillPlan.class);
 	private RsTablePane operationPlanPane=new RsTablePane(null, "");
 	private final JPanel panel = new JPanel();
 	private final JButton button = new JButton("∂©µ•≤È—Ø");

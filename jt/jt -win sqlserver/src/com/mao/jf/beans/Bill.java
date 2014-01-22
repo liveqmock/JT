@@ -5,6 +5,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 import java.awt.Color;
 import java.beans.Transient;
 import java.io.File;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -44,9 +45,13 @@ public class Bill extends BeanMao {
 	private Date billedDate;
 	private String meterial;	
 	private int warehoused;
+	@javax.persistence.Transient
 	private int backRepairNum;
+	@javax.persistence.Transient
 	private String status;
+	@javax.persistence.Transient
 	private float operCost;
+	@javax.persistence.Transient
 	private float planCost;
 	private String gjh;
 	private String meterialz;
@@ -54,10 +59,10 @@ public class Bill extends BeanMao {
 	private String techCondition;
 	private String partName;
 	@OneToMany(mappedBy = "bill")
-	private List<Material> materials;
+	private Collection<Material> materials;
 	
 	@OneToMany(mappedBy = "bill")
-	private List<Plan> plans;
+	private Collection<BillPlan> plans;
 	public Bill() {
 		custom = "";
 		billid = "";
@@ -102,8 +107,8 @@ public class Bill extends BeanMao {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public List<Material> getMaterials() {
-		return materials;
+	public Collection<Material> getMaterials() {
+		return  materials;
 	}
 	public void setMaterials(Vector<Material> materials) {
 		this.materials = materials;
@@ -175,7 +180,7 @@ public class Bill extends BeanMao {
 	public Date getOutBillDate() {
 		return outBillDate;
 	}
-	public void setMaterials(List<Material> materials) {
+	public void setMaterials(Collection<Material> materials) {
 		this.materials = materials;
 	}
 
@@ -493,11 +498,11 @@ public class Bill extends BeanMao {
 	}
 	
 	
-	public List<Plan> getPlans() {
-		return plans;
+	public Collection<BillPlan> getPlans() {
+		return  plans;
 	}
 
-	public void setPlans(List<Plan> plans) {
+	public void setPlans(Collection<BillPlan> plans) {
 		this.plans = plans;
 	}
 

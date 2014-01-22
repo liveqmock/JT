@@ -5,14 +5,14 @@ import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
 
-import com.mao.jf.beans.Plan;
+import com.mao.jf.beans.BillPlan;
 
 public class WorkDetailTableMode extends AbstractTableModel {
 
-	Vector<Plan> plans;
+	Vector<BillPlan> plans;
 	Vector<String> columnNames=new Vector<>();
 	
-	public WorkDetailTableMode(Vector<Plan> plans) {
+	public WorkDetailTableMode(Vector<BillPlan> plans) {
 		super();
 		this.plans = plans;
 		columnNames.add("ÐòºÅ");
@@ -42,11 +42,11 @@ public class WorkDetailTableMode extends AbstractTableModel {
 		columnNames.add("±¸×¢");
 	}
 
-	public Vector<Plan> getPlans() {
+	public Vector<BillPlan> getPlans() {
 		return plans;
 	}
 
-	public void setPlans(Vector<Plan> plans) {
+	public void setPlans(Vector<BillPlan> plans) {
 		this.plans = plans;
 	}
 
@@ -64,7 +64,7 @@ public class WorkDetailTableMode extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		Plan plan=plans.get(rowIndex);
+		BillPlan plan=plans.get(rowIndex);
 		switch (columnIndex) {
 		case 0:
 			return plan.getBill().getBillid();
@@ -110,7 +110,7 @@ public class WorkDetailTableMode extends AbstractTableModel {
 	}
 
 	
-	public Plan getSelectPlan(int row) {
+	public BillPlan getSelectPlan(int row) {
 		return plans.get(row);
 
 

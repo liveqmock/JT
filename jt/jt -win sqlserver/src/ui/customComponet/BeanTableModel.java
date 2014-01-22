@@ -9,7 +9,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.TreeSet;
 
 import javax.swing.JFileChooser;
@@ -27,16 +28,17 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.annotation.Caption;
 import com.mao.jf.beans.annotation.Hidden;
 public class BeanTableModel<T> extends AbstractTableModel  {
-	private List<T> beans;
+	private Collection<T> beans;
 	private BeanTableModelHeader[] heads;
-	public BeanTableModel(List<T> beans,Class<T> class1) {
+	public BeanTableModel(Collection<T> beans,Class<T> class1) {
 		this(beans,class1,null);
 
 	}
-	public BeanTableModel(List<T> beans,Class<T> class1, String [] header) {
+	public BeanTableModel(Collection<T> beans,Class<T> class1, String [] header) {
 		super();
 		TreeSet<BeanTableModelHeader> headers = new TreeSet<BeanTableModelHeader>();
 		for(Field fld:class1.getDeclaredFields()){
@@ -125,7 +127,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	/**
 	 * @return the beans
 	 */
-	public List<T> getBeans() {
+	public Collection<T> getBeans() {
 		return beans;
 	}
 
@@ -136,7 +138,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	 * @param beans
 	 *            the beans to set
 	 */
-	public void setBeans(List<T> beans) {
+	public void setBeans(Collection<T> beans) {
 
 		this.beans=beans;
 		fireTableDataChanged();
@@ -254,10 +256,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 
 	public void removeRow(int row) {
 		try {
-			Method removeMethod = getSelectBean(row).getClass().getMethod(
-					"remove");
-			//			System.out.println(removeMethod.getName());
-			removeMethod.invoke(getSelectBean(row));
+			BeanMao.removeBean( getSelectBean(row));
 
 		} catch (Exception e2) {
 			e2.printStackTrace();
@@ -272,14 +271,22 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 		return heads[arg0].getFldClass();
 	}
 	public void insertRow( T t) {
-		int row = beans.indexOf(t);
-		System.err.println("row:"+row);
-		if(row>-1) {
-			beans.set(row, t);
+		int row =0;
+		
+		if(beans.contains(t)){
+			Iterator<T> it = beans.iterator();
+			int p=0;
+			while(it.hasNext()){
+				if(it.next().equals(t)){
+					row=p;
+					break;
+				}
+				p++;
+			}
 		}else{
 			row=beans.size();
 			beans.add(t);
-		}
+		}			
 		fireTableRowsInserted(row, row);
 	}
 

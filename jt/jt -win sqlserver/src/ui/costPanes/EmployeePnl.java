@@ -59,7 +59,7 @@ public class EmployeePnl extends BeanPanel<Employee> {
 		comboBox = new JComboBox<Operation>(new Vector<Operation>(Operation.loadAll(Operation.class)));
 		
 		add(comboBox, "4, 4, fill, default");
-		if(bean.getOperation()==null) bean.setOperation((Operation) comboBox.getSelectedItem());
+		if(editBean.getOperation()==null) editBean.setOperation((Operation) comboBox.getSelectedItem());
 		JLabel label_1 = new JLabel("\u5DE5\u8D44\uFF1A");
 		add(label_1, "2, 6, right, default");
 		
@@ -69,11 +69,6 @@ public class EmployeePnl extends BeanPanel<Employee> {
 		name.setName("姓名");
 		comboBox.setName("岗位");
 		wage.setName("工资");
-		getValidationGroup().add(comboBox,Validators.notNull());
-		getValidationGroup().add(name,Validators.REQUIRE_NON_EMPTY_STRING);
-		getValidationGroup().add(name,Validators.maxLength(20));
-		getValidationGroup().add(wage,Validators.REQUIRE_NON_EMPTY_STRING);
-		getValidationGroup().add(wage,Validators.numberMinE(0));
 		
 		JLabel label_2 = new JLabel("\u7C7B\u578B\uFF1A");
 		add(label_2, "2, 8, right, default");
@@ -82,15 +77,23 @@ public class EmployeePnl extends BeanPanel<Employee> {
 		type.setModel(new DefaultComboBoxModel(new String[] {"\u64CD\u4F5C\u5458", "\u68C0\u9A8C\u5458"}));
 		type.setSelectedIndex(0);
 		add(type, "4, 8, fill, default");
+		
+
+		getValidationGroup().add(comboBox,Validators.notNull());
+		getValidationGroup().add(name,Validators.REQUIRE_NON_EMPTY_STRING);
+		getValidationGroup().add(name,Validators.maxLength(20));
+		getValidationGroup().add(wage,Validators.REQUIRE_NON_EMPTY_STRING);
+		getValidationGroup().add(wage,Validators.numberMinE(0));
 	
 	}
+	
 	@Override
 	protected void dataBinding() {
 		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("name"), name, jTextFieldBeanProperty));
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("monWage"), wage, jTextFieldBeanProperty));
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("operation"), comboBox, BeanProperty.create("selectedItem")));
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("employeeType"), type, BeanProperty.create("selectedItem")));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,  BeanProperty.create("name"), name, jTextFieldBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,  BeanProperty.create("monWage"), wage, jTextFieldBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,  BeanProperty.create("operation"), comboBox, BeanProperty.create("selectedItem")));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,  BeanProperty.create("employeeType"), type, BeanProperty.create("selectedItem")));
 		
 		
 	}

@@ -58,7 +58,7 @@ public class MaterialPanel extends BeanPanel<Material> {
 			}
 		});
 		
-		bean.setEnterEmployee(Userman.loginUser);
+		editBean.setEnterEmployee(Userman.loginUser);
 
 		name.setName("材料名称");
 		unitName.setName("计价单位");
@@ -113,11 +113,11 @@ public class MaterialPanel extends BeanPanel<Material> {
 	}
 	protected  void dataBinding() {
 		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("name"), name,  BeanProperty.create("selectedItem")));
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("unitCost"), unitCost, jTextFieldBeanProperty));
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("unitName"), unitName, jTextFieldBeanProperty));
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("num"), num, jTextFieldBeanProperty));
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, bean, BeanProperty.create("billNo"), bill, jTextFieldBeanProperty));
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean, BeanProperty.create("name"), name,  BeanProperty.create("selectedItem")));
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean, BeanProperty.create("unitCost"), unitCost, jTextFieldBeanProperty));
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean, BeanProperty.create("unitName"), unitName, jTextFieldBeanProperty));
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean, BeanProperty.create("num"), num, jTextFieldBeanProperty));
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, editBean, BeanProperty.create("billNo"), bill, jTextFieldBeanProperty));
 		
 		
 	}

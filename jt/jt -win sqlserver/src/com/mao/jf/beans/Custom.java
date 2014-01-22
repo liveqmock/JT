@@ -117,7 +117,7 @@ public  class Custom extends BeanMao {
 	}
 	public static Set<String> loadContacts(String name, int out) {
 		HashSet<String> names=new HashSet<>();
-		for(Custom custom:loadAll(Custom.class," a.out="+out+" a.name='"+name+"'")){
+		for(Custom custom:loadAll(Custom.class," a.out="+out+" and a.name='"+name+"'")){
 			names.add(custom.contact);
 		}
 		return names;

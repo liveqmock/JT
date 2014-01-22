@@ -10,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import com.mao.jf.beans.annotation.Caption;
+import javax.persistence.OneToOne;
+import javax.persistence.JoinColumn;
 
 @Entity
 public class Employee extends BeanMao {
@@ -18,6 +20,9 @@ public class Employee extends BeanMao {
 	@GeneratedValue(strategy = IDENTITY)
 	private int id;
 	private String name;
+	
+	@OneToOne
+	@JoinColumn(name = "operation", referencedColumnName = "id")
 	private Operation operation ;
 	private float wage;
 	private String employeeType;

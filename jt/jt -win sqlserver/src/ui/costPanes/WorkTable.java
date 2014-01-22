@@ -9,13 +9,13 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 import ui.tableModes.WorkTableMode;
 
-import com.mao.jf.beans.Plan;
+import com.mao.jf.beans.BillPlan;
 
 public class WorkTable extends JXTable {
 
-	private Vector<Plan> plans;
+	private Vector<BillPlan> plans;
 	private WorkTableMode mode;
-	public WorkTable(Vector<Plan> plans) {
+	public WorkTable(Vector<BillPlan> plans) {
 		this.plans=plans;
 		setHighlighters(HighlighterFactory.
 				createAlternateStriping());
@@ -26,10 +26,10 @@ public class WorkTable extends JXTable {
 		setShowGrid(true);
 		packAll();
 	}
-	public Plan getSelectPlan() {
+	public BillPlan getSelectPlan() {
 		return mode.getSelectPlan(convertRowIndexToModel(getSelectedRow()));
 	}
-	public void setSelectBean(Plan plan) {
+	public void setSelectBean(BillPlan plan) {
 		 for(int i=0;i<getRowCount();i++){
 			 if(mode.getSelectPlan(i).getId()==plan.getId()){
 				 setRowSelectionInterval(i, i);
@@ -39,7 +39,7 @@ public class WorkTable extends JXTable {
 		
 	}
 	
-	public void changeData(Vector<Plan> plans) {
+	public void changeData(Vector<BillPlan> plans) {
 		mode.setPlans(plans);
 	}
 }

@@ -9,12 +9,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import com.mao.jf.beans.annotation.Caption;
+import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
 
 @Entity
 public class BackRepair extends BeanMao {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private int id;
+	
+	@ManyToOne
+	@JoinColumn(name = "billItem", referencedColumnName = "id")
 	private Bill billItem ;
 	@Caption("·µÐÞÊý¾Ý")
 	private long backNum ;

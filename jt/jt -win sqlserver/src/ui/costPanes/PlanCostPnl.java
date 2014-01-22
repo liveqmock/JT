@@ -18,10 +18,10 @@ import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
+import com.mao.jf.beans.BillPlan;
 import com.mao.jf.beans.Operation;
-import com.mao.jf.beans.Plan;
 
-public class PlanCostPnl extends BeanPanel<Plan> {
+public class PlanCostPnl extends BeanPanel<BillPlan> {
 
 	private JTextField operationNum;
 	private JTextField note;
@@ -32,29 +32,29 @@ public class PlanCostPnl extends BeanPanel<Plan> {
 	private JComboBox<Operation> operation;
 	private JLabel unit;
 	private JTextField unitCost;
-	public PlanCostPnl(Plan bean) {
+	public PlanCostPnl(BillPlan bean) {
 		super(bean);
 	}
 	@Override
 	protected void dataBinding() {
 		BeanProperty<Object, Object> textProperty = BeanProperty.create("text");
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,
 				BeanProperty.create("bill.billid"), billId, textProperty));
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,
 				BeanProperty.create("bill.item"), itemId, textProperty));
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,
 				BeanProperty.create("operationNum"), operationNum, textProperty));
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, bean,
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, editBean,
 				BeanProperty.create("operationUnit"), unit, textProperty));
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,
 				BeanProperty.create("unitCost"), unitCost, textProperty));
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,
 				BeanProperty.create("note"), note, textProperty));
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,
 				BeanProperty.create("planDate"), planDate, BeanProperty.create("date")));
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,
 				BeanProperty.create("operation"), operation, BeanProperty.create("selectedItem")));
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,
 				BeanProperty.create("useTime"), useTime, textProperty));
 		
 		

@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -14,6 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.mao.jf.beans.annotation.Caption;
+
+import javax.persistence.OneToOne;
 
 @Entity
 public class OperationPlan extends BeanMao {
@@ -24,33 +27,36 @@ public class OperationPlan extends BeanMao {
 	private int sequence;
 	
 	@ManyToOne
-	@JoinColumn(name = "plan", referencedColumnName = "id")
-	private Plan plan;
+	@JoinColumn(name = "billplan", referencedColumnName = "id")
+	private BillPlan billPlan;
+	@Column(insertable = false, updatable = false)
 	private String name;  
 	private float cost   ;
 	private String note  ;
 	private float unitUseTime;
 	private float prepareTime;
 	private Date planDate;
-
+	@OneToOne
+	@JoinColumn(name = "name", referencedColumnName = "name")
+	private Operation operation;
 	public OperationPlan() {
 		super();
 	}
 	public OperationPlan(Operation operation) {
-
-		setCost(operation.getCost());
-		setName(operation.getName());
-		setPlan(plan);
+		this.operation=operation;
 	}
 
 	@Caption(order =1, value= "流程序号")
-	public int getSequence() {
-		return getPlan().getOperationPlans().indexOf(this)+1;
+	public int getSequenceChange() {
+		 sequence= getBillPlan().getOperationPlans().indexOf(this)+1;
+		 return sequence;
 	}
-
+	public int getSequence() {
+		return sequence;
+	}
 	@Caption(order = 2, value= "工序名称")
 	public String getName() {
-		return name;
+		return name=name==null?operation.getName():name;
 	}
 	@Transient
 	@Caption(order =3, value= "排产时间")
@@ -73,19 +79,21 @@ public class OperationPlan extends BeanMao {
 	@Transient
 	@Caption(order = 6, value= "计划总用时")
 	public float getUseTime() {
-		return unitUseTime*plan.getNum()+prepareTime;
+		return unitUseTime*billPlan.getNum()+prepareTime;
 	}
 
 
 	@Caption(order = 7, value= "单位费用")
 	public float getCost() {
+		if(cost==0)
+			cost=operation.getCost();
 		return cost;
 	}
 
 	@Transient
 	@Caption(order = 8, value= "计划费用")
 	public float getPlanCost() {
-		return cost*(getUnitUseTime()*plan.getNum()+prepareTime);
+		return cost*(getUnitUseTime()*billPlan.getNum()+prepareTime);
 	}
 
 	@Caption(order =99, value= "备注")
@@ -94,10 +102,6 @@ public class OperationPlan extends BeanMao {
 	}
 
 
-
-	public Plan getPlan() {
-		return plan;
-	}
 
 
 
@@ -124,14 +128,17 @@ public class OperationPlan extends BeanMao {
 	public void setNote(String note) {
 		this.note = note;
 	}
-	public void setPlan(Plan plan) {
-		this.plan = plan;
-	}
 
 	public void setPrepareTime(float prepareTime) {
 		this.prepareTime = prepareTime;
 	}
 
+	public BillPlan getBillPlan() {
+		return billPlan;
+	}
+	public void setBillPlan(BillPlan billPlan) {
+		this.billPlan = billPlan;
+	}
 	@Override
 	public String toString() {
 		// TODO 自动生成的方法存根
@@ -142,19 +149,19 @@ public class OperationPlan extends BeanMao {
 		if(planDate==null){
 			long planDatetime=0;
 			long lastDate=getLastPlanDate();
-			int point = getPlan().getOperationPlans().indexOf(this);
+			int point = getBillPlan().getOperationPlans().indexOf(this);
 			if(point>0){
-				OperationPlan lower = getPlan().getOperationPlans().get(point-1);
+				OperationPlan lower = getBillPlan().getOperationPlans().get(point-1);
 				long lowerPlanDate = lower.getPlanDate().getTime()+Math.round( lower.getUseTime()*60000);
 				planDatetime=lastDate>lowerPlanDate?lastDate:lowerPlanDate;
+				
 			}else{
 				planDatetime=lastDate;
 			}
-			planDate=new Date(lastDate);
+			planDate=new Date(planDatetime);
 			Calendar calendar= Calendar.getInstance();	
 			calendar.setTimeInMillis(planDatetime+Math.round( getUseTime()*60000));
-			
-			if( calendar.get(Calendar.HOUR_OF_DAY)>17||calendar.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY){
+			if( calendar.get(Calendar.HOUR_OF_DAY)>=17||calendar.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY){
 				calendar.add(Calendar.DAY_OF_MONTH, 1);
 				calendar.set(Calendar.HOUR_OF_DAY, 8);
 				calendar.set(Calendar.MINUTE, 0);
@@ -164,14 +171,14 @@ public class OperationPlan extends BeanMao {
 			
 
 		}
-		
+			
 		return planDate;
 	}
 	@Transient
 	public long getLastPlanDate() {
 		long lastDate=0;
 		try {
-			OperationPlan operationPlan=OperationPlan.load(OperationPlan.class, "  a.planDate=(select max(planDate) from OperationPlan where name='"+getName()+"')");
+			OperationPlan operationPlan=OperationPlan.load(OperationPlan.class, "  a.planDate=(select max(planDate) from OperationPlan where name='"+getName()+"' and id<> "+id+")");
 			lastDate=operationPlan.getPlanDate()==null?new Date().getTime(): 
 								(operationPlan.getPlanDate().getTime())								
 						         +Math.round( operationPlan.getUseTime()*60000);;
@@ -208,10 +215,10 @@ public class OperationPlan extends BeanMao {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (plan == null) {
-			if (other.plan != null)
+		if (billPlan == null) {
+			if (other.billPlan != null)
 				return false;
-		} else if (!plan.equals(other.plan))
+		} else if (!billPlan.equals(other.billPlan))
 			return false;
 		return true;
 	}

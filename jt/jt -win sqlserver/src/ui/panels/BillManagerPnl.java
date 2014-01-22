@@ -61,7 +61,7 @@ public class BillManagerPnl extends JPanel{
 
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout(0, 0));
-		cstlist = new JXList(new Vector<Custom>(BeanMao.loadAll(Custom.class, " a.out=1")));
+		cstlist = new JXList(new Vector<String>(Custom.loadNames(0)));
 		cstlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollPane = new JScrollPane(cstlist);
 

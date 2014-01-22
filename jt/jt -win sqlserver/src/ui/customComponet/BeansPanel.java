@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -16,23 +17,23 @@ import javax.swing.JPanel;
 
 import org.apache.commons.beanutils.BeanUtils;
 
-public abstract class BeansPanel<T> extends BeanPanel<List<T>> {
+public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
 	private BeanTablePane<T> tablePane;
 	private BeanPanel<T> beanPanel;
 	private String[] filterColumns;
 	private boolean vertical=false;
 	private Class<T> class1;
-	public BeansPanel(List<T> beans, BeanPanel<T> beanPanel,Class<T> class1) {
+	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1) {
 		this(beans, beanPanel,class1, null,false);
 	}
-	public BeansPanel(List<T> beans, BeanPanel<T> beanPanel,Class<T> class1,boolean vertical) {
+	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1,boolean vertical) {
 		this(beans, beanPanel,class1, null,vertical);
 	}
-	public BeansPanel(List<T> beans, BeanPanel<T> beanPanel,Class<T> class1,
+	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1,
 			String filterColumns[]) {
 		this(beans, beanPanel,class1, filterColumns,false);
 	}
-	public BeansPanel(List<T> beans, BeanPanel<T> beanPanel,Class<T> class1,
+	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1,
 			String filterColumns[],boolean vertical) {
 		super(beans,1);
 		this.beanPanel=beanPanel;
@@ -47,7 +48,7 @@ public abstract class BeansPanel<T> extends BeanPanel<List<T>> {
 		
 		beanPanel.setBorder(BorderFactory.createEtchedBorder());
 		setLayout(new BorderLayout(0, 0));
-		tablePane = new BeanTablePane<T>(bean,class1, filterColumns);
+		tablePane = new BeanTablePane<T>(editBean,class1, filterColumns);
 		ActionListener listener = new ActionListener() {
 
 			@Override
@@ -114,19 +115,15 @@ public abstract class BeansPanel<T> extends BeanPanel<List<T>> {
 		
 	}
 	public void reEditRow() {
-		try {
-			beanPanel.setBean((T) BeanUtils.cloneBean( tablePane.getSelectBean()));
-		} catch (IllegalAccessException | InstantiationException
-				| InvocationTargetException | NoSuchMethodException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
+		beanPanel.setBean( tablePane.getSelectBean());
+		
 		
 	}
 	public void addNew() {
 		if (!beanPanel.isValide()) {
 			return;
 		}
+		
 		T newbean = saveBean();
 		if (newbean != null) {
 			tablePane.addNew(newbean);
@@ -156,7 +153,7 @@ public abstract class BeansPanel<T> extends BeanPanel<List<T>> {
 	 * @see com.mao.beanAdapter.BeanPanel#setBean(java.lang.Object)
 	 */
 	@Override
-	public void setBean(List<T> bean) {
+	public void setBean(Collection<T> bean) {
 		// TODO Auto-generated method stub
 		super.setBean(bean);
 		tablePane.setBeans(bean);

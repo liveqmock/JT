@@ -8,6 +8,7 @@ import net.miginfocom.swing.MigLayout;
 import ui.customComponet.BeanPanel;
 import validation.builtin.Validators;
 
+import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Userman;
 
 public class ChangePasswdPanel extends BeanPanel<Userman> {
@@ -25,7 +26,7 @@ public class ChangePasswdPanel extends BeanPanel<Userman> {
 		JLabel label = new JLabel("\u7528\u6237\u540D\uFF1A");
 		add(label, "cell 0 0,alignx trailing");
 
-		userNameField = new JLabel(bean.getName());
+		userNameField = new JLabel(editBean.getName());
 		add(userNameField, "cell 1 0,growx");
 
 		add(new JLabel("原密码："), "cell 0 1,alignx trailing");
@@ -58,12 +59,13 @@ public class ChangePasswdPanel extends BeanPanel<Userman> {
 		//
 	}
 	public boolean isOk() {
-		if(bean.getPassword().equals(passwordField.getText())&&passwordField1.getText().equals(passwordField2.getText())){
-			bean.setPassword(passwordField1.getText());
-			bean.save();
+		if(editBean.getPassword().equals(passwordField.getText())&&passwordField1.getText().equals(passwordField2.getText())){
+			editBean.setPassword(passwordField1.getText());
+
+			BeanMao.saveBean(getBean());
 				
 			return true;
-		}else if(!bean.getPassword().equals(passwordField.getText())){
+		}else if(!editBean.getPassword().equals(passwordField.getText())){
 			JOptionPane.showMessageDialog(this, "原密码不正确！");
 		}else if(!passwordField1.getText().equals(passwordField2.getText())){
 			JOptionPane.showMessageDialog(this, "新密码再次输入不一样！");

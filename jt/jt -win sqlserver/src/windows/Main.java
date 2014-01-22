@@ -6,14 +6,18 @@ import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import javax.persistence.EntityManager;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
@@ -25,6 +29,8 @@ import ui.frames.About;
 import ui.panels.BillManagerPnl;
 import ui.panels.LoginPanel;
 
+import com.mao.jf.beans.BeanManager;
+import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.SerialiObject;
 import com.mao.jf.beans.SessionData;
 import com.mao.jf.beans.Userman;
@@ -76,21 +82,31 @@ public class Main extends JFrame {
 	}
 
 	public static void main(String[] args) {
+		 EntityManager a = BeanMao.beanManager.getEm();
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				try {
 
-					jcifs.Config.setProperty("jcifs.smb.client.domain",
-							"192.168.1.103");
-					jcifs.Config.setProperty("jcifs.smb.client.username", "cw");
-					jcifs.Config.setProperty("jcifs.smb.client.password",
-							"mao564864");
-					jcifs.Config.setProperty(
-							"jcifs.smb.client.responseTimeout", "5000");
-					jcifs.Config.setProperty("jcifs.smb.client.soTimeout",
-							"5000");
+					
+					new SwingWorker<Void, Integer>(){
 
+						@Override
+						protected Void doInBackground() throws Exception {
+							jcifs.Config.setProperty("jcifs.smb.client.domain",
+									"192.168.1.103");
+							jcifs.Config.setProperty("jcifs.smb.client.username", "cw");
+							jcifs.Config.setProperty("jcifs.smb.client.password",
+									"mao564864");
+							jcifs.Config.setProperty(
+									"jcifs.smb.client.responseTimeout", "5000");
+							jcifs.Config.setProperty("jcifs.smb.client.soTimeout",
+									"5000");
+							BeanMao.beanManager.getEm();
+							return null;
+						}
+						
+					}.execute();
 					try(Statement st=SessionData.getConnection().createStatement();){
 						ResultSet rs=st.executeQuery("select * from version");
 						if(rs.next()){
@@ -118,8 +134,10 @@ public class Main extends JFrame {
 
 						@Override
 						public boolean okButtonAction() {
-
-							if (getBean().load()) {
+							try{
+								
+								Userman loginUser = BeanMao.load(Userman.class, " a.name='"+getBean().getName()+"' and password='"+getBean().getPassword()+"'");
+								Userman.loginUser=loginUser;
 								try {
 									SerialiObject.save(getBean(), new File(
 											"user.dat"));
@@ -129,14 +147,23 @@ public class Main extends JFrame {
 								}
 								new Main();
 								return true;
-							} else
+							} catch(Exception e){
+								e.printStackTrace();
 								return false;
+							}
 						}
+
+						@Override
+						public void cancel() {
+							System.exit(0);
+						}
+						
+						
 					};
 					dialog.setVisible(true);
 					dialog.toFront();
 					
-
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

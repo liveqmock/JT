@@ -3,10 +3,7 @@ package com.mao.jf.beans;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.beans.Transient;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,43 +12,18 @@ import javax.persistence.Id;
 import com.mao.jf.beans.annotation.Caption;
 
 @Entity
-public class Userman extends BeanMao {
-	public static Userman Load(String name) {
-		try (PreparedStatement pst = SessionData.getConnection()
-				.prepareStatement("select * from userman where name=?")) {
-			pst.setString(1, name);
-			ResultSet rs = pst.executeQuery();
-
-			Userman user = null;
-			if (rs.next()) {
-				user = new Userman();
-				user.setName(name);
-				user.setPassword(rs.getString("password"));
-				user.setLevel(rs.getInt("level"));
-				user.setId(rs.getInt("id"));
-
-			}
-
-			return user;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-
-	}
+public class Userman  implements Serializable{
+	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private int id;
 	private String name;
 	private String password;
 	private int level;
-
-
 	public static Userman loginUser;
 
 	public Userman() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	public Userman(String name, String passwd) {
@@ -119,27 +91,7 @@ public class Userman extends BeanMao {
 		return level==0;
 	}
 
-	public boolean load() {
-		try (Statement statement = SessionData.getConnection()
-				.createStatement();
-				ResultSet rs = statement
-						.executeQuery("select * from userman where name='"
-								+ name + "' and password='" + password + "'")) {
-
-			if (rs.next()) {
-				setLevel(rs.getInt("level"));
-				setId(rs.getInt("id"));
-				loginUser = this;
-				return true;
-			} else
-				return false;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-
-	}
+	
 
 
 	public void setLevel(int level) {

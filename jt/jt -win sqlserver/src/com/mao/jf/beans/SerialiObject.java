@@ -3,7 +3,6 @@ package com.mao.jf.beans;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -30,7 +29,7 @@ public class SerialiObject {
 				object = in.readObject();
 				in.close();
 				fs.close();
-			} catch (IOException | ClassNotFoundException e) {
+			} catch (Exception|ExceptionInInitializerError e) {
 
 			}
 		return object;

@@ -7,10 +7,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,44 +23,48 @@ import javax.persistence.OneToMany;
 
 import com.mao.jf.beans.annotation.Caption;
 
+import javax.persistence.JoinTable;
+
 @Entity
-public class Plan extends BeanMao {
+public class BillPlan extends BeanMao {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private int id;
 	private int num;
-	
+
 	private int sequenceNum;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "bill", referencedColumnName = "id")
 	private Bill bill;
 	private Date produceDate;
-	
-	@OneToMany(mappedBy = "plan")
-	private ArrayList<OperationPlan> operationPlans;
+
+	@OneToMany(mappedBy = "billPlan")
+	private Collection<OperationPlan> operationPlans;
+	@javax.persistence.Transient
+	private ArrayList<OperationPlan> operationPlans2;
 	private int completed;
 	@javax.persistence.Transient
 	private List<OperationWork> operationWorks;
 
-	public Plan(Bill bill) {
+	public BillPlan(Bill bill) {
 		this.bill=bill;
 	}
 
-	public Plan() {
+	public BillPlan() {
 	}
 
 
 
 	public Bill getBill() {
-		
+
 		return bill;
-		
+
 	}
-	
-	
-	
+
+
+
 	public int getId() {
 		return id;
 	}
@@ -69,14 +75,21 @@ public class Plan extends BeanMao {
 
 	public HashMap<OperationPlan, Date> getPlanLastDate() {
 		HashMap<OperationPlan, Date> lastDateMap = null;
-		
-		
+
+
 		return lastDateMap;
 	}
-	
 
-	public ArrayList<OperationPlan> getOperationPlans() {
-		return operationPlans;
+
+	public List<OperationPlan> getOperationPlans() {
+		if(operationPlans!=null&&operationPlans2==null){
+			TreeSet<OperationPlan> operationPlanSet = new TreeSet<OperationPlan>(new WpCompare());
+			operationPlanSet.addAll(operationPlans);
+			operationPlans2=new ArrayList<>(operationPlanSet );
+		}
+		if(operationPlans2==null) 
+			operationPlans2=new ArrayList<OperationPlan>();
+		return  operationPlans2;
 	}
 
 	public int getCompleted() {
@@ -94,7 +107,7 @@ public class Plan extends BeanMao {
 		if(num==0)return getBill().getNum();
 		return num;
 	}
-	
+
 	@Transient
 	public int  getPlanTime() {
 		int time = 0;
@@ -103,29 +116,19 @@ public class Plan extends BeanMao {
 		}
 		return time;
 	}
-	@Caption(order = 3, value= "图号")
+	@Caption(order = 1, value= "图号")
 	public String getPic() {
 		return bill.getPicid();
 	}
-	@Caption(order = 2, value= "创建时间")
+	@Caption(order = 3, value= "创建时间")
 	public Date getProduceDate() {
 		if(produceDate==null)produceDate=new Date();
 		return produceDate;
 	}
-	@Caption(order=1,value="序号")
+	@Caption(order=2,value="序号")
 	public int getSequenceNum() {
 		if(sequenceNum==0) {
-			try(Statement st=SessionData.getConnection().createStatement();
-					ResultSet rs=st.executeQuery("select max(sequenceNum) from \"plan\" where bill="+bill.getId());
-
-					){
-				if(rs.next()) {
-					sequenceNum = rs.getInt(1)+1;
-				}else sequenceNum=1;
-			} catch (SQLException e) {
-				// TODO 自动生成的 catch 块
-				e.printStackTrace();
-			}
+			sequenceNum=getBill().getPlans().size();
 		}
 		return sequenceNum;
 	}
@@ -137,9 +140,9 @@ public class Plan extends BeanMao {
 		}
 		return time;
 	}
-	
 
-	
+
+
 	public boolean isBig() {
 		// TODO 自动生成的方法存根
 		return getPlanCost()>bill.getPlanCost();
@@ -158,7 +161,7 @@ public class Plan extends BeanMao {
 	public void setNum(int num) {
 		this.num = num;
 	}
-	public void setOperationPlans(ArrayList<OperationPlan> operationPlans) {
+	public void setOperationPlans(Collection<OperationPlan> operationPlans) {
 		this.operationPlans = operationPlans;
 	}
 
@@ -174,9 +177,9 @@ public class Plan extends BeanMao {
 	@Transient
 	public List<OperationWork> getOperationWorks() {
 		if(operationWorks==null)
-			
-		operationWorks=OperationWork.loadAll(OperationWork.class, " a.operationPlan.plan= "+getId());
-			
+
+			operationWorks=OperationWork.loadAll(OperationWork.class, " a.operationPlan.plan.id= "+getId());
+
 		return operationWorks;
 	}
 
@@ -192,7 +195,7 @@ public class Plan extends BeanMao {
 				return 0;
 			}
 		}
-		
+
 	}
 
 }

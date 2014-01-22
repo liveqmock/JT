@@ -20,8 +20,6 @@ import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import ui.costPanes.EmployeeCostPnl;
 import ui.costPanes.EmployeePnl;
@@ -284,12 +282,12 @@ public class MenuAction extends AbstractAction {
 	}
 
 	private void manageUser() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
-		BeansPanel<Userman> beansPanel=new BeansPanel<Userman>(Userman.loadAll(Userman.class),new UsermanPnl(new Userman()),Userman.class) {
+		BeansPanel<Userman> beansPanel=new BeansPanel<Userman>(BeanMao.loadAll(Userman.class),new UsermanPnl(new Userman()),Userman.class) {
 
 			@Override
 			public Userman saveBean() {
 
-				getPanelBean().save();
+				BeanMao.saveBean(getPanelBean());
 				return getPanelBean();
 
 			}

@@ -89,8 +89,8 @@ public class OperationWork extends BeanMao {
 	public OperationPlan getOperationPlan() {
 		return operationPlan;
 	}
-	public Plan getPlan() {
-		return getOperationPlan().getPlan();
+	public BillPlan getPlan() {
+		return getOperationPlan().getBillPlan();
 	}
 	@Caption(order = 7, value= "计划费用")
 	public float getPlanCost() {

@@ -53,13 +53,13 @@ private JTextField backNote;
 		JLabel label_2 = new JLabel("\u5BA2\u6237\uFF1A");
 		add(label_2, "2, 2");
 		
-		cstLabel = new JLabel(bean.getBillItem().getCustom());
+		cstLabel = new JLabel(editBean.getBillItem().getCustom());
 		add(cstLabel, "4, 2, left, default");
 
 		JLabel label_3 = new JLabel("\u8BA2\u5355\u53F7\uFF1A");
 		add(label_3, "2, 4");
 		
-		billNoLabel = new JLabel(bean.getBillItem().getBillNo());
+		billNoLabel = new JLabel(editBean.getBillItem().getBillNo());
 		add(billNoLabel, "4, 4");
 
 		JLabel label_6 = new JLabel("返修原因");
@@ -96,29 +96,29 @@ private JTextField backNote;
 		backNote.setName("返修原因");
 		getValidationGroup().add(backNumFld,Validators.REQUIRE_VALID_INTEGER);
 		getValidationGroup().add(backNumFld,Validators.numberMin(0));
-		getValidationGroup().add(backNumFld,Validators.numberMaxE(bean.getBillItem().getNum()));
+		getValidationGroup().add(backNumFld,Validators.numberMaxE(editBean.getBillItem().getNum()));
 		getValidationGroup().add(backDatePicker.getEditor(),Validators.REQUIRE_NON_EMPTY_STRING);
 	}
 	protected  void dataBinding() {
 		BeanProperty<BackRepair, Long> backRepairBeanProperty = BeanProperty.create("backNum");
 		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, backRepairBeanProperty, backNumFld, jTextFieldBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean, backRepairBeanProperty, backNumFld, jTextFieldBeanProperty));
 		
 		BeanProperty<BackRepair, String> noteProperty = BeanProperty.create("note");
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, noteProperty, backNote, jTextFieldBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean, noteProperty, backNote, jTextFieldBeanProperty));
 
 		BeanProperty<BackRepair, Date> backRepairBeanProperty_1 = BeanProperty.create("backDate");
 		BeanProperty<JXDatePicker, Date> jXDatePickerBeanProperty = BeanProperty.create("date");
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, backRepairBeanProperty_1, backDatePicker, jXDatePickerBeanProperty));
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean, backRepairBeanProperty_1, backDatePicker, jXDatePickerBeanProperty));
 		
 		BeanProperty<BackRepair, Date> backRepairBeanProperty_11 = BeanProperty.create("getDate");
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, backRepairBeanProperty_11, getDatePicker, jXDatePickerBeanProperty));
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean, backRepairBeanProperty_11, getDatePicker, jXDatePickerBeanProperty));
 		
 		BeanProperty<BackRepair, String> backRepairBeanProperty_2 = BeanProperty.create("billItem.billNo");
 		BeanProperty<JLabel, String> jLabelBeanProperty = BeanProperty.create("text");
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, bean, backRepairBeanProperty_2, billNoLabel, jLabelBeanProperty));
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, editBean, backRepairBeanProperty_2, billNoLabel, jLabelBeanProperty));
 		//
 		BeanProperty<BackRepair, String> backRepairBeanProperty_3 = BeanProperty.create("billItem.custom");
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, bean, backRepairBeanProperty_3, cstLabel, jLabelBeanProperty));
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, editBean, backRepairBeanProperty_3, cstLabel, jLabelBeanProperty));
 	}
 }

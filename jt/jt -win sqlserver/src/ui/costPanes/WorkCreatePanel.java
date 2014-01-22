@@ -26,7 +26,7 @@ import ui.customComponet.BeanTablePane;
 import validation.ui.ValidationPanel;
 
 import com.mao.jf.beans.OperationWork;
-import com.mao.jf.beans.Plan;
+import com.mao.jf.beans.BillPlan;
 
 public class WorkCreatePanel extends JPanel {
 	private WorkTable table;
@@ -71,9 +71,9 @@ public class WorkCreatePanel extends JPanel {
 
 		JScrollPane plan = new JScrollPane();
 		panel.add(plan, BorderLayout.CENTER);
-//		Vector<Plan> plans = Plan.loadUnCompleted(" join operationplan c on a.id=c.plan");
+//		Vector<BillPlan> plans = BillPlan.loadUnCompleted(" join operationplan c on a.id=c.plan");
 //		System.err.println(plans.size());
-		table=new WorkTable(new Vector<Plan>());
+		table=new WorkTable(new Vector<BillPlan>());
 		plan.setViewportView(table);
 
 		JPanel panel_2 = new JPanel();
@@ -94,7 +94,7 @@ public class WorkCreatePanel extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-//				table.changeData(Plan.loadUnCompletedBySearch(" and picid like '%"+textField.getText()+"%'"));
+//				table.changeData(BillPlan.loadUnCompletedBySearch(" and picid like '%"+textField.getText()+"%'"));
 				
 			}
 		});

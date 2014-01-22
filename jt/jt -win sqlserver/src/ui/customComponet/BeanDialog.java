@@ -108,6 +108,7 @@ public abstract class BeanDialog<T> extends JDialog {
 						if (!BeanDialog.this.contentPanel.isValide()) {
 							return;
 						}
+						
 						if (okButtonAction())
 							BeanDialog.this.dispose();
 
@@ -121,9 +122,10 @@ public abstract class BeanDialog<T> extends JDialog {
 				JButton cancelButton = new JButton("È¡Ïû");
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						BeanDialog.this.bean = null;
-						BeanDialog.this.dispose();
+						cancel();
 					}
+
+					
 				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
@@ -193,7 +195,11 @@ public abstract class BeanDialog<T> extends JDialog {
 	}
 
 	public abstract boolean okButtonAction();
-
+	public void cancel() {
+		BeanDialog.this.bean = null;
+		BeanDialog.this.dispose();
+		
+	}
 	public T getBean() {
 		return bean;
 	}

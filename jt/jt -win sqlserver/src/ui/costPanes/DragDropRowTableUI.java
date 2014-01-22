@@ -9,9 +9,9 @@ import javax.swing.JComponent;
 import javax.swing.event.MouseInputListener;
 import javax.swing.plaf.basic.BasicTableUI;
 
-import com.mao.jf.beans.OperationPlan;
-
 import ui.customComponet.BeanTableModel;
+
+import com.mao.jf.beans.OperationPlan;
 
 public class DragDropRowTableUI<T> extends BasicTableUI {
 	private boolean draggingRow = false;

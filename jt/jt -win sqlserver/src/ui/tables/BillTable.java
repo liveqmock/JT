@@ -2,8 +2,8 @@ package ui.tables;
 
 import java.awt.Component;
 import java.io.File;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.ListSelectionModel;

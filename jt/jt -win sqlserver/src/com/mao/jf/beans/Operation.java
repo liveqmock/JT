@@ -1,12 +1,18 @@
 package com.mao.jf.beans;
 
-import java.beans.IntrospectionException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Vector;
+import static javax.persistence.GenerationType.IDENTITY;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 import com.mao.jf.beans.annotation.Caption;
 
+@Entity
 public class Operation extends BeanMao {
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	private int id;
 	private String name;  
 	private int  num ; 
 	private float cost   ;
@@ -20,6 +26,14 @@ public class Operation extends BeanMao {
 		return name;
 	}
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	@Caption(order = 3, value= "设备数量")
 	public int getNum() {
 		return num;
@@ -52,11 +66,7 @@ public class Operation extends BeanMao {
 		this.num = num;
 	}
 
-	public static Vector<Operation> loadOutAll() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
-		// TODO 自动生成的方法存根
-		return loadAll(Operation.class, "select * from Operation where out=1 ");
-	}
-
+	
 	
 	
 	

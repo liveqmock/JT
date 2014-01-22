@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.SimpleDateFormat;
+import java.util.Vector;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -27,7 +28,8 @@ import javax.swing.border.LineBorder;
 import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXDatePicker;
 
-import com.mao.jf.beans.CustomBill;
+import com.mao.jf.beans.BeanMao;
+import com.mao.jf.beans.Custom;
 
 public abstract class BillShowPnl extends JPanel{
 
@@ -50,7 +52,7 @@ public abstract class BillShowPnl extends JPanel{
 
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout(0, 0));
-		cstlist = new JXComboBox(CustomBill.LoadNames());
+		cstlist = new JXComboBox(new Vector<Custom>(BeanMao.loadAll(Custom.class," a.out=0")));
 
 		
 

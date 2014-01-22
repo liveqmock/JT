@@ -1,8 +1,8 @@
 package com.mao.jf.beans;
 
-import java.beans.IntrospectionException;
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.beans.Transient;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -10,24 +10,37 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.TreeSet;
-import java.util.Vector;
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import com.mao.jf.beans.annotation.Caption;
 
+@Entity
 public class Plan extends BeanMao {
 
-
-	
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	private int id;
 	private int num;
 	
 	private int sequenceNum;
+	
+	@ManyToOne
+	@JoinColumn(name = "bill", referencedColumnName = "id")
 	private Bill bill;
 	private Date produceDate;
+	
+	@OneToMany(mappedBy = "plan")
 	private ArrayList<OperationPlan> operationPlans;
-	private boolean completed;
-	private Vector<OperationWork> operationWorks;
-	private WpCompare wpCompare=new WpCompare();
+	private int completed;
+	@javax.persistence.Transient
+	private List<OperationWork> operationWorks;
 
 	public Plan(Bill bill) {
 		this.bill=bill;
@@ -46,6 +59,14 @@ public class Plan extends BeanMao {
 	
 	
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public HashMap<OperationPlan, Date> getPlanLastDate() {
 		HashMap<OperationPlan, Date> lastDateMap = null;
 		
@@ -53,8 +74,12 @@ public class Plan extends BeanMao {
 		return lastDateMap;
 	}
 	
-	
-	public boolean getCompleted() {
+
+	public ArrayList<OperationPlan> getOperationPlans() {
+		return operationPlans;
+	}
+
+	public int getCompleted() {
 		return completed;
 	}
 	@Transient
@@ -69,23 +94,7 @@ public class Plan extends BeanMao {
 		if(num==0)return getBill().getNum();
 		return num;
 	}
-	@Transient
-	public ArrayList<OperationPlan> getOperationPlans() {
-		if(operationPlans==null){
-			operationPlans=new ArrayList<OperationPlan>();
-			try {
-				operationPlans.addAll( OperationPlan.loadAll(OperationPlan.class,"select * from OperationPlan where \"plan\"="+getId()));
-					
-			} catch (InstantiationException | IllegalAccessException
-					| IllegalArgumentException | InvocationTargetException
-					| NoSuchMethodException | SecurityException
-					| IntrospectionException e) {
-				// TODO 自动生成的 catch 块
-//				e.printStackTrace();
-			}
-		}
-		return operationPlans;
-	}
+	
 	@Transient
 	public int  getPlanTime() {
 		int time = 0;
@@ -136,35 +145,13 @@ public class Plan extends BeanMao {
 		return getPlanCost()>bill.getPlanCost();
 	}
 
-	@Override
-	public void 	save() {
-		try {
-			if(operationPlans!=null) {
-				if(getUserTime()>0||getId()>0)
-					super.save();
-				for(OperationPlan operationPlan:operationPlans){
-					if(operationPlan.getUnitUseTime()> 0) {
-						operationPlan.save();
-					}else if(operationPlan.getId()>0 ) {
-						operationPlan.remove();
-					}
-				}
-			}
-			
-		} catch (IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException | NoSuchMethodException
-				| SecurityException | IntrospectionException | SQLException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
-	}
 
 	public void setBill(Bill bill) {
 		this.bill = bill;
 	}
 
 	public void setCompleted(boolean completed) {
-		this.completed = completed;
+		this.completed = completed?1:0;
 	}
 
 
@@ -185,17 +172,11 @@ public class Plan extends BeanMao {
 
 
 	@Transient
-	public Vector<OperationWork> getOperationWorks() {
+	public List<OperationWork> getOperationWorks() {
 		if(operationWorks==null)
-			try {
-				operationWorks=OperationWork.loadAll(OperationWork.class, "select a.* from OperationWork a join Operationplan b on a.Operationplan =b.id join \"plan\" c on c.id=b.\"plan\" and c.id= "+getId());
-			} catch (InstantiationException | IllegalAccessException
-					| IllegalArgumentException | InvocationTargetException
-					| NoSuchMethodException | SecurityException
-					| IntrospectionException e) {
-				// TODO 自动生成的 catch 块
-				e.printStackTrace();
-			}
+			
+		operationWorks=OperationWork.loadAll(OperationWork.class, " a.operationPlan.plan= "+getId());
+			
 		return operationWorks;
 	}
 

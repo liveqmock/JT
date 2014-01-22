@@ -1,13 +1,25 @@
 package com.mao.jf.beans;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.beans.Transient;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import com.mao.jf.beans.annotation.Caption;
 
+@Entity
 public class Material  extends BeanMao{
-
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
 	private int id;
 	
+	@ManyToOne
+	@JoinColumn(name = "bill", referencedColumnName = "id")
 	private Bill bill; 
 	@Caption("²ÄÁÏ£¨¹¤Ðò£©Ãû³Æ")
 	private String name ;

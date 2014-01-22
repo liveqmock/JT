@@ -1,14 +1,29 @@
 package com.mao.jf.beans;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.beans.Transient;
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
 import com.mao.jf.beans.annotation.Caption;
 
+@Entity
 public class OperationWork extends BeanMao {
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	private int id;
 	
-	
-	private OperationPlan operationPlan;
+	@OneToOne
+	@JoinColumn(name = "operationPlan", referencedColumnName = "id")
+	private OperationPlan operationPlan;	
+	@OneToOne
+	@JoinColumn(name = "employee", referencedColumnName = "id")
 	private Employee employee;
 	private Date finishDate;
 	private int getNum;
@@ -16,8 +31,12 @@ public class OperationWork extends BeanMao {
 	private int scrapNum;
 	private String scrapReason;
 	private float workTime;
-	private float workCost;
+	private float workCost;	
+	@OneToOne
+	@JoinColumn(name = "checker", referencedColumnName = "id")
 	private Employee checker;
+	@OneToOne
+	@JoinColumn(name = "prepareEmployee", referencedColumnName = "id")
 	private Employee prepareEmployee;
 	private float prepareTime;
 	private float prepareCost;
@@ -49,6 +68,13 @@ public class OperationWork extends BeanMao {
 	@Caption(value="完工日期",order=18)
 	public Date getFinishDate() {
 		return finishDate;
+	}
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 

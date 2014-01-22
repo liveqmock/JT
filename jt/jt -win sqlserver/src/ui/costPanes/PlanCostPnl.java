@@ -1,7 +1,6 @@
 package ui.costPanes;
 
-import java.beans.IntrospectionException;
-import java.lang.reflect.InvocationTargetException;
+import java.util.Vector;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -102,15 +101,8 @@ public class PlanCostPnl extends BeanPanel<Plan> {
 		
 		JLabel label_3 = new JLabel("\u751F\u4EA7\u5DE5\u5E8F\uFF1A");
 		add(label_3, "2, 6, right, default");
-		try {
-			operation = new JComboBox(Operation.loadAll(Operation.class));
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException
-				| IntrospectionException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
+		operation = new JComboBox<Operation>(new Vector<Operation>(Operation.loadAll(Operation.class)));
+		
 		add(operation, "4, 6, 5, 1, fill, default");
 		
 		JLabel label_14 = new JLabel("计量单位：");

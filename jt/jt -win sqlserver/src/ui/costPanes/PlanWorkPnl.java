@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.IntrospectionException;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 
 import javax.swing.BoxLayout;
@@ -61,19 +59,9 @@ public class PlanWorkPnl extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				SearchDlg searchDlg=	new SearchDlg();
 				searchDlg.setVisible(true);
-				String sql="select a.* from bill a join \"plan\" b on a.id=b.bill where "+searchDlg.getSqlString();
-//				System.err.println(sql);
-				try {
-					billTable.setBeans(Bill.loadAll(Bill.class, sql));
-				} catch (InstantiationException | IllegalAccessException
-						| IllegalArgumentException | InvocationTargetException
-						| NoSuchMethodException | SecurityException
-						| IntrospectionException e1) {
-					// TODO 自动生成的 catch 块
-					e1.printStackTrace();
-				}
-
-
+				String sql=" a.plans<>null and "+searchDlg.getSqlString();
+				billTable.setBeans(Bill.loadAll(Bill.class, sql));
+				
 			}
 		});	
 

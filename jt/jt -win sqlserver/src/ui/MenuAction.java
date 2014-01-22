@@ -10,9 +10,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
-import javax.naming.NamingException;
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetProvider;
 import javax.swing.AbstractAction;
@@ -22,7 +23,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import ui.costPanes.BillTimeTable;
 import ui.costPanes.EmployeeCostPnl;
 import ui.costPanes.EmployeePnl;
 import ui.costPanes.OperationPnl;
@@ -44,13 +44,12 @@ import ui.panels.MaterialsPanel;
 import ui.panels.UsermanPnl;
 import ui.tables.BillTable;
 
-import com.mao.jf.beans.Custom;
 import com.mao.jf.beans.BackRepair;
+import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Bill;
-import com.mao.jf.beans.CustomBill;
+import com.mao.jf.beans.Custom;
 import com.mao.jf.beans.Employee;
 import com.mao.jf.beans.Operation;
-import com.mao.jf.beans.CustomOut;
 import com.mao.jf.beans.SessionData;
 import com.mao.jf.beans.Userman;
 
@@ -133,14 +132,14 @@ public class MenuAction extends AbstractAction {
 				break;
 
 			case "订单客户管理":
-				Vector<Custom> customs =new CustomBill().LoadAll();
-				if(customs.size()==0) customs.add(new CustomBill());
-				adminCustom(customs);
+				List<Custom> customs =BeanMao.loadAll(Custom.class, " a.out=0");
+				if(customs==null) customs=new ArrayList<Custom>();
+				adminCustom(customs,0);
 				break;
 			case "外协客户管理":
-				Vector<Custom> outCustoms =new CustomOut().LoadAll();
-				if(outCustoms.size()==0) outCustoms.add(new CustomOut());
-				adminCustom(outCustoms);
+				customs =BeanMao.loadAll(Custom.class, " a.out=1");
+				if(customs==null) customs=new ArrayList<Custom>();
+				adminCustom(customs,1);
 				break;
 			case "生产计划与实际成本对照":
 				showWorkCostPanel();
@@ -248,28 +247,6 @@ public class MenuAction extends AbstractAction {
 	}
 
 	private void showBillTime() {
-		try {
-			JDialog dialog=new JDialog();
-
-			BillTimeTable table;
-			table = new BillTimeTable();
-			JPanel panel=new JPanel();
-			panel.setLayout(new BorderLayout());
-			panel.add(new JScrollPane(table),BorderLayout.CENTER);
-			dialog.setContentPane(panel);
-			dialog.setTitle("排产时间查看");
-
-			dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
-			dialog.setLocationRelativeTo(null);
-			dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-			dialog.setVisible(true);
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException
-				| IntrospectionException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
 
 	}
 
@@ -311,17 +288,10 @@ public class MenuAction extends AbstractAction {
 
 			@Override
 			public Userman saveBean() {
-				try {
-					getPanelBean().save();
-					return getPanelBean();
-				} catch (IllegalAccessException | IllegalArgumentException
-						| InvocationTargetException | NoSuchMethodException
-						| SecurityException | IntrospectionException
-						| SQLException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-				return null;
+
+				getPanelBean().save();
+				return getPanelBean();
+
 			}
 
 		};
@@ -444,17 +414,9 @@ public class MenuAction extends AbstractAction {
 
 			@Override
 			public Employee saveBean() {
-				try {
-					getPanelBean().save();
-					return getPanelBean();
-				} catch (IllegalAccessException
-						| IllegalArgumentException
-						| InvocationTargetException
-						| NoSuchMethodException | SecurityException
-						| IntrospectionException | SQLException e) {
-					e.printStackTrace();
-				}
-				return null;
+				getPanelBean().save();
+				return getPanelBean();
+
 			}
 		};
 		BeanDialog<Employee> dialog=new BeanDialog<Employee>(panel,"操作人员管理") {
@@ -480,18 +442,9 @@ public class MenuAction extends AbstractAction {
 
 			@Override
 			public Operation saveBean() {
-				try {
-					getPanelBean().save();
-					return getPanelBean();
-				} catch (IllegalAccessException
-						| IllegalArgumentException
-						| InvocationTargetException
-						| NoSuchMethodException | SecurityException
-						| IntrospectionException | SQLException e) {
-					// TODO 自动生产的 catch 块
-					e.printStackTrace();
-				}
-				return null;
+				getPanelBean().save();
+				return getPanelBean();
+
 			}
 		};
 		BeanDialog<Operation> dialog=new BeanDialog<Operation>(panel,"操作工序管理") {
@@ -537,13 +490,13 @@ public class MenuAction extends AbstractAction {
 	}
 	private void editBackRepair() {
 		final Bill billItem=table.getSelectBean();
-		Vector<BackRepair> backRepairs=null;
+		List<BackRepair> backRepairs=null;
 		BackRepair backRepair1=new BackRepair();
 		backRepair1.setBillItem(billItem);
 		if(billItem.getBackRepairNum()==0){
 			backRepairs=new Vector<>();
 		}else{
-			backRepairs=BackRepair.Load(billItem);
+			backRepairs=BeanMao.loadAll(BackRepair.class," a.bill.id="+ billItem);
 
 		}
 		BeansPanel<BackRepair> beansPanel=new BeansPanel<BackRepair>(backRepairs,new BackRepairPanel(backRepair1),BackRepair.class,true) {
@@ -551,17 +504,14 @@ public class MenuAction extends AbstractAction {
 			@Override
 			public BackRepair saveBean() {
 				BackRepair backRepair;
-				try {
-					backRepair=getPanelBean();
-					backRepair.save();
-					billItem.setBackRepairNum(billItem.getBackRepairNum()+1);
-					BackRepair newBackRepair =new BackRepair();
-					newBackRepair.setBillItem(billItem);
-					getBeanPanel().setBean(newBackRepair);
-				} catch (SQLException e) {
-					e.printStackTrace();
-					return null;
-				}
+
+				backRepair=getPanelBean();
+				backRepair.save();
+				billItem.setBackRepairNum(billItem.getBackRepairNum()+1);
+				BackRepair newBackRepair =new BackRepair();
+				newBackRepair.setBillItem(billItem);
+				getBeanPanel().setBean(newBackRepair);
+
 				return backRepair;
 			}
 		};
@@ -579,27 +529,19 @@ public class MenuAction extends AbstractAction {
 
 	}
 
-	public static void adminCustom(Vector<Custom>customs) {
-		BeansPanel<Custom> beansPanel2=new BeansPanel<Custom>(customs.firstElement().LoadAll(),new CustomPanel(customs.firstElement()),Custom.class,true) {
+	public static void adminCustom(List<Custom>customs,final int out) {
+		BeansPanel<Custom> beansPanel2=new BeansPanel<Custom>(customs,new CustomPanel(null),Custom.class,true) {
 
 			@Override
 			public Custom saveBean() {
-				try {
-					Custom custom = getPanelBean();
 
-					custom.save();
-					if(custom instanceof CustomBill){
-						setPanelBean(new CustomBill());
-					}else if(custom instanceof CustomOut){
-						setPanelBean(new CustomOut());
-					}
-					return custom;
-				} catch (ClassNotFoundException | SQLException
-						| NamingException e) {
-					e.printStackTrace();
-					return null;
-				}
+				Custom custom = getPanelBean();
+				custom.setOut(out);
+				custom.save();
+				return custom;
+
 			}
+
 		};
 
 		BeanDialog<Custom> dialog=new BeanDialog<Custom>(beansPanel2,"订单客户管理") {

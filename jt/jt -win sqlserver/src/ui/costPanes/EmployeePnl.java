@@ -1,7 +1,6 @@
 package ui.costPanes;
 
-import java.beans.IntrospectionException;
-import java.lang.reflect.InvocationTargetException;
+import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -57,15 +56,8 @@ public class EmployeePnl extends BeanPanel<Employee> {
 		JLabel label = new JLabel("\u5C97\u4F4D\uFF1A");
 		add(label, "2, 4, right, default");
 		
-		try {
-			comboBox = new JComboBox<Operation>(Operation.loadAll(Operation.class));
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException
-				| IntrospectionException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
+		comboBox = new JComboBox<Operation>(new Vector<Operation>(Operation.loadAll(Operation.class)));
+		
 		add(comboBox, "4, 4, fill, default");
 		if(bean.getOperation()==null) bean.setOperation((Operation) comboBox.getSelectedItem());
 		JLabel label_1 = new JLabel("\u5DE5\u8D44\uFF1A");

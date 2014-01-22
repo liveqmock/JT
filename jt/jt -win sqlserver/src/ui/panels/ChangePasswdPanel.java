@@ -1,9 +1,5 @@
 package ui.panels;
 
-import java.beans.IntrospectionException;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
@@ -64,14 +60,8 @@ public class ChangePasswdPanel extends BeanPanel<Userman> {
 	public boolean isOk() {
 		if(bean.getPassword().equals(passwordField.getText())&&passwordField1.getText().equals(passwordField2.getText())){
 			bean.setPassword(passwordField1.getText());
-				try {
-					bean.save();
-				} catch (IllegalAccessException | IllegalArgumentException
-						| InvocationTargetException | NoSuchMethodException
-						| SecurityException | IntrospectionException | SQLException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
+			bean.save();
+				
 			return true;
 		}else if(!bean.getPassword().equals(passwordField.getText())){
 			JOptionPane.showMessageDialog(this, "原密码不正确！");

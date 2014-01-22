@@ -1,7 +1,7 @@
 package ui.costPanes;
 
 import java.util.ArrayList;
-import java.util.TreeSet;
+import java.util.Vector;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -75,10 +75,10 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		useTime=new JTextField();     
 		note=new JTextField();        
 		operationPlan= new JComboBox<OperationPlan>();;
-		employee= new JComboBox<Employee>(Employee.loadOperaters());
+		employee= new JComboBox<Employee>(new Vector<Employee>(Employee.loadOperaters()));
 		checker= new JComboBox<Employee>();
 		finishDate=new JXDatePicker();
-		prepareEmployee=new JComboBox<Employee>(Employee.loadOperaters());
+		prepareEmployee=new JComboBox<Employee>(new Vector<Employee>(Employee.loadOperaters()));
 
 		
 		add( new JLabel("¹¤Ðò:"), "2, 2, right, default");		

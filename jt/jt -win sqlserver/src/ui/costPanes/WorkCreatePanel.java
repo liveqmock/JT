@@ -5,9 +5,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
@@ -116,18 +114,10 @@ public class WorkCreatePanel extends JPanel {
 				if (!workPnl.isValide()) {
 					return;
 				}
-				try {
-					workPnl.getBean().save();
-					workTablePane.addNew(workPnl.getBean());
-					workPnl.setBean(new OperationWork());
-				} catch (IllegalAccessException | IllegalArgumentException
-						| InvocationTargetException | NoSuchMethodException
-						| SecurityException | IntrospectionException
-						| SQLException e1) {
-					// TODO 自动生成的 catch 块
-					e1.printStackTrace();
-				}
-
+				workPnl.getBean().save();
+				workTablePane.addNew(workPnl.getBean());
+				workPnl.setBean(new OperationWork());
+				
 
 			}
 		});

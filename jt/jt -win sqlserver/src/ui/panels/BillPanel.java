@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
@@ -54,10 +55,9 @@ import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
+import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Custom;
 import com.mao.jf.beans.Bill;
-import com.mao.jf.beans.CustomBill;
-import com.mao.jf.beans.CustomOut;
 import com.mao.jf.beans.SerialiObject;
 import com.mao.jf.beans.SessionData;
 import com.mao.jf.beans.Userman;
@@ -75,9 +75,9 @@ public class BillPanel extends JSplitPane {
 	private JTextField picNoFld;
 	private JTextField numFld;
 	private JTextField imgFld;
-	private JComboBox<String> customCombox;
-	private JComboBox<String> contactManCombox;
-	private JComboBox<String> outCustomCombox;
+	private JComboBox<Object> customCombox;
+	private JComboBox<Object> contactManCombox;
+	private JComboBox<Object> outCustomCombox;
 	private MyImageView imageView;
 	private ValidationPanel vPanel;
 	private JXDatePicker billcreateDate;
@@ -409,15 +409,15 @@ public class BillPanel extends JSplitPane {
 		JPanel panel_1 = new JPanel();
 		panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.X_AXIS));
 
-		customCombox = new JComboBox<>(CustomBill.LoadNames());
+		customCombox = new JComboBox<>(Custom.loadNames(0).toArray());
 		customCombox.setName("\u8BA2\u5355\u5BA2\u6237");
 		panel_1.add(customCombox);
 		customCombox.addItemListener(new ItemListener() {
 
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				contactManCombox.setModel(new DefaultComboBoxModel<>(CustomBill
-						.LoadContacts((String) e.getItem())));
+				contactManCombox.setModel(new DefaultComboBoxModel<>(Custom
+						.loadContacts((String) e.getItem(),0).toArray()));
 
 			}
 		});
@@ -430,17 +430,16 @@ public class BillPanel extends JSplitPane {
 			public void actionPerformed(ActionEvent e) {
 
 
-				Vector<Custom> customs =new CustomBill().LoadAll();
-				if(customs.size()==0) customs.add(new CustomBill());
-				MenuAction.adminCustom(customs);
+				List<Custom> customs =BeanMao.loadAll(Custom.class," a.out=0");
+				if(customs.size()==0) customs.add(new Custom(0));
+				MenuAction.adminCustom(customs,0);
 
 			}
 		});
 		JLabel lblNewLabel_1 = new JLabel(
 				"\u7ECF\u529E\u4EBA(\u8BA2\u5355\u65B9)\uFF1A");
 
-		contactManCombox = new JComboBox<>(
-				CustomBill.LoadContacts((String) customCombox.getSelectedItem()));
+		contactManCombox = new JComboBox<>();
 		contactManCombox.setName("\u7ECF\u529E\u4EBA");
 
 
@@ -509,7 +508,7 @@ public class BillPanel extends JSplitPane {
 		JLabel label_3 = new JLabel("\u5916\u534F\u5BA2\u6237\uFF1A");
 		panel_3.setLayout(new BoxLayout(panel_3, BoxLayout.X_AXIS));
 
-		outCustomCombox = new JComboBox<>(CustomOut.LoadNames());
+		outCustomCombox = new JComboBox<>(Custom.loadNames(1).toArray());
 		panel_3.add(outCustomCombox);
 
 		addOutCustomBt = new JButton("\u65B0\u589E\u5BA2\u6237");
@@ -518,9 +517,9 @@ public class BillPanel extends JSplitPane {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				Vector<Custom> customs =new CustomOut().LoadAll();
-				if(customs.size()==0) customs.add(new CustomBill());
-				MenuAction.adminCustom(customs);
+				Vector<Custom> customs =(Vector<Custom>) BeanMao.loadAll(Custom.class," a.out=1");
+				if(customs.size()==0) customs.add(new Custom(1));
+				MenuAction.adminCustom(customs,1);
 
 			}
 		});
@@ -851,9 +850,9 @@ public class BillPanel extends JSplitPane {
 		//
 		BeanProperty<Bill, String> billItemBeanProperty_9 = BeanProperty
 				.create("custom");
-		BeanProperty<JComboBox<String>, String> jComboBoxBeanProperty = BeanProperty
+		BeanProperty<JComboBox<Object>, String> jComboBoxBeanProperty = BeanProperty
 				.create("selectedItem");
-		AutoBinding<Bill, String, JComboBox<String>, String> autoBinding_9 = Bindings
+		AutoBinding<Bill, String, JComboBox<Object>, String> autoBinding_9 = Bindings
 				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
 						billItemBeanProperty_9, customCombox,
 						jComboBoxBeanProperty);
@@ -861,7 +860,7 @@ public class BillPanel extends JSplitPane {
 		//
 		BeanProperty<Bill, String> billItemBeanProperty_10 = BeanProperty
 				.create("customMan");
-		AutoBinding<Bill, String, JComboBox<String>, String> autoBinding_10 = Bindings
+		AutoBinding<Bill, String, JComboBox<Object>, String> autoBinding_10 = Bindings
 				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
 						billItemBeanProperty_10, contactManCombox,
 						jComboBoxBeanProperty);
@@ -869,7 +868,7 @@ public class BillPanel extends JSplitPane {
 		//
 		BeanProperty<Bill, String> billItemBeanProperty_11 = BeanProperty
 				.create("outCustom");
-		AutoBinding<Bill, String, JComboBox<String>, String> autoBinding_11 = Bindings
+		AutoBinding<Bill, String, JComboBox<Object>, String> autoBinding_11 = Bindings
 				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
 						billItemBeanProperty_11, outCustomCombox,
 						jComboBoxBeanProperty);

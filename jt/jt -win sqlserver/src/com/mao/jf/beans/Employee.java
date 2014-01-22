@@ -1,19 +1,33 @@
 package com.mao.jf.beans;
 
-import java.beans.IntrospectionException;
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.beans.Transient;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Vector;
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 import com.mao.jf.beans.annotation.Caption;
 
+@Entity
 public class Employee extends BeanMao {
 	private static float convert=60*8*26;
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	private int id;
 	private String name;
 	private Operation operation ;
 	private float wage;
 	private String employeeType;
 	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	@Caption(order = 1, value= "姓名")
 	public String getName() {
 		return name;
@@ -56,31 +70,15 @@ public class Employee extends BeanMao {
 		// TODO 自动生成的方法存根
 		return name;
 	}
-	public static Vector<Employee> loadCheckers() {
-		// TODO 自动生成的方法存根
-		try {
-			return loadAll(Employee.class, "select * from employee where employeeType='检验员'");
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException
-				| IntrospectionException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
-		return null;
+	public static List<Employee> loadCheckers() {
+		
+			return loadAll(Employee.class, " a.employeeType='检验员'");
+		
 	}
-	public static Vector<Employee> loadOperaters() {
-		// TODO 自动生成的方法存根
-		try {
-			return loadAll(Employee.class, "select * from employee where employeeType='操作员'");
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException
-				| IntrospectionException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
-		return null;
+	public static List<Employee> loadOperaters() {
+		
+				return loadAll(Employee.class, "a.employeeType='操作员'");
+		
 	}
 	
 	

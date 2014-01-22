@@ -8,6 +8,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.Box;
@@ -34,8 +35,9 @@ import org.jdesktop.swingx.JXList;
 
 import ui.tables.BillTable;
 
+import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Bill;
-import com.mao.jf.beans.CustomBill;
+import com.mao.jf.beans.Custom;
 
 public class BillManagerPnl extends JPanel{
 
@@ -59,7 +61,7 @@ public class BillManagerPnl extends JPanel{
 
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout(0, 0));
-		cstlist = new JXList(CustomBill.LoadNames());
+		cstlist = new JXList(new Vector<Custom>(BeanMao.loadAll(Custom.class, " a.out=1")));
 		cstlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollPane = new JScrollPane(cstlist);
 
@@ -281,7 +283,7 @@ public class BillManagerPnl extends JPanel{
 							try {
 								dialog.setLocationRelativeTo(table);
 								dialog.setVisible(true);
-								Vector<Bill> bills = Bill
+								List<Bill> bills = Bill
 										.loadBySearch("custom='"
 												+ cstlist.getSelectedValue()
 												+ "'",false);

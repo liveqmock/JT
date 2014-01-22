@@ -1,13 +1,20 @@
 package com.mao.jf.beans;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.beans.Transient;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 import com.mao.jf.beans.annotation.Caption;
 
+@Entity
 public class Userman extends BeanMao {
 	public static Userman Load(String name) {
 		try (PreparedStatement pst = SessionData.getConnection()
@@ -33,6 +40,9 @@ public class Userman extends BeanMao {
 		}
 
 	}
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	private int id;
 	private String name;
 	private String password;
 	private int level;
@@ -65,6 +75,14 @@ public class Userman extends BeanMao {
 
 	public int getLevel() {
 		return level;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	@Transient

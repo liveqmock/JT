@@ -1,34 +1,34 @@
 package com.mao.jf.beans;
 
-import java.sql.SQLException;
-import java.util.Vector;
+import static javax.persistence.GenerationType.IDENTITY;
 
-import javax.naming.NamingException;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import com.mao.jf.beans.annotation.Caption;
-import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
-public  class Custom {
+public  class Custom extends BeanMao {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	protected int id;
+	private int id;
 	@Caption("姓名")
-	protected String name;
+	private String name;
 	@Caption("电话")
-	protected String tel;
+	private String tel;
 	@Caption("地址")
-	protected String address;
+	private String address;
 	@Caption("传真")
-	protected String fax;
+	private String fax;
 	@Caption("联系人")
-	protected String contact;
+	private String contact;
 	@Caption("Email")
-	protected String email;
-
+	private String email;
+	private int out;
 	public Custom() {
 		super();
 
@@ -38,6 +38,10 @@ public  class Custom {
 		this.fax = "";
 		this.contact = "";
 		this.email = "";
+	}
+
+	public Custom(int out) {
+		this.out=out;
 	}
 
 	public int getId() {
@@ -96,4 +100,26 @@ public  class Custom {
 		this.tel = tel;
 	}
 
+	public int getOut() {
+		return out;
+	}
+
+	public void setOut(int out) {
+		this.out = out;
+	}
+
+	public static Set<String> loadNames(int out) {
+		HashSet<String> names=new HashSet<>();
+		for(Custom custom:loadAll(Custom.class," a.out="+out)){
+			names.add(custom.name);
+		}
+		return names;
+	}
+	public static Set<String> loadContacts(String name, int out) {
+		HashSet<String> names=new HashSet<>();
+		for(Custom custom:loadAll(Custom.class," a.out="+out+" a.name='"+name+"'")){
+			names.add(custom.contact);
+		}
+		return names;
+	}
 }

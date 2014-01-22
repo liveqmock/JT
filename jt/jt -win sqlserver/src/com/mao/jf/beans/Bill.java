@@ -1,88 +1,22 @@
 package com.mao.jf.beans;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.awt.Color;
-import java.beans.IntrospectionException;
 import java.beans.Transient;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Date;
-import java.util.NoSuchElementException;
+import java.util.List;
 import java.util.Vector;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import com.mao.jf.beans.annotation.Caption;
-import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 @Entity
-public class Bill extends BeanMao {
-
-	public static Vector<Bill> loadByGrp(String billGrp) {
-
-		return loadBySearch(" billgroup='"+billGrp+"'",true);
-	}
-	public static Vector<Bill> loadBySearch(String searchString,boolean isShowCompelete) {
-
-		Vector<Bill> billItems=null;
-		if(!Userman.loginUser.isManager()&& !isShowCompelete) searchString+=" and itemCompleteDate is null ";
-		try {
-			billItems = loadAll(Bill.class,"select a.*, (select count(1) from backrepair where billid=a.id ) backrepairNum,(select sum(unitcost*operationNum) from opercost  where bill=a.id ) opercost, plancost from bill a where "
-					+ searchString
-					+ " order by itemCompleteDate ,requestdate");
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException
-				| IntrospectionException e1) {
-			// TODO 自动生成的 catch 块
-			e1.printStackTrace();
-		}
-
-		String sql="select sum(outprice*outnum)/(case when sum(outnum)>0 then sum(outnum) else 1 end) outprice,"
-				+ " sum(reportprice*num)/(case when sum(num)>0 then sum(num) else 1 end) reportprice,sum(outnum) outnum,"
-				+ " sum(num) num,sum(plancost) plancost,sum( opercost ) opercost"
-				+ " from (select outprice,outnum,reportprice,num, "
-				+ " (select sum(workcost) from operationwork  b join \"plan\"  c on b.\"plan\"=c.id and c.bill=a.id  ) opercost,"
-				+ " (select sum(cost*(unitusetime*b.num+preparetime)) from operationplan b join \"plan\"  c on b.\"plan\"=c.id and c.bill=a.id ) plancost"
-				+ " from bill a where "+searchString+ ") as a ";
-
-		try(Statement st=SessionData.getConnection().createStatement();
-
-				ResultSet rs=st.executeQuery(sql);){
-			if(rs.next()){
-				Bill billItem = new Bill();
-				billItem.setCustom("合计");
-				billItem.setReportPrice(rs.getFloat("reportprice"));
-				billItem.setOutPrice(rs.getFloat("outprice"));
-				billItem.setNum(rs.getInt("num"));
-				billItem.setOutNum(rs.getLong("outnum"));
-				billItem.setItemCompleteDate(new Date());
-				billItem.setOperCost(rs.getFloat("OperCost"));
-				billItem.setPlanCost(rs.getFloat("PlanCost"));
-				billItems.add(billItem);
-			}
-		} catch (SQLException e) {
-			// TODO 自动生成的 catch 块
-			System.err.println(sql);
-			e.printStackTrace();
-		}
-		return billItems;
-
-	}
-	public static Vector<Bill> loadBySearch(String searchField,
-			String searchString) {
-		return loadBySearch(searchField + " like '%" + searchString + "%'",true);
-
-	}
-	public static Vector<Bill> loadNotComplete() {
-		return loadBySearch("true",true);
-
-	}
-	
+public class Bill extends BeanMao {	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private int id;
@@ -108,13 +42,10 @@ public class Bill extends BeanMao {
 	private String billgroup;
 	private Date itemCompleteDate;
 	private Date billedDate;
-	private String meterial;
-
-	private boolean warehoused;
-
+	private String meterial;	
+	private int warehoused;
 	private int backRepairNum;
 	private String status;
-
 	private float operCost;
 	private float planCost;
 	private String gjh;
@@ -122,8 +53,11 @@ public class Bill extends BeanMao {
 	private String meterialType;
 	private String techCondition;
 	private String partName;
-	private Vector<Material> materials;
-
+	@OneToMany(mappedBy = "bill")
+	private List<Material> materials;
+	
+	@OneToMany(mappedBy = "bill")
+	private List<Plan> plans;
 	public Bill() {
 		custom = "";
 		billid = "";
@@ -135,7 +69,45 @@ public class Bill extends BeanMao {
 		customMan = "";
 		billNo = "";
 	}
+	
+	public static List<Bill> loadBySearch(String searchString,boolean isShowCompelete) {
 
+		List<Bill> billItems=null;
+		if(!Userman.loginUser.isManager()|| !isShowCompelete){
+			searchString=(searchString==null?"":searchString+" and ")+" a.itemCompleteDate is null  order by a.itemCompleteDate ,a.requestDate";
+		}else{
+
+			searchString=(searchString==null?"":searchString+" ")+" order by a.itemCompleteDate ,a.requestDate";
+		}
+		
+		
+		billItems=loadAll(Bill.class,searchString);
+		
+		return billItems;
+
+	}
+	public static List<Bill> loadByGrp(String billGrp) {
+
+		return loadBySearch(" a.billgroup='"+billGrp+"'",true);
+	}
+	public static List<Bill> loadNotComplete() {
+		return loadBySearch(null,true);
+
+	}
+	
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public List<Material> getMaterials() {
+		return materials;
+	}
+	public void setMaterials(Vector<Material> materials) {
+		this.materials = materials;
+	}
 	@Caption(order = 61, value= "返修记录")
 	public int getBackRepairNum() {
 		return backRepairNum;
@@ -203,6 +175,10 @@ public class Bill extends BeanMao {
 	public Date getOutBillDate() {
 		return outBillDate;
 	}
+	public void setMaterials(List<Material> materials) {
+		this.materials = materials;
+	}
+
 	@Transient
 	//@Caption(order=56,value="生产状态")
 	public String getStatus() {
@@ -341,7 +317,7 @@ public class Bill extends BeanMao {
 	@Transient
 	@Caption(order = 51, value= "入库状态")
 	public String getWarehousedStr() {
-		return warehoused ? "已入库" : "未入库";
+		return warehoused==1 ? "已入库" : "未入库";
 	}
 	@Transient
 	@Caption(order = 52, value= "开票状态")
@@ -394,102 +370,8 @@ public class Bill extends BeanMao {
 		return outGetDate != null;
 	}
 
-	// @Caption(order=12,value="客户请求总价")
-	// public float getRequestMoney() {
-	// return requestPrice*num;
-	// }
 
-
-	public boolean isWarehoused() {
-		return warehoused;
-	}
-
-
-	public void save() {
-		String sql = "";
-		if (id == 0) {
-			if (Userman.loginUser.isManager())
-				sql = "insert into bill (billdate,billid ,item,picid ,imageUrl ,note,custom ," +
-						"outCustom,customMan,billno,billeddate,outgetdate,itemCompleteDate,num," +
-						"requestDate,outNum,color,warehoused,outBillNo,billgroup,outBillDate,meterial," +
-						"meterialz,meterialType,techCondition,partName,gjh,reportPrice ,outPrice,plancost)" +
-						" values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-			else
-				sql = "insert into bill (billdate,billid ,item,picid ,imageUrl ,note,custom ,outCustom," +
-						"customMan,billno,billeddate,outgetdate,num,requestDate,itemCompleteDate,outNum," +
-						"color,warehoused,outBillNo,billgroup,outBillDate,meterial,meterialz,meterialType," +
-						"techCondition,partName,gjh) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-
-		} else {
-
-			if (Userman.loginUser.isManager())
-				sql = "update  bill set billdate=?,billid=? ,item=?,picid =?,imageUrl =?,note=?,custom =?,outCustom =?," +
-						"customMan =?,billno=?,billeddate=?,outgetdate=?,itemCompleteDate=?,num=?,requestDate=?,outNum =?," +
-						"color=?,warehoused=?,outBillNo=?,billgroup=?,outBillDate=?,meterial=?,meterialz=? ,meterialType=? ," +
-						"techCondition=? ,partName=? ,gjh=? ,reportPrice=? ,outPrice =? ,plancost=? where id="+ id;
-			else
-
-				sql = "update  bill set billdate=?,billid=? ,item=?,picid =?,imageUrl =?,note=?,custom =?,outCustom =?," +
-						"customMan =?,billno=?,billeddate=?,outgetdate=?,itemCompleteDate=?,num=?,requestDate=?,outNum =?," +
-						"color=?,warehoused=?,outBillNo=?,billgroup=?,outBillDate=?,meterial=? ,meterialz=? ,meterialType=? ," +
-						"techCondition=? ,partName=? ,gjh=? where id="+ id;
-		}
-		System.err.println(getId()+"\t"+ sql);
-		try (PreparedStatement pst = SessionData.getConnection()
-				.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);) {
-			pst.setDate(
-					1,
-					billDate == null ? null : new java.sql.Date(billDate
-							.getTime()));
-			pst.setString(2, billid);
-			pst.setString(3, item);
-			pst.setString(4, picid);
-			pst.setString(5, imageUrl);
-			pst.setString(6, note);
-			pst.setString(7, custom);
-			pst.setString(8, outCustom);
-			pst.setString(9, customMan);
-			pst.setString(10, billNo);
-			pst.setDate(11, billedDate == null ? null : new java.sql.Date(
-					billedDate.getTime()));
-			pst.setDate(12, outGetDate == null ? null : new java.sql.Date(
-					outGetDate.getTime()));
-			pst.setDate(13, itemCompleteDate == null ? null
-					: new java.sql.Date(itemCompleteDate.getTime()));
-			pst.setInt(14, num);
-			pst.setDate(15, requestDate == null ? null : new java.sql.Date(
-					requestDate.getTime()));
-			pst.setLong(16, outNum);
-			pst.setString(17, color);
-			pst.setInt(18, warehoused?1:0);
-			pst.setString(19, outBillNo);
-			pst.setString(20, billgroup);
-			pst.setDate(21, outBillDate == null ? null : new java.sql.Date(
-					outBillDate.getTime()));
-			pst.setString(22, meterial);
-			pst.setString(23, meterialz);
-			pst.setString(24, meterialType);
-			pst.setString(25, techCondition);
-			pst.setString(26, partName);
-			pst.setString(27, gjh);
-			if (Userman.loginUser.isManager()) {
-				pst.setFloat(28, reportPrice);
-				pst.setFloat(29, outPrice);
-				pst.setFloat(30, planCost);
-			}
-
-			pst.execute();
-			if(getId()==0){
-				ResultSet rsKey = pst.getGeneratedKeys();
-				if (rsKey != null && rsKey.next())
-					this.id = rsKey.getInt(1);
-			}
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+	
 
 	public void setBackRepairNum(int backRepairNum) {
 		this.backRepairNum = backRepairNum;
@@ -579,7 +461,7 @@ public class Bill extends BeanMao {
 		this.requestDate = requestDate;
 	}
 
-	public void setWarehoused(boolean warehoused) {
+	public void setWarehoused(int warehoused) {
 		this.warehoused = warehoused;
 	}
 	@Caption(order=0,value="订单组")
@@ -589,19 +471,7 @@ public class Bill extends BeanMao {
 	public void setBillgroup(String billgroup) {
 		this.billgroup = billgroup;
 	}
-	public Vector<Plan> getPlans() {
-		// TODO 自动生成的方法存根
-		try {
-			return Plan.loadAll(Plan.class, "select * from \"plan\" where bill="+getId());
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException
-				| IntrospectionException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-			return null;
-		}
-	}
+	
 	public void setMeterial(String meterial) {
 		this.meterial = meterial;
 	}
@@ -621,31 +491,18 @@ public class Bill extends BeanMao {
 	public void setPartName(String partName) {
 		this.partName = partName;
 	}
-	public Vector<Material> getmaterials() {
-		if(materials==null)
-			try {	
-				materials=new Vector<Material>();
+	
+	
+	public List<Plan> getPlans() {
+		return plans;
+	}
 
-				materials=Material.loadAll(Material.class,"select * from material where bill="+this.id);
-				for(Material material:materials)material.setBill(this);
-			} catch (InstantiationException | IllegalAccessException
-					| IllegalArgumentException | InvocationTargetException
-					| NoSuchMethodException | SecurityException
-					| IntrospectionException e) {
-				// TODO 自动生成的 catch 块
-				e.printStackTrace();
-			}
-		return materials;
+	public void setPlans(List<Plan> plans) {
+		this.plans = plans;
 	}
-	public Material getFirstMaterial() {
-		try{
-			return getmaterials().firstElement();
-		}catch(NoSuchElementException e){
-			return new Material(this);
-		}
-	}
+
 	@Override
-	public void remove() throws SQLException {
+	public void remove() {
 		// TODO 自动生成的方法存根
 		super.remove();
 		if(this.imageUrl!=null) new File(this.imageUrl).delete();

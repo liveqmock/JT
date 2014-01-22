@@ -1,17 +1,30 @@
 package com.mao.jf.beans;
 
-import java.beans.IntrospectionException;
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.beans.Transient;
-import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 import com.mao.jf.beans.annotation.Caption;
 
+@Entity
 public class OperationPlan extends BeanMao {
 	private static SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	private int id;
 	private int sequence;
+	
+	@ManyToOne
+	@JoinColumn(name = "plan", referencedColumnName = "id")
 	private Plan plan;
 	private String name;  
 	private float cost   ;
@@ -20,6 +33,9 @@ public class OperationPlan extends BeanMao {
 	private float prepareTime;
 	private Date planDate;
 
+	public OperationPlan() {
+		super();
+	}
 	public OperationPlan(Operation operation) {
 
 		setCost(operation.getCost());
@@ -29,7 +45,6 @@ public class OperationPlan extends BeanMao {
 
 	@Caption(order =1, value= "Á÷³ÌÐòºÅ")
 	public int getSequence() {
-		System.err.println(getPlan().getOperationPlans().size());
 		return getPlan().getOperationPlans().indexOf(this)+1;
 	}
 
@@ -86,11 +101,16 @@ public class OperationPlan extends BeanMao {
 
 
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public void setUnitUseTime(float unitUseTime) {
 		this.unitUseTime = unitUseTime;
-	}
-	public OperationPlan() {
-		super();
 	}
 
 
@@ -151,7 +171,7 @@ public class OperationPlan extends BeanMao {
 	public long getLastPlanDate() {
 		long lastDate=0;
 		try {
-			OperationPlan operationPlan=OperationPlan.load(OperationPlan.class, "select top 1 * from OperationPlan where plandate=(select max(plandate) from OperationPlan where name='"+getName()+"')");
+			OperationPlan operationPlan=OperationPlan.load(OperationPlan.class, "  a.planDate=(select max(planDate) from OperationPlan where name='"+getName()+"')");
 			lastDate=operationPlan.getPlanDate()==null?new Date().getTime(): 
 								(operationPlan.getPlanDate().getTime())								
 						         +Math.round( operationPlan.getUseTime()*60000);;
@@ -170,17 +190,7 @@ public class OperationPlan extends BeanMao {
 	public void setSequence(int sequence) {
 		this.sequence = sequence;
 	}
-	@Transient
-	public Operation getOperation() {
-		try {
-			return Operation.load(Operation.class, "select * from operation where name='"+name+"'");
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException
-				| IntrospectionException e) {
-			return null;
-		}
-	}
+	
 	public void setOperation(Operation operation) {
 		this.name=operation.getName();
 		this.cost=operation.getCost();

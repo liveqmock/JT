@@ -53,13 +53,13 @@ private JTextField backNote;
 		JLabel label_2 = new JLabel("\u5BA2\u6237\uFF1A");
 		add(label_2, "2, 2");
 		
-		cstLabel = new JLabel(editBean.getBillItem().getCustom());
+		cstLabel = new JLabel();
 		add(cstLabel, "4, 2, left, default");
 
 		JLabel label_3 = new JLabel("\u8BA2\u5355\u53F7\uFF1A");
 		add(label_3, "2, 4");
 		
-		billNoLabel = new JLabel(editBean.getBillItem().getBillNo());
+		billNoLabel = new JLabel();
 		add(billNoLabel, "4, 4");
 
 		JLabel label_6 = new JLabel("返修原因");
@@ -96,7 +96,6 @@ private JTextField backNote;
 		backNote.setName("返修原因");
 		getValidationGroup().add(backNumFld,Validators.REQUIRE_VALID_INTEGER);
 		getValidationGroup().add(backNumFld,Validators.numberMin(0));
-		getValidationGroup().add(backNumFld,Validators.numberMaxE(editBean.getBillItem().getNum()));
 		getValidationGroup().add(backDatePicker.getEditor(),Validators.REQUIRE_NON_EMPTY_STRING);
 	}
 	protected  void dataBinding() {

@@ -24,6 +24,16 @@ import javax.persistence.OneToMany;
 import com.mao.jf.beans.annotation.Caption;
 
 import javax.persistence.JoinTable;
+import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
+
+import ui.customComponet.BeanTableModel;
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.CascadeType.MERGE;
+import static javax.persistence.CascadeType.REMOVE;
+import static javax.persistence.CascadeType.REFRESH;
+import static javax.persistence.CascadeType.DETACH;
 
 @Entity
 public class BillPlan extends BeanMao {
@@ -45,7 +55,7 @@ public class BillPlan extends BeanMao {
 	@javax.persistence.Transient
 	private ArrayList<OperationPlan> operationPlans2;
 	private int completed;
-	@javax.persistence.Transient
+	@OneToMany(mappedBy = "plan")
 	private List<OperationWork> operationWorks;
 
 	public BillPlan(Bill bill) {
@@ -128,7 +138,11 @@ public class BillPlan extends BeanMao {
 	@Caption(order=2,value="ÐòºÅ")
 	public int getSequenceNum() {
 		if(sequenceNum==0) {
-			sequenceNum=getBill().getPlans().size();
+			try{
+				sequenceNum=getBill().getPlans().size();
+			}catch(Exception e){
+				
+			}
 		}
 		return sequenceNum;
 	}
@@ -196,6 +210,35 @@ public class BillPlan extends BeanMao {
 			}
 		}
 
+	}
+
+
+
+	public void initPlanDate() {
+		for(OperationPlan operationPlan: operationPlans2){
+			operationPlan.setPlanDate(null);
+			operationPlan.getPlanDate();
+		}
+
+	}
+
+	@Override
+	public void remove() {
+		operationPlans.clear();
+		operationPlans.addAll(operationPlans2);
+		super.remove();
+	}
+
+	@Override
+	public void save() {
+		if(operationPlans==null)
+			operationPlans=operationPlans2;
+		else {
+			operationPlans.clear();
+			operationPlans.addAll(operationPlans2);
+
+		}
+		super.save();
 	}
 
 }

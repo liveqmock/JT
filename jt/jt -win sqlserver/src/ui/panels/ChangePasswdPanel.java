@@ -4,6 +4,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+
 import net.miginfocom.swing.MigLayout;
 import ui.customComponet.BeanPanel;
 import validation.builtin.Validators;
@@ -26,7 +30,7 @@ public class ChangePasswdPanel extends BeanPanel<Userman> {
 		JLabel label = new JLabel("\u7528\u6237\u540D\uFF1A");
 		add(label, "cell 0 0,alignx trailing");
 
-		userNameField = new JLabel(editBean.getName());
+		userNameField = new JLabel();
 		add(userNameField, "cell 1 0,growx");
 
 		add(new JLabel("‘≠√‹¬Î£∫"), "cell 0 1,alignx trailing");
@@ -56,7 +60,9 @@ public class ChangePasswdPanel extends BeanPanel<Userman> {
 	}
 
 	protected void dataBinding() {
-		//
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,
+				BeanProperty.create("name"), userNameField, BeanProperty.create("text")));
+		
 	}
 	public boolean isOk() {
 		if(editBean.getPassword().equals(passwordField.getText())&&passwordField1.getText().equals(passwordField2.getText())){

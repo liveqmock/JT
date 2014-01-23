@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.mao.jf.beans.annotation.Caption;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Material  extends BeanMao{
@@ -30,6 +31,8 @@ public class Material  extends BeanMao{
 	@Caption("数量")
 	private float num ;
 	@Caption("输入员")
+	@OneToOne
+	@JoinColumn(name = "enterEmployee", referencedColumnName = "id")
 	private Userman enterEmployee ;
 	
 	public Material() {
@@ -82,8 +85,8 @@ public class Material  extends BeanMao{
 	}
 	
 	@Transient
-	@Caption(value="订单号",order=-1)
+	@Caption(value="图号",order=-1)
 	public String getBillNo() {
-		return bill.getBillNo();
+		return bill.getPicid();
 	}
 }

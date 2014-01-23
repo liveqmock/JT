@@ -23,6 +23,9 @@ public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
 	private String[] filterColumns;
 	private boolean vertical=false;
 	private Class<T> class1;
+	public BeansPanel() {
+		super(null);
+	}
 	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1) {
 		this(beans, beanPanel,class1, null,false);
 	}
@@ -41,6 +44,7 @@ public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
 		this.vertical=vertical;
 		this.class1=class1;
 		createContents();
+		setBean(beans);
 	}
 	protected void createContents() {
 
@@ -119,7 +123,7 @@ public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
 		
 		
 	}
-	public void addNew() {
+	protected void addNew() {
 		if (!beanPanel.isValide()) {
 			return;
 		}
@@ -127,12 +131,9 @@ public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
 		T newbean = saveBean();
 		if (newbean != null) {
 			tablePane.addNew(newbean);
-			try {
-				setPanelBean((T) newbean.getClass().newInstance());
-			} catch (InstantiationException | IllegalAccessException e) {
-				// TODO 自动生成的 catch 块
-				e.printStackTrace();
-			}
+			T newBean = createNewBean();
+			setPanelBean(newBean);
+			
 		}
 	}
 
@@ -157,12 +158,17 @@ public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
 		// TODO Auto-generated method stub
 		super.setBean(bean);
 		tablePane.setBeans(bean);
+		T newBean = createNewBean();
+		beanPanel.setBean(newBean);
+		
+	}
+	public T createNewBean() {
 		try {
-				beanPanel.setBean(class1.newInstance());
-			} catch (InstantiationException | IllegalAccessException e) {
+			return class1.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			return null;
 		}
 	}
-
 	public void setPanelBean(T t) {
 		this.beanPanel.setBean(t);
 	}
@@ -195,12 +201,7 @@ public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
 	}
 
 	public void reset() {
-		try {
-			BeansPanel.this.beanPanel.setBean((T) beanPanel.getBean().getClass().newInstance());
-		} catch (InstantiationException | IllegalAccessException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
+		BeansPanel.this.beanPanel.setBean(createNewBean());
 		
 	}
 }

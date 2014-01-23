@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -52,7 +53,7 @@ public abstract class BillShowPnl extends JPanel{
 
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout(0, 0));
-		cstlist = new JXComboBox(new Vector<Custom>(BeanMao.loadAll(Custom.class," a.out=0")));
+		cstlist = new JXComboBox(new Vector<String>(BeanMao.beanManager.getEm().createQuery("select distinct name from Custom").getResultList()));
 
 		
 
@@ -94,12 +95,11 @@ public abstract class BillShowPnl extends JPanel{
 		panel.add(eDatePicker);
 
 		Component horizontalStrut = Box.createHorizontalStrut(20);
-		horizontalStrut.setPreferredSize(new Dimension(30, 0));
+		horizontalStrut.setPreferredSize(new Dimension(10, 0));
 		panel.add(horizontalStrut);
 		searchButton = new JButton("搜索");
 		panel.add(searchButton);
 		JButton searchAdButton = new JButton("高级搜索");
-		panel.add(searchAdButton);
 		searchAdButton.addActionListener(new ActionListener() {
 
 
@@ -113,15 +113,21 @@ public abstract class BillShowPnl extends JPanel{
 
 			
 		});
-		panel.add(Box.createHorizontalGlue());
-
-		JPanel searchPanel=new JPanel();
-
-		new BoxLayout(panel, BoxLayout.Y_AXIS);
-		searchPanel.add(panel);
-		searchPanel.add(cstlist);
-		add(searchPanel, BorderLayout.NORTH);
 		
+		JPanel panel2= new JPanel() ;
+		panel2.setLayout(new BoxLayout(panel2, BoxLayout.X_AXIS));
+		panel2.add(new JLabel("按客户查找:"));
+		panel2.add(cstlist);
+		horizontalStrut = Box.createHorizontalStrut(50);
+		horizontalStrut.setPreferredSize(new Dimension(50, 0));
+		panel2.add(horizontalStrut);
+		panel2.add(searchAdButton);
+
+		JPanel panel3= new JPanel() ;
+		panel3.setLayout(new BoxLayout(panel3, BoxLayout.Y_AXIS));
+		panel3.add(panel);
+		panel3.add(panel2);
+		add(panel3, BorderLayout.NORTH);
 		actions();
 		setVisible(true);
 		requestFocus();
@@ -219,6 +225,7 @@ public abstract class BillShowPnl extends JPanel{
 			
 			@Override
 			public void itemStateChanged(ItemEvent e) {
+				if(e.getStateChange()==ItemEvent.SELECTED)
 				loadData("custom='"+e.getItem()	+ "'");
 				
 			}

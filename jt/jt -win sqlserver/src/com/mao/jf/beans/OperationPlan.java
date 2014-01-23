@@ -25,44 +25,47 @@ public class OperationPlan extends BeanMao {
 	@GeneratedValue(strategy = IDENTITY)
 	private int id;
 	private int sequence;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "billplan", referencedColumnName = "id")
 	private BillPlan billPlan;
-	@Column(insertable = false, updatable = false)
+	@OneToOne
+	@JoinColumn(name = "operation", referencedColumnName = "id")
+	private Operation operation;
 	private String name;  
 	private float cost   ;
 	private String note  ;
 	private float unitUseTime;
 	private float prepareTime;
 	private Date planDate;
-	@OneToOne
-	@JoinColumn(name = "name", referencedColumnName = "name")
-	private Operation operation;
 	public OperationPlan() {
 		super();
 	}
 	public OperationPlan(Operation operation) {
-		this.operation=operation;
+		this.name=operation.getName();
+		this.cost=operation.getCost();
 	}
 
+	public OperationPlan(BillPlan plan) {
+		this.billPlan=plan;
+	}
 	@Caption(order =1, value= "流程序号")
 	public int getSequenceChange() {
-		 sequence= getBillPlan().getOperationPlans().indexOf(this)+1;
-		 return sequence;
+		sequence= getBillPlan().getOperationPlans().indexOf(this)+1;
+		return sequence;
 	}
 	public int getSequence() {
 		return sequence;
 	}
 	@Caption(order = 2, value= "工序名称")
 	public String getName() {
-		return name=name==null?operation.getName():name;
+		return name;
 	}
 	@Transient
 	@Caption(order =3, value= "排产时间")
 	public String getPlanDateStr() {
 		try{
-		return df.format(getPlanDate());
+			return df.format(getPlanDate());
 		}catch(Exception e){
 			return null;
 		}
@@ -79,14 +82,16 @@ public class OperationPlan extends BeanMao {
 	@Transient
 	@Caption(order = 6, value= "计划总用时")
 	public float getUseTime() {
-		return unitUseTime*billPlan.getNum()+prepareTime;
+		try{
+		return unitUseTime*billPlan.getNum()/operation.getNum()+prepareTime;
+		}catch(Exception e){
+			return 0;
+		}
 	}
 
 
 	@Caption(order = 7, value= "单位费用")
 	public float getCost() {
-		if(cost==0)
-			cost=operation.getCost();
 		return cost;
 	}
 
@@ -109,6 +114,9 @@ public class OperationPlan extends BeanMao {
 		return id;
 	}
 
+	public Operation getOperation() {
+		return operation;
+	}
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -123,6 +131,10 @@ public class OperationPlan extends BeanMao {
 	}
 	public void setName(String name) {
 		this.name = name;
+		if(name!=null){
+			Operation operation=BeanMao.load(Operation.class, " a.name='"+name+"'");
+			this.cost=operation.getCost();
+		}
 	}
 
 	public void setNote(String note) {
@@ -146,7 +158,7 @@ public class OperationPlan extends BeanMao {
 	}
 
 	public Date getPlanDate() {
-		if(planDate==null){
+		if(planDate==null&&getBillPlan()!=null){
 			long planDatetime=0;
 			long lastDate=getLastPlanDate();
 			int point = getBillPlan().getOperationPlans().indexOf(this);
@@ -154,7 +166,7 @@ public class OperationPlan extends BeanMao {
 				OperationPlan lower = getBillPlan().getOperationPlans().get(point-1);
 				long lowerPlanDate = lower.getPlanDate().getTime()+Math.round( lower.getUseTime()*60000);
 				planDatetime=lastDate>lowerPlanDate?lastDate:lowerPlanDate;
-				
+
 			}else{
 				planDatetime=lastDate;
 			}
@@ -168,10 +180,7 @@ public class OperationPlan extends BeanMao {
 				planDatetime=calendar.getTimeInMillis();
 				planDate=calendar.getTime();
 			}
-			
-
-		}
-			
+		}			
 		return planDate;
 	}
 	@Transient
@@ -180,9 +189,9 @@ public class OperationPlan extends BeanMao {
 		try {
 			OperationPlan operationPlan=OperationPlan.load(OperationPlan.class, "  a.planDate=(select max(planDate) from OperationPlan where name='"+getName()+"' and id<> "+id+")");
 			lastDate=operationPlan.getPlanDate()==null?new Date().getTime(): 
-								(operationPlan.getPlanDate().getTime())								
-						         +Math.round( operationPlan.getUseTime()*60000);;
-			
+				(operationPlan.getPlanDate().getTime())								
+				+Math.round( operationPlan.getUseTime()*60000);;
+
 		} catch (Exception e) {
 			lastDate=new Date().getTime();
 		}
@@ -197,30 +206,50 @@ public class OperationPlan extends BeanMao {
 	public void setSequence(int sequence) {
 		this.sequence = sequence;
 	}
-	
+
 	public void setOperation(Operation operation) {
+		this.operation=operation;
+		try{
 		this.name=operation.getName();
 		this.cost=operation.getCost();
+		}catch(Exception e){
+			
+		}
 	}
 
+	@Override
+	public void remove() {
+		getBillPlan().initPlanDate();
+		super.remove();
+	}
+	@Override
+	public void save() {
+		this.name=operation.getName();
+		this.cost=operation.getCost();
+		getBillPlan().initPlanDate();
+		super.save();
+	}
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
+		if (obj == null)
+			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		OperationPlan other = (OperationPlan) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
 		if (billPlan == null) {
 			if (other.billPlan != null)
 				return false;
 		} else if (!billPlan.equals(other.billPlan))
 			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
 		return true;
 	}
 	
+
 }

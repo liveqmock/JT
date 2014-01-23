@@ -1,162 +1,131 @@
 package ui.costPanes;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
+import java.awt.Button;
 import java.awt.Dimension;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
+import javax.swing.UIManager;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.apache.commons.beanutils.BeanUtils;
-
+import ui.customComponet.BeanTableModel;
 import ui.customComponet.BeanTablePane;
-import validation.ui.ValidationPanel;
+import ui.panels.BillShowPnl;
 
-import com.mao.jf.beans.OperationWork;
+import com.mao.jf.beans.Bill;
+import com.mao.jf.beans.BillPlan;
 import com.mao.jf.beans.BillPlan;
 
-public class WorkCreatePanel extends JPanel {
-	private WorkTable table;
-	private BeanTablePane<OperationWork> workTablePane;
-	private OperationWorkPnl workPnl=new OperationWorkPnl(new OperationWork());
-	private JTextField textField;
+public class WorkCreatePanel extends BillShowPnl {
+
+	private BeanTablePane<Bill> billTable;
+	private OperarionWorksPnl operarionWorksPnl;
+	private JSplitPane splitPane;
+	private BeanTablePane<BillPlan> plansTablePane;
 
 	public WorkCreatePanel() {
-		createContents();
+		super();
+
+		splitPane=new JSplitPane();
+		billTable=new BeanTablePane(null, Bill.class);
+
+		splitPane.setLeftComponent(billTable);
+		operarionWorksPnl=new OperarionWorksPnl(null);
+		operarionWorksPnl.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "工序管理明细", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+
+		plansTablePane=new BeanTablePane<BillPlan>(null, BillPlan.class);
+		plansTablePane.setPreferredSize(new Dimension(400, 150));
+		
+		JPanel plansPanel=new JPanel();
+		plansPanel.setLayout(new BoxLayout(plansPanel, BoxLayout.Y_AXIS));
+		plansTablePane.setBorder(new TitledBorder(BorderFactory.createSoftBevelBorder(BevelBorder.RAISED), "排产计划表", TitledBorder.LEFT, TitledBorder.TOP, null, null));
+
+		plansPanel.add(plansTablePane);
+		plansPanel.add(operarionWorksPnl);
+
+		splitPane.setRightComponent(plansPanel);
+		splitPane.setDividerLocation(400);
+		add(splitPane,BorderLayout.CENTER);
+		billTable.getTable().getSelectionModel()
+		.addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(final ListSelectionEvent arg0) {
+				if (arg0.getValueIsAdjusting()) {
+					billItemSelectAction();
+				}
+
+			}
+
+		});
+		plansTablePane.getTable().getSelectionModel()
+		.addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(final ListSelectionEvent arg0) {
+				if (arg0.getValueIsAdjusting()) {
+					planItemSelectAction();
+				}
+
+			}
+
+		});
+		
 	}
-	protected void createContents() {
-		setLayout(new BorderLayout(0, 0));
 
-		workTablePane = new BeanTablePane<>(null,OperationWork.class);
+	@Override
+	public void searchAction(String search) {
+		List<Bill> bills = Bill.loadAll(Bill.class,search);
+		billTable.setBeans(bills);
+	}
 
+	public void billItemSelectAction() {
+		Bill bill = billTable.getSelectBean();
+		Collection<BillPlan> plans = bill.getPlans();
+		plansTablePane.setBeans( plans);	
+		if(plans!=null&&plans.size()>0)
+			operarionWorksPnl.setPlan(plans.iterator().next());
+		
+	}
+	public void planItemSelectAction() {
+		BillPlan plan = plansTablePane.getSelectBean();
 
-		JSplitPane splitPane = new JSplitPane();
-		add(splitPane, BorderLayout.CENTER);
-		JPanel panel_3 = new JPanel();
-		panel_3.setLayout(new BorderLayout(0, 0));
+		operarionWorksPnl.setPlan(plan);
 
-		JButton okBt= new JButton("\u786E\u5B9A\uFF08O\uFF09");
-		okBt.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-		okBt.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		okBt.setMnemonic('o');
-		panel_3.add(okBt, BorderLayout.SOUTH);
-
-		JPanel panel_1 = new JPanel();
-
-		splitPane.setRightComponent(panel_1);
-		panel_1.setLayout(new BorderLayout(0, 0));
-		panel_1.add(panel_3, BorderLayout.NORTH);
-		ValidationPanel validationPanel=new ValidationPanel();
-		panel_3.add(validationPanel);
-		validationPanel.setInnerComponent(workPnl);
-		panel_1.add(workTablePane);
-
-		JPanel panel = new JPanel();
-		panel.setMinimumSize(new Dimension(100,0));
-		splitPane.setLeftComponent(panel);		
-		panel.setLayout(new BorderLayout(0, 0));
-
-		JScrollPane plan = new JScrollPane();
-		panel.add(plan, BorderLayout.CENTER);
-//		Vector<BillPlan> plans = BillPlan.loadUnCompleted(" join operationplan c on a.id=c.plan");
-//		System.err.println(plans.size());
-		table=new WorkTable(new Vector<BillPlan>());
-		plan.setViewportView(table);
-
-		JPanel panel_2 = new JPanel();
-		panel_2.setBorder(new EmptyBorder(1, 1, 1, 1));
-		panel.add(panel_2, BorderLayout.NORTH);
-		panel_2.setLayout(new BoxLayout(panel_2, BoxLayout.X_AXIS));
-
-		JLabel label = new JLabel("\u56FE\u53F7\uFF1A");
-		panel_2.add(label);
-
-		textField = new JTextField();
-		panel_2.add(textField);
-		textField.setColumns(10);
-
-		JButton searchBt = new JButton("\u67E5\u627E");
-		panel_2.add(searchBt);
-		searchBt.addActionListener(new ActionListener() {
+	}
+	private void addNewPlan() {
+		try{
+			Bill bill = billTable.getSelectBean();
+			if(bill==null)return;
+			BillPlan plan = new BillPlan(bill);
+			plan.save();
+			 ((BeanTableModel<BillPlan>) plansTablePane.getTable().getModel()).insertRow(plan);
 			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-//				table.changeData(BillPlan.loadUnCompletedBySearch(" and picid like '%"+textField.getText()+"%'"));
-				
-			}
-		});
-		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				workPnl.setOperationPlans(table.getSelectPlan().getOperationPlans());
-				workTablePane.setBeans(table.getSelectPlan().getOperationWorks());
-
-			}
-		});
-		okBt.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (!workPnl.isValide()) {
-					return;
-				}
-				workPnl.getBean().save();
-				workTablePane.addNew(workPnl.getBean());
-				workPnl.setBean(new OperationWork());
-				
-
-			}
-		});
-		ActionListener listener = new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JMenuItem item = (JMenuItem) e.getSource();
-				switch (item.getText()) {
-				case "删除":
-
-					workTablePane.removeSelectRow();
-
-					break;
-				case "修改":
-
-					try {
-						workPnl.setBean((OperationWork) BeanUtils.cloneBean( workTablePane.getSelectBean()));
-					} catch (IllegalAccessException | InstantiationException
-							| InvocationTargetException | NoSuchMethodException e1) {
-						// TODO 自动生成的 catch 块
-						e1.printStackTrace();
-					}
-
-					break;
-
-				default:
-					break;
-				}
-			}
-
-		};
-		workTablePane.getPopupMenu().add("修改").addActionListener(listener);
-		workTablePane.getPopupMenu().add("删除").addActionListener(listener);
-
-		splitPane.setDividerLocation(0.6);
-		splitPane.setDividerLocation(500);
+			operarionWorksPnl.setBean(plan.getOperationWorks());
+		}catch(Exception e1){
+			e1.printStackTrace();
+		}
+		
 	}
-
-
-
+	private void removeSelectRow() {
+		((BeanTableModel<BillPlan>) plansTablePane.getTable().getModel()).removeRow(
+				plansTablePane.getTable()
+				.convertRowIndexToModel(plansTablePane.getTable().getSelectedRow()));
+		
+	}
 }

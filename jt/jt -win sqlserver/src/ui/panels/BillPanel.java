@@ -429,10 +429,7 @@ public class BillPanel extends JSplitPane {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-
-				List<Custom> customs =BeanMao.loadAll(Custom.class," a.out=0");
-				if(customs.size()==0) customs.add(new Custom(0));
-				MenuAction.adminCustom(customs,0);
+				MenuAction.adminCustom(0);
 
 			}
 		});
@@ -517,9 +514,7 @@ public class BillPanel extends JSplitPane {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				Vector<Custom> customs =(Vector<Custom>) BeanMao.loadAll(Custom.class," a.out=1");
-				if(customs.size()==0) customs.add(new Custom(1));
-				MenuAction.adminCustom(customs,1);
+				MenuAction.adminCustom(1);
 
 			}
 		});

@@ -90,7 +90,8 @@ public abstract class BeanPanel<T> extends JPanel {
 			for(Binding<?, ?, ?, ?> binding: bindingGroup.getBindings())
 				bindingGroup.removeBinding(binding);
 			this.origBean = origBean;
-			this.editBean=(T) BeanUtils.cloneBean(origBean);
+			if(origBean!=null)
+				this.editBean=(T) BeanUtils.cloneBean(origBean);
 			dataBinding();
 			bindingGroup.bind();
 		}catch(Exception e){

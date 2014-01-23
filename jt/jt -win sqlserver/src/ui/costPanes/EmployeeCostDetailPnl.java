@@ -39,7 +39,7 @@ public class EmployeeCostDetailPnl extends JPanel {
 			+" 报废数量,SUM(e.reportprice*a.scrapnum) 报废成本 	from employee b left "
 			+"join operationwork  a on a.employee=b.id  join operationplan c on a.operationplan"
 			+" = c.id 	join \"plan\" d on c.\"plan\"=d.id join bill e on d.bill =e.id  "
-			+"where b.name = ? and finishdate between ? and ?  "
+			+"where b.name like ? and finishdate between ? and ?  "
 			+" group by a.employee,wage,b.name ,finishdate,c.name	) a  full  join (select "
 			+"a.id employee,a.name,finishdate,c.name oper, sum(b.preparetime) preparetime,sum(b.preparetime)"
 			+"*wage wages from employee a  left join operationwork b on b.prepareemployee =a.id "

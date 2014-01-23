@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import com.mao.jf.beans.annotation.Caption;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class OperationWork extends BeanMao {
@@ -41,7 +42,9 @@ public class OperationWork extends BeanMao {
 	private float prepareTime;
 	private float prepareCost;
 	private float planCost;
-	
+	@ManyToOne
+	@JoinColumn(name = "billplan", referencedColumnName = "id")
+	private BillPlan plan;
 	private String note;
 	public OperationWork() {
 		super();
@@ -50,7 +53,13 @@ public class OperationWork extends BeanMao {
 	public OperationWork(OperationPlan operationPlan) {
 		
 		setOperationPlan(operationPlan);
+		
 	}
+	public OperationWork(BillPlan plan) {
+		this.plan=plan;
+		
+	}
+
 	@Caption(value="工序名",order=1)
 	@Transient
 	public String getOperationName() {
@@ -90,11 +99,11 @@ public class OperationWork extends BeanMao {
 		return operationPlan;
 	}
 	public BillPlan getPlan() {
-		return getOperationPlan().getBillPlan();
+		return plan;
 	}
 	@Caption(order = 7, value= "计划费用")
 	public float getPlanCost() {
-		return planCost==0?getOperationPlan().getPlanCost():planCost;
+		return planCost==0?(getOperationPlan()==null?0: getOperationPlan().getPlanCost()):planCost;
 	}
 	public void setPlanCost(float planCost) {
 		this.planCost = planCost;
@@ -181,6 +190,8 @@ public class OperationWork extends BeanMao {
 
 	public void setOperationPlan(OperationPlan operationPlan) {
 		this.operationPlan = operationPlan;
+		if(operationPlan!=null)
+			this.plan=operationPlan.getBillPlan();
 	}
 
 	public void setPrepareCost(float prepareCost) {
@@ -209,6 +220,10 @@ public class OperationWork extends BeanMao {
 
 	public void setWorkTime(float workTime) {
 		this.workTime = workTime;
+	}
+
+	public void setPlan(BillPlan plan) {
+		this.plan = plan;
 	}
 	
 

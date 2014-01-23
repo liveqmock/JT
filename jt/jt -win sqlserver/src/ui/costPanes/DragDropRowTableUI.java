@@ -90,11 +90,10 @@ public class DragDropRowTableUI<T> extends BasicTableUI {
 			draggingRow = false;
 			table.repaint();
 
-			for(int row=0;row<table.getRowCount();row++){
-				OperationPlan bean = ((BeanTableModel<OperationPlan>)table.getModel()).getSelectBean(table.convertRowIndexToModel(row));
-				bean.setPlanDate(null);
-				bean.getPlanDate();
-			}
+				OperationPlan bean = ((BeanTableModel<OperationPlan>)table.getModel()).getSelectBean(table.convertRowIndexToModel(sRow));
+				if(bean!=null){
+					bean.getBillPlan().initPlanDate();
+				}
 		}
 	}
 }

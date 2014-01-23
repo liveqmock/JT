@@ -5,7 +5,10 @@ import java.awt.event.ItemListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
+import java.util.Vector;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -21,6 +24,7 @@ import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
+import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Material;
 import com.mao.jf.beans.SessionData;
 import com.mao.jf.beans.Userman;
@@ -40,25 +44,18 @@ public class MaterialPanel extends BeanPanel<Material> {
 		Layout();
 
 		name.setEditable(true);
-		try(Statement st=SessionData.getConnection().createStatement()){
-			ResultSet rs = st.executeQuery("select distinct name from (select name from material order by createDate desc) a");
-			while(rs.next()){
-				name.addItem(rs.getString(1));
-			}
-		} catch (SQLException e1) {
-			// TODO 自动生成的 catch 块
-			e1.printStackTrace();
-		}
+		
 		name.addItemListener(new ItemListener() {
 			
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
-				getMaterial((String)arg0.getItem());
+				if(arg0.getStateChange()==ItemEvent.SELECTED)
+					getMaterial((String)arg0.getItem());
 				
 			}
 		});
 		
-		editBean.setEnterEmployee(Userman.loginUser);
+
 
 		name.setName("材料名称");
 		unitName.setName("计价单位");
@@ -89,13 +86,15 @@ public class MaterialPanel extends BeanPanel<Material> {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,}));
 		
+		List names = BeanMao.beanManager.getEm().createQuery( "select distinct name from Material ").getResultList();
+		
 		bill=new JTextField(); 
-		name=new JComboBox<String> () ;
+		name=new JComboBox<String> (new Vector<String>(names)) ;
 		unitName=new JTextField() ;
 		unitCost =new JTextField();
 		num=new JTextField() ;
 		
-		add( new JLabel("订单号"), "2, 2, right, default");		
+		add( new JLabel("图号"), "2, 2, right, default");		
 		add(bill, "4, 2, fill, default");
 
 		add(new JLabel("材料名称"), "2, 4, right, default");		
@@ -117,15 +116,16 @@ public class MaterialPanel extends BeanPanel<Material> {
 		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean, BeanProperty.create("unitCost"), unitCost, jTextFieldBeanProperty));
 		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean, BeanProperty.create("unitName"), unitName, jTextFieldBeanProperty));
 		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean, BeanProperty.create("num"), num, jTextFieldBeanProperty));
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, editBean, BeanProperty.create("billNo"), bill, jTextFieldBeanProperty));
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, editBean, BeanProperty.create("bill.picid"), bill, jTextFieldBeanProperty));
 		
 		
 	}
 	private void getMaterial(String nameStr) {
 		try {
-			Material material= Material.load(Material.class,"select * from material where  name='"+nameStr+"' order by createdate desc");
-			unitName.setText(material.getUnitName());
-			unitCost.setText(String.valueOf( material.getUnitCost()));
+			 Object[] object = (Object[]) BeanMao.beanManager.getEm().createNativeQuery("select top 1 unitName,unitCost from material where name='"+nameStr+"' order by  createDate desc").getSingleResult();
+			
+			 unitName.setText((String) object[0]);
+			unitCost.setText(String.valueOf( String.valueOf(object[1])));
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();

@@ -172,10 +172,5 @@ public class SqlTableModel extends AbstractTableModel {
 
 	}
 
-	// public static void main(String s[]) {
-	// SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	// sf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
-	// System.err.println(sf.format(Calendar.getInstance().getTime()));
-	//
-	// }
+
 }

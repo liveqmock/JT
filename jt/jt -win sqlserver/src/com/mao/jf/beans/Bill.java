@@ -5,6 +5,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 import java.awt.Color;
 import java.beans.Transient;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,12 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import com.mao.jf.beans.annotation.Caption;
+
+import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 @Entity
 public class Bill extends BeanMao {	
 	@Id
@@ -46,12 +53,9 @@ public class Bill extends BeanMao {
 	private String meterial;	
 	private int warehoused;
 	@javax.persistence.Transient
-	private int backRepairNum;
-	@javax.persistence.Transient
 	private String status;
 	@javax.persistence.Transient
 	private float operCost;
-	@javax.persistence.Transient
 	private float planCost;
 	private String gjh;
 	private String meterialz;
@@ -60,9 +64,13 @@ public class Bill extends BeanMao {
 	private String partName;
 	@OneToMany(mappedBy = "bill")
 	private Collection<Material> materials;
-	
+
 	@OneToMany(mappedBy = "bill")
+	@OrderColumn(name = "sequenceNum")
 	private Collection<BillPlan> plans;
+
+	@OneToMany(mappedBy = "billItem")
+	private Collection<BackRepair> backRepairs;
 	public Bill() {
 		custom = "";
 		billid = "";
@@ -74,20 +82,23 @@ public class Bill extends BeanMao {
 		customMan = "";
 		billNo = "";
 	}
-	
+	public static List<Bill> loadBySearch(String searchString) {
+
+		return loadBySearch(searchString, true);
+
+	}
 	public static List<Bill> loadBySearch(String searchString,boolean isShowCompelete) {
 
 		List<Bill> billItems=null;
-		if(!Userman.loginUser.isManager()|| !isShowCompelete){
-			searchString=(searchString==null?"":searchString+" and ")+" a.itemCompleteDate is null  order by a.itemCompleteDate ,a.requestDate";
-		}else{
-
+		if(Userman.loginUser.isManager()|| isShowCompelete){
 			searchString=(searchString==null?"":searchString+" ")+" order by a.itemCompleteDate ,a.requestDate";
+			
+		}else{
+			searchString=(searchString==null?"":searchString+" and ")+" a.itemCompleteDate is null  order by a.itemCompleteDate ,a.requestDate";
+
 		}
-		
-		
-		billItems=loadAll(Bill.class,searchString);
-		
+			billItems=loadAll(Bill.class,searchString);
+			
 		return billItems;
 
 	}
@@ -95,12 +106,8 @@ public class Bill extends BeanMao {
 
 		return loadBySearch(" a.billgroup='"+billGrp+"'",true);
 	}
-	public static List<Bill> loadNotComplete() {
-		return loadBySearch(null,true);
 
-	}
-	
-	
+
 	public int getId() {
 		return id;
 	}
@@ -115,7 +122,7 @@ public class Bill extends BeanMao {
 	}
 	@Caption(order = 61, value= "返修记录")
 	public int getBackRepairNum() {
-		return backRepairNum;
+		return getBackRepairs().size();
 	}
 
 	@Caption(order = 5, value= "订单日期")
@@ -200,6 +207,15 @@ public class Bill extends BeanMao {
 
 		return Userman.loginUser.isManager()? operCost:0;
 	}
+	public Collection<BackRepair> getBackRepairs() {
+		if(backRepairs==null) backRepairs=new ArrayList<>();
+		return backRepairs;
+	}
+
+	public void setBackRepairs(Collection<BackRepair> backRepairs) {
+		this.backRepairs = backRepairs;
+	}
+
 	@Transient
 	@Caption(order=58,value="计划费用")
 	public float getPlanCost() {
@@ -376,11 +392,7 @@ public class Bill extends BeanMao {
 	}
 
 
-	
 
-	public void setBackRepairNum(int backRepairNum) {
-		this.backRepairNum = backRepairNum;
-	}
 
 	public void setBillDate(Date billDate) {
 		this.billDate = billDate;
@@ -451,6 +463,7 @@ public class Bill extends BeanMao {
 	}
 
 	public void setOutPrice(float outPrice) {
+		if(!Userman.loginUser.isManager())return;
 		this.outPrice = outPrice;
 	}
 
@@ -459,6 +472,7 @@ public class Bill extends BeanMao {
 	}
 
 	public void setReportPrice(float reportPrice) {
+		if(!Userman.loginUser.isManager())return;
 		this.reportPrice = reportPrice;
 	}
 
@@ -476,7 +490,7 @@ public class Bill extends BeanMao {
 	public void setBillgroup(String billgroup) {
 		this.billgroup = billgroup;
 	}
-	
+
 	public void setMeterial(String meterial) {
 		this.meterial = meterial;
 	}
@@ -496,8 +510,8 @@ public class Bill extends BeanMao {
 	public void setPartName(String partName) {
 		this.partName = partName;
 	}
-	
-	
+
+
 	public Collection<BillPlan> getPlans() {
 		return  plans;
 	}

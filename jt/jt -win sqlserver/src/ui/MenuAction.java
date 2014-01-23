@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 
@@ -29,6 +30,7 @@ import ui.costPanes.PlanWorkPnl;
 import ui.costPanes.ShowWorkCostPnl;
 import ui.costPanes.WorkCostPnl;
 import ui.costPanes.WorkCreatePanel;
+
 import ui.customComponet.BeanDialog;
 import ui.customComponet.BeanTableModel;
 import ui.customComponet.BeansPanel;
@@ -130,14 +132,10 @@ public class MenuAction extends AbstractAction {
 				break;
 
 			case "订单客户管理":
-				List<Custom> customs =BeanMao.loadAll(Custom.class, " a.out=0");
-				if(customs==null) customs=new ArrayList<Custom>();
-				adminCustom(customs,0);
+				adminCustom(0);
 				break;
 			case "外协客户管理":
-				customs =BeanMao.loadAll(Custom.class, " a.out=1");
-				if(customs==null) customs=new ArrayList<Custom>();
-				adminCustom(customs,1);
+				adminCustom(1);
 				break;
 			case "生产计划与实际成本对照":
 				showWorkCostPanel();
@@ -193,19 +191,9 @@ public class MenuAction extends AbstractAction {
 				showWorkCost();
 				break;
 			case "操作人员管理":
-				try {
-					try {
-						employeeManager();
-					} catch (InstantiationException | IllegalAccessException
-							| InvocationTargetException | NoSuchMethodException
-							| IntrospectionException e1) {
-						// TODO 自动生产的 catch 块
-						e1.printStackTrace();
-					}
-				} catch (IllegalArgumentException | SecurityException e1) {
-					// TODO 自动生产的 catch 块
-					e1.printStackTrace();
-				}
+
+				employeeManager();
+
 				break;
 			case "月度统计":
 				monStatistic();
@@ -311,7 +299,7 @@ public class MenuAction extends AbstractAction {
 		JDialog dialog=new JDialog();
 		dialog.setTitle("工序管理");
 		dialog.setContentPane(new WorkCreatePanel());
-		dialog.setBounds(100, 100, 500, 500);
+		dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
 		dialog.setLocationRelativeTo(null);
 		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 		dialog.setVisible(true);
@@ -400,13 +388,13 @@ public class MenuAction extends AbstractAction {
 
 	private void showBillGroup() {
 
-		table.setBeans(Bill.loadByGrp(table.getSelectBean().getBillgroup()));
+		table.setBeans((Collection<Bill>) Bill.loadByGrp(table.getSelectBean().getBillgroup()));
 	}
 
 
 
 
-	private void employeeManager() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
+	private void employeeManager()  {
 		EmployeePnl beanPanel = new EmployeePnl(new Employee());
 		BeansPanel<Employee> panel = new BeansPanel<Employee>(Employee.loadAll(Employee.class),beanPanel,Employee.class,true) {
 
@@ -460,13 +448,20 @@ public class MenuAction extends AbstractAction {
 	}
 
 	private void yearStatistic() {
-
-		SqlFrame("select   concat(year(itemcompletedate) ,'年度') 年度,custom 单位,sum(num) 数量,sum(reportprice*num) 总价 from bill where itemcompletedate is not null group by concat(year(itemcompletedate),'年度'),custom union select   concat(year(itemcompletedate) ,'年度 总计') 年度,null 单位,sum(num) 数量,sum(reportprice*num) 总价 from bill where itemcompletedate is not null group by concat(year(itemcompletedate),'年度 总计') order by 年度 desc", "年度统计");
+		String sql = "select 年份,单位,sum(数量) ,sum(总价) from ("
+				+"select   str(year(itemcompletedate)) +'年' 年份,custom 单位,num 数量,reportprice*num 总价 from bill where itemcompletedate is not null  union "
+				+"select   str(year(itemcompletedate)) +'年' 年份,' 合计' 单位,num 数量,reportprice*num 总价 from bill where itemcompletedate is not null) a "
+				+"group by 年份,单位 order by 年份 desc,单位 ";
+		SqlFrame(sql, "年度统计");
 
 	}
 
 	private void monStatistic() {
-		SqlFrame("select   concat(year(itemcompletedate) ,'年',month(itemcompletedate),'月') 月份,custom 单位,sum(num) 数量,sum(reportprice*num) 总价 from bill where itemcompletedate is not null group by concat(year(itemcompletedate),'年',month(itemcompletedate),'月'),custom union select   concat(year(itemcompletedate) ,'年',month(itemcompletedate),'月 总计') 月份,null 单位,sum(num) 数量,sum(reportprice*num) 总价 from bill where itemcompletedate is not null group by concat(year(itemcompletedate),'年',month(itemcompletedate),'月 总计') order by 月份 desc", "月度统计");
+		String sql = "select 月份,单位,sum(数量) ,sum(总价) from ("
+				+"select   str(year(itemcompletedate)) +'年'+str(month(itemcompletedate))+'月' 月份,custom 单位,num 数量,reportprice*num 总价 from bill where itemcompletedate is not null  union "
+				+"select   str(year(itemcompletedate)) +'年'+str(month(itemcompletedate))+'月' 月份,' 合计' 单位,num 数量,reportprice*num 总价 from bill where itemcompletedate is not null) a "
+				+"group by 月份,单位 order by 月份 desc,单位 ";
+		SqlFrame(sql,"月度统计");
 	}
 
 	private void SqlFrame(String sql,final String title){
@@ -486,30 +481,23 @@ public class MenuAction extends AbstractAction {
 		}
 
 	}
+	@SuppressWarnings("serial")
 	private void editBackRepair() {
 		final Bill billItem=table.getSelectBean();
-		List<BackRepair> backRepairs=null;
-		BackRepair backRepair1=new BackRepair();
-		backRepair1.setBillItem(billItem);
-		if(billItem.getBackRepairNum()==0){
-			backRepairs=new Vector<>();
-		}else{
-			backRepairs=BeanMao.loadAll(BackRepair.class," a.bill.id="+ billItem);
-
-		}
-		BeansPanel<BackRepair> beansPanel=new BeansPanel<BackRepair>(backRepairs,new BackRepairPanel(backRepair1),BackRepair.class,true) {
+		BeansPanel<BackRepair> beansPanel=new BeansPanel<BackRepair>(billItem.getBackRepairs(),new BackRepairPanel(null),BackRepair.class,true) {
 
 			@Override
 			public BackRepair saveBean() {
-				BackRepair backRepair;
-
-				backRepair=getPanelBean();
+				BackRepair backRepair=getPanelBean();
+				
 				backRepair.save();
-				billItem.setBackRepairNum(billItem.getBackRepairNum()+1);
-				BackRepair newBackRepair =new BackRepair();
-				newBackRepair.setBillItem(billItem);
-				getBeanPanel().setBean(newBackRepair);
-
+				
+				return backRepair;
+			}
+			@Override
+			public BackRepair createNewBean() {
+				BackRepair backRepair=new BackRepair();
+				backRepair.setBillItem(billItem);
 				return backRepair;
 			}
 		};
@@ -527,8 +515,10 @@ public class MenuAction extends AbstractAction {
 
 	}
 
-	public static void adminCustom(List<Custom>customs,final int out) {
-		BeansPanel<Custom> beansPanel2=new BeansPanel<Custom>(customs,new CustomPanel(null),Custom.class,true) {
+	public static void adminCustom(final int out) {
+		List<Custom> customs = BeanMao.loadAll(Custom.class, " a.out="+out);
+		if(customs==null)customs=new ArrayList<>();
+		BeansPanel<Custom> beansPanel=new BeansPanel<Custom>(customs,new CustomPanel(null),Custom.class,true) {
 
 			@Override
 			public Custom saveBean() {
@@ -542,7 +532,7 @@ public class MenuAction extends AbstractAction {
 
 		};
 
-		BeanDialog<Custom> dialog=new BeanDialog<Custom>(beansPanel2,"订单客户管理") {
+		BeanDialog<Custom> dialog=new BeanDialog<Custom>(beansPanel,"订单客户管理") {
 
 			@Override
 			public boolean okButtonAction() {

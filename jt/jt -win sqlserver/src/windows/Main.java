@@ -47,7 +47,7 @@ public class Main extends JFrame {
 
 	public Main() {
 		setBounds(100, 100, 700, 400);
-		setTitle("津田精密机构订单管理系统");
+		setTitle("津田精密机构订单管理系统"); 
 		setIconImage(Toolkit.getDefaultToolkit().getImage(About.class.getResource("/ui/logo.PNG")));
 		final BillManagerPnl billManagerPnl=new BillManagerPnl();
 		setJMenuBar(new MainMenu(billManagerPnl.getTable()));
@@ -87,12 +87,8 @@ public class Main extends JFrame {
 			@Override
 			public void run() {
 				try {
-
-					
-					new SwingWorker<Void, Integer>(){
-
-						@Override
-						protected Void doInBackground() throws Exception {
+					 new Runnable() {
+						public void run() {
 							jcifs.Config.setProperty("jcifs.smb.client.domain",
 									"192.168.1.103");
 							jcifs.Config.setProperty("jcifs.smb.client.username", "cw");
@@ -103,10 +99,10 @@ public class Main extends JFrame {
 							jcifs.Config.setProperty("jcifs.smb.client.soTimeout",
 									"5000");
 							BeanMao.beanManager.getEm();
-							return null;
 						}
-						
-					}.execute();
+					}.run();
+					
+					
 					try(Statement st=SessionData.getConnection().createStatement();){
 						ResultSet rs=st.executeQuery("select * from version");
 						if(rs.next()){

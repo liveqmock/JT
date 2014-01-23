@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Vector;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -55,7 +56,7 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 				FormFactory.DEFAULT_COLSPEC,
 				FormFactory.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),},
-			new RowSpec[] {
+				new RowSpec[] {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
@@ -81,11 +82,11 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		finishDate=new JXDatePicker();
 		prepareEmployee=new JComboBox<Employee>(new Vector<Employee>(Employee.loadOperaters()));
 
-		
+
 		add( new JLabel("工序:"), "2, 2, right, default");		
 		add(operationPlan, "4, 2, fill, default");
-		
-		
+
+
 		add( new JLabel("操作员:"), "6, 2, right, default");		
 		add(employee, "8, 2, fill, default");
 		employee.setName("操作员");
@@ -93,12 +94,12 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		add(new JLabel("实发数:"), "2, 4, right, default");
 		add(getNum, "4, 4, fill, default");
 		getNum.setName("实发数");
-		
-		
+
+
 		add(new JLabel("成品数："), "6, 4, right, default");
 		add(productNum, "8, 4, fill, default");
 		productNum.setName("成品数");
-		
+
 		add(new JLabel("报废数:"), "2, 6, right, default");
 		add(scrapNum, "4, 6, fill, default");
 		scrapNum.setName("报废数");
@@ -106,7 +107,7 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 
 		add(new JLabel("报废原因:"), "6, 6, right, default");		
 		add(scrapReason, "8, 6, fill, default");
-		
+
 		add(new JLabel("用时:"), "2, 8, right, default");		
 		add(useTime, "4, 8, fill, default");
 		useTime.setName("用时");
@@ -124,19 +125,19 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 
 		add(new JLabel("调机员:"), "6, 10, right, default");		
 		add(prepareEmployee, "8, 10, fill, default");
-		
+
 		add(new JLabel("检验员:"), "2, 12, right, default");		
 		add(checker, "4, 12, fill, default");
 
 
 		add(new JLabel("备注:"), "6, 12, right, default");		
 		add(note, "8, 12, fill, default");
-		
+
 		addValidators();
 	}
 	public void addValidators() {
 
-		
+
 		getValidationGroup().add(getNum,Validators.REQUIRE_VALID_INTEGER);
 		getValidationGroup().add(getNum,Validators.numberMin(0));
 		getValidationGroup().add(getNum,Validators.REQUIRE_NON_EMPTY_STRING);
@@ -151,7 +152,7 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		getValidationGroup().add(prepareTime,Validators.numberMinE(0));
 		getValidationGroup().add(employee,Validators.notNull());
 	}
-	
+
 	@Override
 	protected void dataBinding() {
 		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
@@ -169,8 +170,8 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,  BeanProperty.create("prepareEmployee"), prepareEmployee, comboBoxBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,  BeanProperty.create("operationPlan"), operationPlan, comboBoxBeanProperty));
 
-		
-		
+
+
 	}
 	public void setOperationPlans(Collection< OperationPlan> operationPlans) {
 		operationPlan.removeAllItems();
@@ -178,9 +179,15 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 			if(operation.getUseTime()>0){
 				operationPlan.addItem(operation);
 			}
-			
+
 		}
-		
+
+	}
+	@Override
+	public void setBean(OperationWork origBean) {
+		if(origBean.getPlan()!=null)
+			operationPlan.setModel(new DefaultComboBoxModel<>(new Vector<>(origBean.getPlan().getOperationPlans())));
+		super.setBean(origBean);
 	}
 
 }

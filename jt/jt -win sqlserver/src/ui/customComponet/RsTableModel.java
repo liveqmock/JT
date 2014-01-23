@@ -127,10 +127,6 @@ public class RsTableModel extends AbstractTableModel {
 			if(getColumnCount()<=c)return null;
 			rs.absolute(r + 1);
 
-			if(getColumnClass(c)==String.class)
-				System.err.println("S-"+rs.getString(c+1));
-			else
-				System.err.println(rs.getObject(c+1));
 			return rs.getObject(c + 1);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

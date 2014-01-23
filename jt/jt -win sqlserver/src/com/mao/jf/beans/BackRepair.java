@@ -19,7 +19,7 @@ public class BackRepair extends BeanMao {
 	private int id;
 	
 	@ManyToOne
-	@JoinColumn(name = "billItem", referencedColumnName = "id")
+	@JoinColumn(name = "billid", referencedColumnName = "id")
 	private Bill billItem ;
 	@Caption("·µÐÞÊý¾Ý")
 	private long backNum ;

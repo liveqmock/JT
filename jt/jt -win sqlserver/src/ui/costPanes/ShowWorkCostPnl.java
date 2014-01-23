@@ -20,10 +20,10 @@ public class ShowWorkCostPnl extends BillShowPnl {
 +"preparecost 实际调机费用 , material 材料费用,"
 +"isnull(workcost,0)+isnull(preparecost,0)+isnull(material,0) 总费用 from ("
 +"select bill,sum(unitusetime*b.num) planwork, sum(cost*unitusetime*b.num) operation,sum(preparetime*.2) prepare "
-+"from operationplan a join \"plan\" b on a.\"plan\"=b.id group by bill"
++"from operationplan a join \"billplan\" b on a.\"billplan\"=b.id group by bill"
 +") a left join("
 +"select bill,sum(workcost) workcost,sum(worktime) worktime,sum(preparecost) preparecost "
-+"from operationwork a join \"plan\" b on a.\"plan\"=b.id group by bill"
++"from operationwork a join \"billplan\" b on a.\"billplan\"=b.id group by bill"
 +") b on a.bill=b.bill left join ("
 +"select  bill, sum(unitcost*num) material from material group by bill"
 +") c on a.bill=c.bill join bill d on a.bill=d.id";

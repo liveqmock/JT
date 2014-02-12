@@ -63,6 +63,7 @@ public class MainMenu extends JMenuBar {
 			menu.add("生产工序管理").addActionListener(action);
 //			menu.add("生产材料管理").addActionListener(action);
 			menu.addSeparator();
+			menu.add("查看未开始的排产计划").addActionListener(action);
 			menu.add("员工产出统计").addActionListener(action);
 			menu.add("工序产出统计").addActionListener(action);
 			menu.add("排产时间查看").addActionListener(action);
@@ -71,7 +72,6 @@ public class MainMenu extends JMenuBar {
 			menu.addSeparator();
 			menu.add("工序费用管理").addActionListener(action);
 			menu.add("操作人员管理").addActionListener(action);
-
 			menu = new JMenu("用户管理");
 			add(menu);
 			menu.add("用户管理").addActionListener(action);
@@ -103,6 +103,7 @@ public class MainMenu extends JMenuBar {
 			menu = new JMenu("成本管理");
 			add(menu);
 			menu.add("生产计划管理").addActionListener(action);
+			menu.add("查看未开始的排产计划").addActionListener(action);
 			menu.add("生产计划与实际成本对照").addActionListener(action);
 			menu = new JMenu("用户管理");
 			add(menu);

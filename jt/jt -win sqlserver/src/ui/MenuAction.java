@@ -28,9 +28,9 @@ import ui.costPanes.OperationPnl;
 import ui.costPanes.PlanCreatePanel;
 import ui.costPanes.PlanWorkPnl;
 import ui.costPanes.ShowWorkCostPnl;
+import ui.costPanes.UnStartPlanPnl;
 import ui.costPanes.WorkCostPnl;
 import ui.costPanes.WorkCreatePanel;
-
 import ui.customComponet.BeanDialog;
 import ui.customComponet.BeanTableModel;
 import ui.customComponet.BeansPanel;
@@ -195,6 +195,9 @@ public class MenuAction extends AbstractAction {
 				employeeManager();
 
 				break;
+			case "查看未开始的排产计划":
+				showUnStartPlan();
+				break;
 			case "月度统计":
 				monStatistic();
 				break;
@@ -309,6 +312,15 @@ public class MenuAction extends AbstractAction {
 		JDialog dialog=new JDialog();
 		dialog.setTitle("工序管理");
 		dialog.setContentPane(new ShowWorkCostPnl());
+		dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
+		dialog.setLocationRelativeTo(null);
+		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+		dialog.setVisible(true);
+	}
+	private void showUnStartPlan(){
+		JDialog dialog=new JDialog();
+		dialog.setTitle("未开始的排产计划");
+		dialog.setContentPane(new UnStartPlanPnl());
 		dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
 		dialog.setLocationRelativeTo(null);
 		dialog.setModalityType(ModalityType.APPLICATION_MODAL);

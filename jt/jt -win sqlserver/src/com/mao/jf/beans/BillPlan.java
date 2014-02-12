@@ -126,16 +126,20 @@ public class BillPlan extends BeanMao {
 		}
 		return time;
 	}
-	@Caption(order = 1, value= "图号")
+	@Caption(order = 1, value= "客户")
+	public String getCustom() {
+		return bill.getCustom();
+	}
+	@Caption(order = 2, value= "图号")
 	public String getPic() {
 		return bill.getPicid();
 	}
 	@Caption(order = 3, value= "创建时间")
 	public Date getProduceDate() {
-		if(produceDate==null)produceDate=new Date();
+		if(produceDate==null && getOperationPlans()!=null&&getOperationPlans().size()>0)produceDate=getOperationPlans().get(0).getPlanDate();
 		return produceDate;
 	}
-	@Caption(order=2,value="序号")
+	@Caption(order=3,value="序号")
 	public int getSequenceNum() {
 		if(sequenceNum==0) {
 			try{
@@ -240,5 +244,11 @@ public class BillPlan extends BeanMao {
 		}
 		super.save();
 	}
-
+	public static List<BillPlan> getUnstartPlan() {
+		return BeanMao.loadAll(BillPlan.class, " a.id not in (select plan from OperationWork) order by produceDate");
+		
+	}
+	public static void main(String[] a) {
+		System.err.println(BeanMao.loadAll(BillPlan.class, " a.id not in (select plan from OperationWork) order by produceDate").size());
+	}
 }

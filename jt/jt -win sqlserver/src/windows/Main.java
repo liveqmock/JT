@@ -42,7 +42,7 @@ public class Main extends JFrame {
 	 * Launch the application.
 	 */
 
-	public  static int ver=40;
+	public  static int ver=41;
  
 
 	public Main() {

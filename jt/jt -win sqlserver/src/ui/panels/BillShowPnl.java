@@ -53,7 +53,7 @@ public abstract class BillShowPnl extends JPanel{
 
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout(0, 0));
-		cstlist = new JXComboBox(new Vector<String>(BeanMao.beanManager.getEm().createQuery("select distinct name from Custom").getResultList()));
+		cstlist = new JXComboBox(new Vector<String>(BeanMao.beanManager.getEm().createQuery("select distinct name from Custom where out=0").getResultList()));
 
 		
 

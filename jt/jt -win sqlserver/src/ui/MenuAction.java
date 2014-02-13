@@ -13,7 +13,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Vector;
 
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetProvider;
@@ -210,13 +209,13 @@ public class MenuAction extends AbstractAction {
 			case "生产成本统计":
 				planworkShow();
 				break;
-			case "生产计划管理":
+			case "排产计划录入":
 				planProduct();
 				break;
 			case "生产材料管理":
 				materialManager();
 				break;
-			case "生产工序管理":
+			case "生产工序录入":
 				workManager();
 				break;
 			case "用户管理":

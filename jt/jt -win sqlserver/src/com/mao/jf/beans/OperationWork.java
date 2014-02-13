@@ -9,10 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 import com.mao.jf.beans.annotation.Caption;
-import javax.persistence.ManyToOne;
 
 @Entity
 public class OperationWork extends BeanMao {

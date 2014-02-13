@@ -1,19 +1,12 @@
 package com.mao.jf.beans;
 
-import java.beans.IntrospectionException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Vector;
+import static javax.persistence.GenerationType.IDENTITY;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import com.mao.jf.beans.annotation.Caption;
-
-import javax.persistence.GeneratedValue;
-
-import static javax.persistence.GenerationType.IDENTITY;
-
-import javax.persistence.Column;
 
 @Entity
 public class Operation extends BeanMao {

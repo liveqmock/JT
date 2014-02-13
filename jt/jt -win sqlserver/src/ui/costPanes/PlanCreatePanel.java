@@ -1,14 +1,10 @@
 package ui.costPanes;
 
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Dimension;
-import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -16,9 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -28,7 +22,6 @@ import ui.customComponet.BeanTablePane;
 import ui.panels.BillShowPnl;
 
 import com.mao.jf.beans.Bill;
-import com.mao.jf.beans.BillPlan;
 import com.mao.jf.beans.BillPlan;
 
 public class PlanCreatePanel extends BillShowPnl {
@@ -101,12 +94,12 @@ public class PlanCreatePanel extends BillShowPnl {
 			public void actionPerformed(ActionEvent e) {
 				JMenuItem item = (JMenuItem) e.getSource();
 				switch (item.getText()) {
-				case "删除":
+				case "删除排产计划":
 
 					removeSelectRow();
 
 					break;
-				case "新建":
+				case "新增排产计划":
 
 					addNewPlan();
 
@@ -120,14 +113,13 @@ public class PlanCreatePanel extends BillShowPnl {
 			
 
 		};
-		plansTablePane.getPopupMenu().add("删除").addActionListener(listener);
-		plansTablePane.getPopupMenu().add("新建").addActionListener(listener);
+		plansTablePane.getPopupMenu().add("删除排产计划").addActionListener(listener);
+		plansTablePane.getPopupMenu().add("新建排产计划").addActionListener(listener);
 	}
 
 	@Override
 	public void searchAction(String search) {
-		List<Bill> bills = Bill.loadAll(Bill.class,search);
-		billTable.setBeans(bills);
+		billTable.setBeans(Bill.loadAll(Bill.class,search));
 	}
 
 	public void billItemSelectAction() {
@@ -135,7 +127,9 @@ public class PlanCreatePanel extends BillShowPnl {
 		Collection<BillPlan> plans = bill.getPlans();
 		plansTablePane.setBeans( plans);	
 		if(plans!=null&&plans.size()>0)
-		planPnl.setBean(plans.iterator().next());
+			planPnl.setBean(plans.iterator().next());
+		else
+			planPnl.setBean(null);
 		
 	}
 	public void planItemSelectAction() {
@@ -159,9 +153,10 @@ public class PlanCreatePanel extends BillShowPnl {
 		
 	}
 	private void removeSelectRow() {
-		((BeanTableModel<BillPlan>) plansTablePane.getTable().getModel()).removeRow(
-				plansTablePane.getTable()
-				.convertRowIndexToModel(plansTablePane.getTable().getSelectedRow()));
+		BillPlan rmBean = plansTablePane.getSelectBean();
+		rmBean.getBill().getPlans().remove(rmBean);
+		rmBean.remove();
+		plansTablePane.setBeans(rmBean.getBill().getPlans());
 		
 	}
 }

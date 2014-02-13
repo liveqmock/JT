@@ -11,21 +11,20 @@ public class BeanManager {
 
 	private EntityManager em;
 	private EntityManagerFactory emf;
-	
+
 	public BeanManager() {
 		emf = Persistence.createEntityManagerFactory( "jt-win-sqlserver" );
 
 		em = emf.createEntityManager();
 	}
-	
+
 	public void saveBean(Object bean) {
 		try{
 			em.getTransaction().begin();
 			em.persist(bean);
-			em.getTransaction().commit();
+			em.getTransaction().commit();;
 		}catch(Exception e){
-			em.getTransaction().rollback();
-
+			e.printStackTrace();
 			MyLogger.error("±£¥Ê ß∞‹",e);
 		}
 	}
@@ -36,12 +35,14 @@ public class BeanManager {
 			em.getTransaction().commit();
 			em.detach(bean);
 		}catch(Exception e){
+			e.printStackTrace();
 			em.getTransaction().rollback();
-
+			
 			MyLogger.error("±£¥Ê ß∞‹",e);
 		}
 	}
 	public <T> List<T> getBeans(Class<T> beanClass,String whereString) {
+
 		return em.createQuery( "FROM "+beanClass.getSimpleName() +" as a WHERE "+whereString,beanClass ).getResultList();
 
 	}
@@ -50,7 +51,9 @@ public class BeanManager {
 
 	}
 	public <T> List<T> getBeans(Class<T> beanClass) {
+
 		return em.createQuery( "FROM "+beanClass.getSimpleName() ,beanClass ).getResultList();
+
 	}
 
 	public EntityManager getEm() {
@@ -64,7 +67,7 @@ public class BeanManager {
 	public void close() {
 		em.close();
 		emf.close();
-		
+
 	}
 
 	@Override
@@ -73,17 +76,17 @@ public class BeanManager {
 		super.finalize();
 		close();
 	}
-	
+
 	public <T> T find(Class<T> beanClass,Object id) {
 		return em.find(beanClass,id);
 
 	}
-	
+
 	public <T> T  getBean(Class<T> beanClass,String whereString) throws NoResultException  {
 		return em.createQuery( "FROM "+beanClass.getSimpleName() +" as a WHERE "+whereString,beanClass ).getSingleResult();
 
 	}
 
-	
+
 
 }

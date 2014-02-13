@@ -1,11 +1,8 @@
 package ui.customComponet;
 
-import java.lang.reflect.InvocationTargetException;
-
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
 
@@ -14,24 +11,23 @@ import validation.Severity;
 import validation.ui.ValidationGroup;
 import validation.ui.ValidationPanel;
 
-public abstract class BeanPanel<T> extends JPanel {
+public abstract class BeanOPanel<T> extends JPanel {
 	protected ValidationGroup validationGroup;
 	protected ValidationPanel vPanel;
 	/**
 	 * 
 	 */
-	private T origBean;
+	protected T bean;
 	protected BindingGroup bindingGroup;
-	protected T editBean;
 	/**
 	 * @return the origBean
 	 */
 	public T getBean() {
 		 
-		 return origBean;
+		 return bean;
 	}
 
-	public BeanPanel(T origBean) {
+	public BeanOPanel(T bean) {
 		super();
 		try{
 			vPanel = new ValidationPanel();
@@ -39,7 +35,7 @@ public abstract class BeanPanel<T> extends JPanel {
 			setValidationGroup(vPanel.getValidationGroup());
 			bindingGroup=new BindingGroup();
 			createContents();
-			setBean(origBean);
+			setBean(bean);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -61,13 +57,6 @@ public abstract class BeanPanel<T> extends JPanel {
 				JOptionPane.showMessageDialog(null, p2.getMessage(), "错误",
 						JOptionPane.ERROR_MESSAGE);
 		}
-		if(validate)
-		try {
-			BeanUtils.copyProperties(origBean, editBean);
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
 		return validate;
 	}
 	protected abstract void  dataBinding();
@@ -75,14 +64,12 @@ public abstract class BeanPanel<T> extends JPanel {
 	 * @param origBean
 	 *            the origBean to set
 	 */
-	public void setBean(T origBean) {
+	public void setBean(T bean) {
 		try{
 			bindingGroup.unbind();
 			for(Binding<?, ?, ?, ?> binding: bindingGroup.getBindings())
 				bindingGroup.removeBinding(binding);
-			this.origBean = origBean;
-			if(origBean!=null)
-				this.editBean=(T) BeanUtils.cloneBean(origBean);
+			this.bean = bean;
 			dataBinding();
 			bindingGroup.bind();
 		}catch(Exception e){

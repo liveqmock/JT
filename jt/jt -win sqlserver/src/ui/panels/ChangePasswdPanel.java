@@ -4,11 +4,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
+import net.miginfocom.swing.MigLayout;
+
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 
-import net.miginfocom.swing.MigLayout;
 import ui.customComponet.BeanPanel;
 import validation.builtin.Validators;
 

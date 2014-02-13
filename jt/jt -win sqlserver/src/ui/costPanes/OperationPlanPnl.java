@@ -3,7 +3,6 @@ package ui.costPanes;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.text.Bidi;
 import java.util.Vector;
 
 import javax.swing.JComboBox;
@@ -12,10 +11,9 @@ import javax.swing.JTextField;
 
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.beansbinding.Bindings;
 
-import ui.customComponet.BeanPanel;
+import ui.customComponet.BeanOPanel;
 import validation.builtin.Validators;
 
 import com.jgoodies.forms.factories.FormFactory;
@@ -26,12 +24,12 @@ import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Operation;
 import com.mao.jf.beans.OperationPlan;
 
-public class OperationPlanPnl extends BeanPanel<OperationPlan> implements FocusListener{
+public class OperationPlanPnl extends BeanOPanel<OperationPlan> implements FocusListener{
 	private JTextField unitUseTime     ;
 	private JTextField prepareTime   ;
 	private JTextField planCost;
 	private JTextField note    ;
-	private JComboBox<String> operations;
+	private JComboBox<Operation> operations;
 
 	/**
 	 * Create the panel.
@@ -65,7 +63,7 @@ public class OperationPlanPnl extends BeanPanel<OperationPlan> implements FocusL
 		planCost.setEditable(false);
 		note=new JTextField();
 		
-		operations= new JComboBox<String>(new Vector<String>( BeanMao.beanManager.getEm().createQuery("select name from Operation").getResultList()));
+		operations= new JComboBox<Operation>(new Vector<Operation>( BeanMao.loadAll(Operation.class)));
 		
 
 		
@@ -106,11 +104,11 @@ public class OperationPlanPnl extends BeanPanel<OperationPlan> implements FocusL
 	@Override
 	protected void dataBinding() {
 		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,  BeanProperty.create("unitUseTime"), unitUseTime, jTextFieldBeanProperty));
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,  BeanProperty.create("prepareTime"), prepareTime, jTextFieldBeanProperty));
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,  BeanProperty.create("note"), note, jTextFieldBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("unitUseTime"), unitUseTime, jTextFieldBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("prepareTime"), prepareTime, jTextFieldBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("note"), note, jTextFieldBeanProperty));
 		BeanProperty<Object, Object> comboBoxBeanProperty = BeanProperty.create("selectedItem");
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,  BeanProperty.create("name"), operations, comboBoxBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("operation"), operations, comboBoxBeanProperty));
 
 	}
 	@Override
@@ -121,7 +119,7 @@ public class OperationPlanPnl extends BeanPanel<OperationPlan> implements FocusL
 	@Override
 	public void focusLost(FocusEvent e) {
 		try{
-		planCost.setText(String.valueOf(editBean.getPlanCost()));
+		planCost.setText(String.valueOf(bean.getPlanCost()));
 		}catch(Exception exception){
 			
 		}

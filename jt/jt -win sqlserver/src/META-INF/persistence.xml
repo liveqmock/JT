@@ -13,8 +13,8 @@
 		<class>com.mao.jf.beans.Userman</class>
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
-			<property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://jxjtjm.com:5432;databaseName=bill;"/>
-			<!--<property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://192.168.1.103:1433;databaseName=bill;"/>-->
+			<!--<property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://jxjtjm.com:5432;databaseName=bill;"/>-->
+			<property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://192.168.1.103:1433;databaseName=bill;"/>
 			<property name="javax.persistence.jdbc.user" value="rdp"/>
 			<property name="javax.persistence.jdbc.password" value="mao564864"/>
 		</properties>

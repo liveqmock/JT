@@ -1,18 +1,15 @@
 package com.mao.jf.beans;
 
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.beans.Transient;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TreeSet;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,20 +17,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import com.mao.jf.beans.annotation.Caption;
-
-import javax.persistence.JoinTable;
-import javax.persistence.OrderBy;
-import javax.persistence.OrderColumn;
-
-import ui.customComponet.BeanTableModel;
-import static javax.persistence.CascadeType.ALL;
-import static javax.persistence.CascadeType.PERSIST;
-import static javax.persistence.CascadeType.MERGE;
-import static javax.persistence.CascadeType.REMOVE;
-import static javax.persistence.CascadeType.REFRESH;
-import static javax.persistence.CascadeType.DETACH;
 
 @Entity
 public class BillPlan extends BeanMao {
@@ -50,13 +36,12 @@ public class BillPlan extends BeanMao {
 	private Bill bill;
 	private Date produceDate;
 
-	@OneToMany(mappedBy = "billPlan")
+	@OneToMany(mappedBy = "billPlan", cascade = ALL)
+	@OrderBy("sequence")
 	private Collection<OperationPlan> operationPlans;
-	@javax.persistence.Transient
-	private ArrayList<OperationPlan> operationPlans2;
 	private int completed;
-	@OneToMany(mappedBy = "plan")
-	private List<OperationWork> operationWorks;
+	@OneToMany(mappedBy = "plan", cascade = ALL)
+	private Collection<OperationWork> operationWorks;
 
 	public BillPlan(Bill bill) {
 		this.bill=bill;
@@ -91,19 +76,19 @@ public class BillPlan extends BeanMao {
 	}
 
 
-	public List<OperationPlan> getOperationPlans() {
-		if(operationPlans!=null&&operationPlans2==null){
-			TreeSet<OperationPlan> operationPlanSet = new TreeSet<OperationPlan>(new WpCompare());
-			operationPlanSet.addAll(operationPlans);
-			operationPlans2=new ArrayList<>(operationPlanSet );
+	public ArrayList<OperationPlan> getOperationPlans() {
+		if(!(operationPlans instanceof ArrayList<?>) && operationPlans!=null){
+			operationPlans=new ArrayList<>(operationPlans );
 		}
-		if(operationPlans2==null) 
-			operationPlans2=new ArrayList<OperationPlan>();
-		return  operationPlans2;
+		if(operationPlans==null)operationPlans=new ArrayList<>();
+		return  (ArrayList<OperationPlan>) operationPlans;
 	}
 
 	public int getCompleted() {
 		return completed;
+	}
+	public boolean isCompleted() {
+		return completed==1?true:false;
 	}
 	@Transient
 	public float  getPlanCost() {
@@ -136,7 +121,7 @@ public class BillPlan extends BeanMao {
 	}
 	@Caption(order = 3, value= "创建时间")
 	public Date getProduceDate() {
-		if(produceDate==null && getOperationPlans()!=null&&getOperationPlans().size()>0)produceDate=getOperationPlans().get(0).getPlanDate();
+		if(produceDate==null && getOperationPlans()!=null&&getOperationPlans().size()>0)produceDate=getOperationPlans().iterator().next().getPlanDate();
 		return produceDate;
 	}
 	@Caption(order=3,value="序号")
@@ -180,7 +165,15 @@ public class BillPlan extends BeanMao {
 		this.num = num;
 	}
 	public void setOperationPlans(Collection<OperationPlan> operationPlans) {
+		if(!(operationPlans instanceof ArrayList<?>)&&operationPlans!=null){
+			operationPlans=new ArrayList<>(operationPlans);
+		}
+		if(operationPlans==null)			operationPlans=new ArrayList<>();
 		this.operationPlans = operationPlans;
+	}
+
+	public void setOperationWorks(Collection<OperationWork> operationWorks) {
+		this.operationWorks = operationWorks;
 	}
 
 	public void setProduceDate(Date produceDate) {
@@ -193,15 +186,23 @@ public class BillPlan extends BeanMao {
 
 
 	@Transient
-	public List<OperationWork> getOperationWorks() {
-		if(operationWorks==null)
-
-			operationWorks=OperationWork.loadAll(OperationWork.class, " a.operationPlan.plan.id= "+getId());
-
+	public Collection<OperationWork> getOperationWorks() {
+		if(operationWorks==null)operationPlans=new ArrayList<>();
 		return operationWorks;
 	}
 
 
+
+	
+
+
+	public void initPlanDate() {
+		for(OperationPlan operationPlan: operationPlans){
+			operationPlan.setPlanDate(null);
+			operationPlan.getPlanDate();
+		}
+
+	}
 
 	private class WpCompare implements Comparator<OperationPlan>{
 
@@ -216,39 +217,8 @@ public class BillPlan extends BeanMao {
 
 	}
 
-
-
-	public void initPlanDate() {
-		for(OperationPlan operationPlan: operationPlans2){
-			operationPlan.setPlanDate(null);
-			operationPlan.getPlanDate();
-		}
-
-	}
-
-	@Override
-	public void remove() {
-		operationPlans.clear();
-		operationPlans.addAll(operationPlans2);
-		super.remove();
-	}
-
-	@Override
-	public void save() {
-		if(operationPlans==null)
-			operationPlans=operationPlans2;
-		else {
-			operationPlans.clear();
-			operationPlans.addAll(operationPlans2);
-
-		}
-		super.save();
-	}
 	public static List<BillPlan> getUnstartPlan() {
 		return BeanMao.loadAll(BillPlan.class, " a.id not in (select plan from OperationWork) order by produceDate");
 		
-	}
-	public static void main(String[] a) {
-		System.err.println(BeanMao.loadAll(BillPlan.class, " a.id not in (select plan from OperationWork) order by produceDate").size());
 	}
 }

@@ -6,8 +6,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-public class SerialiObject {
-
+public class SerialiObject { 
 	public static void save(Object object, File file) throws Exception {
 		if (file.createNewFile() || file.isFile()) {
 			FileOutputStream fs = new FileOutputStream(file);

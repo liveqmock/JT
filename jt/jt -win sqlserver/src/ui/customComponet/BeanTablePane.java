@@ -12,8 +12,8 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collection;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -255,6 +255,7 @@ public class BeanTablePane<T> extends JPanel {
 	public void removeSelectRow() {
 		((BeanTableModel<T>) getTable().getModel()).removeRow(getTable()
 				.convertRowIndexToModel(getTable().getSelectedRow()));
+		
 	}
 
 	@SuppressWarnings("unchecked")

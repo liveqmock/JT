@@ -1,17 +1,7 @@
 package ui.costPanes;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.swing.JOptionPane;
-
-import org.apache.commons.beanutils.BeanUtils;
-
 import ui.customComponet.BeansPanel;
 
-import com.mao.jf.beans.OperationPlan;
 import com.mao.jf.beans.BillPlan;
 import com.mao.jf.beans.OperationWork;
 

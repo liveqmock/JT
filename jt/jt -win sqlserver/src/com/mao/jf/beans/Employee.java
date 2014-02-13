@@ -8,10 +8,10 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 import com.mao.jf.beans.annotation.Caption;
-import javax.persistence.OneToOne;
-import javax.persistence.JoinColumn;
 
 @Entity
 public class Employee extends BeanMao {

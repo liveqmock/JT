@@ -6,7 +6,6 @@ import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,10 +13,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 import javax.persistence.EntityManager;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
@@ -29,7 +26,6 @@ import ui.frames.About;
 import ui.panels.BillManagerPnl;
 import ui.panels.LoginPanel;
 
-import com.mao.jf.beans.BeanManager;
 import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.SerialiObject;
 import com.mao.jf.beans.SessionData;
@@ -42,7 +38,7 @@ public class Main extends JFrame {
 	 * Launch the application.
 	 */
 
-	public  static int ver=41;
+	public  static int ver=45;
  
 
 	public Main() {

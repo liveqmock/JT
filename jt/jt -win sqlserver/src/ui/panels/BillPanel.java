@@ -6,6 +6,8 @@ import java.awt.BorderLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -18,8 +20,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
-import java.util.List;
-import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -55,7 +55,6 @@ import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
-import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Bill;
 import com.mao.jf.beans.Custom;
 import com.mao.jf.beans.SerialiObject;
@@ -245,6 +244,23 @@ public class BillPanel extends JSplitPane {
 
 			}
 		});
+		picNoFld.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				// TODO 自动生成的方法存根
+				Bill bill = bean.getSamePicBill();
+				if(bill!=null)
+					imageView.showFile(bill.getImageUrl());
+				
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				
+			}
+		});
+		
 		vPanel.getValidationGroup().add(customCombox, Validators.notNull());
 
 		// vPanel.getValidationGroup().add(billidFld,Validators.REQUIRE_NON_EMPTY_STRING);

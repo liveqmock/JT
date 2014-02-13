@@ -3,7 +3,8 @@ package ui.costPanes;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.event.MouseInputListener;
@@ -68,11 +69,8 @@ public class DragDropRowTableUI<T> extends BasicTableUI {
 					toRow = fromRow + 1;
 				}
 				if (toRow >= 0 && toRow < table.getRowCount()&&toRow!=fromRow) {
-					ArrayList<OperationPlan> beans = (((ArrayList<OperationPlan>)((BeanTableModel<OperationPlan>)table.getModel()).getBeans()	)
-							);
-					OperationPlan moveBean = beans.remove(fromRow);
-					beans.add(toRow, moveBean);
-
+					List<OperationPlan> beans =(List<OperationPlan>) ((BeanTableModel<OperationPlan>)table.getModel()).getBeans();
+					Collections.swap(beans, fromRow, toRow);
 					table.setRowSelectionInterval(toRow, toRow);
 					sRow=toRow;
 					startDragPoint = yMousePoint;

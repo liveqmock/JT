@@ -8,8 +8,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.TreeSet;
 
@@ -40,6 +40,8 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	}
 	public BeanTableModel(Collection<T> beans,Class<T> class1, String [] header) {
 		super();
+		if (beans != null)
+			setBeans(beans);
 		TreeSet<BeanTableModelHeader> headers = new TreeSet<BeanTableModelHeader>();
 		for(Field fld:class1.getDeclaredFields()){
 			if(fld.getAnnotation(Hidden.class)==null){
@@ -80,8 +82,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 		}
 		heads=new BeanTableModelHeader[headers.size()];
 		headers.toArray(heads);
-		if (beans != null)
-			setBeans(beans);
+		
 
 	}
 	/*
@@ -95,8 +96,14 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 		return heads[column].getCaption().value();
 	}
 
-	public T getSelectBean(int i) {
-		return (T) beans.toArray()[i];
+	public T getSelectBean(int r) {			
+			Iterator<T> it = beans.iterator();
+		for(int i=0;i<beans.size();i++){
+			T t = it.next();
+			if(i==r)
+				return t;
+		}
+		return null;
 	}
 
 	@Override
@@ -114,14 +121,18 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	@Override
 	public Object getValueAt(int r, int c) {
 
-		try {
+		try {			
+				 Iterator<T> it = beans.iterator();
+			for(int i=0;i<beans.size();i++){	
+				T t = it.next();
+				if(i==r)
+					return PropertyUtils.getSimpleProperty(t, heads[c].getField());
+			}
 
-			return PropertyUtils.getSimpleProperty(beans.toArray()[r], heads[c].getField());
-
-		} catch (InvocationTargetException | NoSuchMethodException|IllegalArgumentException | IllegalAccessException e) {
-
-			return null;
+		} catch (Exception e) {
+			
 		}
+			return null;
 	}
 
 	/**
@@ -139,7 +150,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	 *            the beans to set
 	 */
 	public void setBeans(Collection<T> beans) {
-
+		
 		this.beans=beans;
 		fireTableDataChanged();
 	}
@@ -255,13 +266,9 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	}
 
 	public void removeRow(int row) {
-		try {
-			BeanMao.removeBean( getSelectBean(row));
-
-		} catch (Exception e2) {
-			e2.printStackTrace();
-		}
-		beans.remove(getSelectBean(row));
+		T bean = getSelectBean(row);
+		beans.remove(bean);
+		BeanMao.removeBean( bean);
 		fireTableRowsDeleted(row, row);
 	}
 

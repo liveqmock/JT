@@ -7,16 +7,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.PostRemove;
+import javax.persistence.PrePersist;
 
 import com.mao.jf.beans.annotation.Caption;
-
-import javax.persistence.OneToOne;
 
 @Entity
 public class OperationPlan extends BeanMao {
@@ -51,7 +51,7 @@ public class OperationPlan extends BeanMao {
 	}
 	@Caption(order =1, value= "流程序号")
 	public int getSequenceChange() {
-		sequence= getBillPlan().getOperationPlans().indexOf(this)+1;
+		sequence= getIndex()+1;
 		return sequence;
 	}
 	public int getSequence() {
@@ -83,7 +83,7 @@ public class OperationPlan extends BeanMao {
 	@Caption(order = 6, value= "计划总用时")
 	public float getUseTime() {
 		try{
-		return unitUseTime*billPlan.getNum()/operation.getNum()+prepareTime;
+			return unitUseTime*billPlan.getNum()/operation.getNum()+prepareTime;
 		}catch(Exception e){
 			return 0;
 		}
@@ -161,9 +161,9 @@ public class OperationPlan extends BeanMao {
 		if(planDate==null&&getBillPlan()!=null){
 			long planDatetime=0;
 			long lastDate=getLastPlanDate();
-			int point = getBillPlan().getOperationPlans().indexOf(this);
+			int point = getIndex();
 			if(point>0){
-				OperationPlan lower = getBillPlan().getOperationPlans().get(point-1);
+				OperationPlan lower = getPreBean();
 				long lowerPlanDate = lower.getPlanDate().getTime()+Math.round( lower.getUseTime()*60000);
 				planDatetime=lastDate>lowerPlanDate?lastDate:lowerPlanDate;
 
@@ -210,24 +210,22 @@ public class OperationPlan extends BeanMao {
 	public void setOperation(Operation operation) {
 		this.operation=operation;
 		try{
-		this.name=operation.getName();
-		this.cost=operation.getCost();
+			this.name=operation.getName();
+			this.cost=operation.getCost();
 		}catch(Exception e){
-			
+
 		}
 	}
 
-	@Override
-	public void remove() {
+	@PostRemove
+	public void postRemove() {
 		getBillPlan().initPlanDate();
-		super.remove();
 	}
-	@Override
-	public void save() {
+	@PrePersist
+	public void prePersist() {
 		this.name=operation.getName();
 		this.cost=operation.getCost();
 		getBillPlan().initPlanDate();
-		super.save();
 	}
 	@Override
 	public boolean equals(Object obj) {
@@ -250,6 +248,13 @@ public class OperationPlan extends BeanMao {
 			return false;
 		return true;
 	}
-	
-
+	public int getIndex() {
+		return getBillPlan().getOperationPlans().indexOf(this);
+	}
+	public OperationPlan getPreBean() {
+		if(getIndex()>0) 
+			return getBillPlan().getOperationPlans().get(getIndex()-1);
+		else
+			return null;
+	}
 }

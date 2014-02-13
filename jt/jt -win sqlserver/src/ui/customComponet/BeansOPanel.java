@@ -13,26 +13,26 @@ import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
+public abstract class BeansOPanel<T> extends BeanOPanel<Collection<T>> {
 	private BeanTablePane<T> tablePane;
-	private BeanPanel<T> beanPanel;
+	private BeanOPanel<T> beanPanel;
 	private String[] filterColumns;
 	private boolean vertical=false;
 	private Class<T> class1;
-	public BeansPanel() {
+	public BeansOPanel() {
 		super(null);
 	}
-	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1) {
+	public BeansOPanel(Collection<T> beans, BeanOPanel<T> beanPanel,Class<T> class1) {
 		this(beans, beanPanel,class1, null,false);
 	}
-	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1,boolean vertical) {
+	public BeansOPanel(Collection<T> beans, BeanOPanel<T> beanPanel,Class<T> class1,boolean vertical) {
 		this(beans, beanPanel,class1, null,vertical);
 	}
-	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1,
+	public BeansOPanel(Collection<T> beans, BeanOPanel<T> beanPanel,Class<T> class1,
 			String filterColumns[]) {
 		this(beans, beanPanel,class1, filterColumns,false);
 	}
-	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1,
+	public BeansOPanel(Collection<T> beans, BeanOPanel<T> beanPanel,Class<T> class1,
 			String filterColumns[],boolean vertical) {
 		super(beans);
 		this.beanPanel=beanPanel;
@@ -48,7 +48,7 @@ public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
 		
 		beanPanel.setBorder(BorderFactory.createEtchedBorder());
 		setLayout(new BorderLayout(0, 0));
-		tablePane = new BeanTablePane<T>(editBean,class1, filterColumns);
+		tablePane = new BeanTablePane<T>(bean,class1, filterColumns);
 		ActionListener listener = new ActionListener() {
 
 			@Override
@@ -176,7 +176,7 @@ public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
 	/**
 	 * @return the beanPanel
 	 */
-	public BeanPanel<T> getBeanPanel() {
+	public BeanOPanel<T> getBeanPanel() {
 		return this.beanPanel;
 	}
 
@@ -184,7 +184,7 @@ public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
 	 * @param beanPanel
 	 *            the beanPanel to set
 	 */
-	public void setBeanPanel(BeanPanel<T> beanPanel) {
+	public void setBeanOPanel(BeanOPanel<T> beanPanel) {
 		this.beanPanel = beanPanel;
 	}
 
@@ -197,7 +197,7 @@ public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
 	}
 
 	public void reset() {
-		BeansPanel.this.beanPanel.setBean(createNewBean());
+		BeansOPanel.this.beanPanel.setBean(createNewBean());
 		
 	}
 }

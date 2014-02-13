@@ -2,13 +2,9 @@ package ui.panels;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -26,8 +22,6 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Material;
-import com.mao.jf.beans.SessionData;
-import com.mao.jf.beans.Userman;
 
 public class MaterialPanel extends BeanPanel<Material> {
 

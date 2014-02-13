@@ -16,12 +16,12 @@ import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Bindings;
 
-import ui.customComponet.BeanPanel;
+import ui.customComponet.BeanOPanel;
 import validation.builtin.Validators;
 
 import com.mao.jf.beans.BillPlan;
 
-public class PlanPnl extends BeanPanel<BillPlan>{
+public class PlanPnl extends BeanOPanel<BillPlan>{
 
 	private JTextField numField;
 	private OperarionPlansPnl operationPlansPnl;
@@ -33,7 +33,7 @@ public class PlanPnl extends BeanPanel<BillPlan>{
 
 	@Override
 	protected void dataBinding() {
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,  BeanProperty.create("num"), numField, BeanProperty.create("text")));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("num"), numField, BeanProperty.create("text")));
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class PlanPnl extends BeanPanel<BillPlan>{
 		numPanel.add(numField);
 		
 
-		operationPlansPnl=new OperarionPlansPnl(editBean);
+		operationPlansPnl=new OperarionPlansPnl(bean);
 
 		operationPlansPnl.getTablePane().getTable().setUI(new DragDropRowTableUI<>());
 		JButton saveBt = new JButton("保存排产计划");
@@ -61,12 +61,13 @@ public class PlanPnl extends BeanPanel<BillPlan>{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				PlanPnl.this.getBean().save();
+				operationPlansPnl.setBean(PlanPnl.this.getBean().getOperationPlans());
 				
 			}
 		});
 		
 		try{
-			getValidationGroup().add(numField,Validators.numberMaxE(editBean.getBill().getNum()));
+			getValidationGroup().add(numField,Validators.numberMaxE(bean.getBill().getNum()));
 			getValidationGroup().add(numField,Validators.notNull());
 			getValidationGroup().add(numField,Validators.REQUIRE_VALID_INTEGER);
 			getValidationGroup().add(numField,Validators.numberMin(0));

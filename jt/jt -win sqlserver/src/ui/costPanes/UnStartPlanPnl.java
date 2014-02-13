@@ -7,13 +7,10 @@ import javax.swing.JSplitPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.jdesktop.swingx.MultiSplitLayout.Split;
+import ui.customComponet.BeanTablePane;
 
 import com.mao.jf.beans.BillPlan;
 import com.mao.jf.beans.OperationPlan;
-
-import ui.customComponet.BeanTableModel;
-import ui.customComponet.BeanTablePane;
 
 public class UnStartPlanPnl extends JPanel {
 

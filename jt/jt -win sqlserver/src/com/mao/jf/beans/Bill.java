@@ -1,5 +1,6 @@
 package com.mao.jf.beans;
 
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.awt.Color;
@@ -15,14 +16,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
+import javax.persistence.PostRemove;
+import javax.persistence.PrePersist;
 
 import com.mao.jf.beans.annotation.Caption;
-
-import javax.persistence.OrderBy;
-import javax.persistence.OrderColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 @Entity
 public class Bill extends BeanMao {	
 	@Id
@@ -65,7 +63,7 @@ public class Bill extends BeanMao {
 	@OneToMany(mappedBy = "bill")
 	private Collection<Material> materials;
 
-	@OneToMany(mappedBy = "bill")
+	@OneToMany(mappedBy = "bill", orphanRemoval = true, cascade = {  ALL })
 	@OrderColumn(name = "sequenceNum")
 	private Collection<BillPlan> plans;
 
@@ -92,13 +90,13 @@ public class Bill extends BeanMao {
 		List<Bill> billItems=null;
 		if(Userman.loginUser.isManager()|| isShowCompelete){
 			searchString=(searchString==null?"":searchString+" ")+" order by a.itemCompleteDate ,a.requestDate";
-			
+
 		}else{
 			searchString=(searchString==null?"":searchString+" and ")+" a.itemCompleteDate is null  order by a.itemCompleteDate ,a.requestDate";
 
 		}
-			billItems=loadAll(Bill.class,searchString);
-			
+		billItems=loadAll(Bill.class,searchString);
+
 		return billItems;
 
 	}
@@ -519,11 +517,16 @@ public class Bill extends BeanMao {
 	public void setPlans(Collection<BillPlan> plans) {
 		this.plans = plans;
 	}
+	public Bill getSamePicBill() {
+		if(custom!=null&&picid!=null)
+			return beanManager.getBean(Bill.class, "custom='"+custom+"' and picid='"+picid+"'");
+		else
+			return null;
 
-	@Override
-	public void remove() {
-		// TODO 自动生成的方法存根
-		super.remove();
+	}
+
+	@PrePersist
+	public void prePersist() {
 		if(this.imageUrl!=null) new File(this.imageUrl).delete();
 	}
 

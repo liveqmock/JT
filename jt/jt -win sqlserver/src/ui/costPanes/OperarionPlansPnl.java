@@ -1,20 +1,15 @@
 package ui.costPanes;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.apache.commons.beanutils.BeanUtils;
+import ui.customComponet.BeansOPanel;
 
-import ui.customComponet.BeansPanel;
-
-import com.mao.jf.beans.OperationPlan;
 import com.mao.jf.beans.BillPlan;
+import com.mao.jf.beans.OperationPlan;
 
-public class OperarionPlansPnl extends BeansPanel<OperationPlan> {
+public class OperarionPlansPnl extends BeansOPanel<OperationPlan> {
 	private BillPlan plan;
 	public OperarionPlansPnl(BillPlan plan) {
 		super(null, new OperationPlanPnl(null), OperationPlan.class);
@@ -39,21 +34,22 @@ public class OperarionPlansPnl extends BeansPanel<OperationPlan> {
 			if(index>-1&&beans.get(index)!=bean){
 				JOptionPane.showMessageDialog(this, "此工序已经存在，不能再添加！","错误",JOptionPane.ERROR_MESSAGE);
 				return;
-			}else if(index>0){
-				try {
-					 BeanUtils.copyProperties(beans.get(index), bean);
-				} catch (IllegalAccessException |  InvocationTargetException  e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
 			}
 			bean.save();
-			getTablePane().addNew(bean);
+			plan.getOperationPlans().add(bean);
+			getTablePane().setBeans(plan.getOperationPlans());
 			setPanelBean(createNewBean());
 		
 			
 	}
+	@Override
+	public void removeSelectRow() {
+		OperationPlan removeBean = getTablePane().getSelectBean();
+		plan.getOperationPlans().remove(removeBean);
+		removeBean.remove();
+		setBean(plan.getOperationPlans());
 
+	}
 	@Override
 	public OperationPlan createNewBean() {
 		return new OperationPlan(plan);
@@ -61,6 +57,7 @@ public class OperarionPlansPnl extends BeansPanel<OperationPlan> {
 	public void setPlan(BillPlan plan) {
 		this.plan=plan;
 		setBean(plan==null?null:plan.getOperationPlans());
+		
 		
 	}
 }

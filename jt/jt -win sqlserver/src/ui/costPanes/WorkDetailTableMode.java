@@ -75,7 +75,7 @@ public class WorkDetailTableMode extends AbstractTableModel {
 		case 2:
 			return plan.getBill().getPicid();
 		case 3:
-			return plan.getProduceDate();
+			return plan.getPlanProcessTime();
 		case 4:
 
 			return plan.getNum();

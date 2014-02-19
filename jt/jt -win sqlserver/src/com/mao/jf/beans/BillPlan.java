@@ -34,7 +34,8 @@ public class BillPlan extends BeanMao {
 	@ManyToOne
 	@JoinColumn(name = "bill", referencedColumnName = "id")
 	private Bill bill;
-	private Date produceDate;
+	private Date startDate;
+	private Date endDate;
 
 	@OneToMany(mappedBy = "billPlan", cascade = ALL)
 	@OrderBy("sequence")
@@ -83,7 +84,17 @@ public class BillPlan extends BeanMao {
 		if(operationPlans==null)operationPlans=new ArrayList<>();
 		return  (ArrayList<OperationPlan>) operationPlans;
 	}
+    public  OperationPlan getNextOperationPlan(OperationPlan operationPlan) {
+    	if(getOperationPlans().indexOf(operationPlan)<getOperationPlans().size()-1)
+		return getOperationPlans().get(getOperationPlans().indexOf(operationPlan)+1);
+    	else return null;
+	}
 
+    public  OperationPlan getpreOperationPlan(OperationPlan operationPlan) {
+    	if(getOperationPlans().indexOf(operationPlan)>0)
+		return getOperationPlans().get(getOperationPlans().indexOf(operationPlan)-1);
+    	else return null;
+	}
 	public int getCompleted() {
 		return completed;
 	}
@@ -107,7 +118,7 @@ public class BillPlan extends BeanMao {
 	public int  getPlanTime() {
 		int time = 0;
 		for(OperationPlan operationPlan:operationPlans){
-			time+=operationPlan.getUseTime();
+			time+=operationPlan.getPlanProcessTime();
 		}
 		return time;
 	}
@@ -119,12 +130,12 @@ public class BillPlan extends BeanMao {
 	public String getPic() {
 		return bill.getPicid();
 	}
-	@Caption(order = 3, value= "创建时间")
-	public Date getProduceDate() {
-		if(produceDate==null && getOperationPlans()!=null&&getOperationPlans().size()>0)produceDate=getOperationPlans().iterator().next().getPlanDate();
-		return produceDate;
+	@Caption(order = 3, value= "开始时间")
+	public Date getStartDate() {
+		if(startDate==null && getOperationPlans()!=null&&getOperationPlans().size()>0)startDate=getOperationPlans().iterator().next().getStartDate();
+		return startDate;
 	}
-	@Caption(order=3,value="序号")
+	@Caption(order=0,value="序号")
 	public int getSequenceNum() {
 		if(sequenceNum==0) {
 			try{
@@ -135,11 +146,12 @@ public class BillPlan extends BeanMao {
 		}
 		return sequenceNum;
 	}
-	@Transient
-	public int  getUserTime() {
+
+	@Caption(order = 5, value= "耗时")
+	public int  getPlanProcessTime() {
 		int time = 0;
 		for(OperationPlan operationPlan:operationPlans){
-			time+=operationPlan.getUseTime();
+			time+=operationPlan.getPlanProcessTime();
 		}
 		return time;
 	}
@@ -176,8 +188,9 @@ public class BillPlan extends BeanMao {
 		this.operationWorks = operationWorks;
 	}
 
-	public void setProduceDate(Date produceDate) {
-		this.produceDate = produceDate;
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
 	}
 
 	public void setSequenceNum(int sequenceNum) {
@@ -191,34 +204,21 @@ public class BillPlan extends BeanMao {
 		return operationWorks;
 	}
 
-
-
-	
-
-
-	public void initPlanDate() {
-		for(OperationPlan operationPlan: operationPlans){
-			operationPlan.setPlanDate(null);
-			operationPlan.getPlanDate();
-		}
-
-	}
-
-	private class WpCompare implements Comparator<OperationPlan>{
-
-		@Override
-		public int compare(OperationPlan o1, OperationPlan o2) {
-			// TODO 自动生成的方法存根
-			int a = Integer.compare(o1.getSequence(), o2.getSequence());
-			try{return a==0?o1.getName().compareTo(o2.getName()):a;}catch (Exception e){
-				return 0;
-			}
-		}
-
-	}
-
 	public static List<BillPlan> getUnstartPlan() {
 		return BeanMao.loadAll(BillPlan.class, " a.id not in (select plan from OperationWork) order by produceDate");
 		
+	}
+
+	@Caption(order = 4, value= "结束时间")
+	public Date getEndDate() {
+			if(endDate==null && getOperationPlans()!=null&&getOperationPlans().size()>0){
+				endDate=getOperationPlans().get(getOperationPlans().size()-1).getEndDate();
+			}
+		
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 }

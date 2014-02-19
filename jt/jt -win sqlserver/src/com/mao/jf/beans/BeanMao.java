@@ -25,8 +25,14 @@ public class BeanMao implements Serializable {
 	public static <T> List<T> loadAll(Class<T> cls,String sql){
 		return beanManager.getBeans(cls, sql);
 	}
+	public static <T> List<T> loadAll(Class<T> cls,String sql,Object[] parms){
+		return beanManager.getBeans(cls, sql,parms);
+	}
 	public static <T> T load(Class<T> cls,String sql) {
 		return beanManager.getBean(cls, sql);
+	}
+	public static <T> T load(Class<T> cls,String sql,Object[] objects) {
+		return beanManager.getBean(cls, sql,objects);
 	}
 
 	public static void saveBean(Object bean) {

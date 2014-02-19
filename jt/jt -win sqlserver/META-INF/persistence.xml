@@ -11,6 +11,8 @@
 		<class>com.mao.jf.beans.OperationWork</class>
 		<class>com.mao.jf.beans.BillPlan</class>
 		<class>com.mao.jf.beans.Userman</class>
+		<class>com.mao.jf.beans.Equipment</class>
+		<class>com.mao.jf.beans.EquipmentPlan</class>
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
 			<property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://jxjtjm.com:5432;databaseName=bill;"/>

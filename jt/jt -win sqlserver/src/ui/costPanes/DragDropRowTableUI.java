@@ -87,11 +87,8 @@ public class DragDropRowTableUI<T> extends BasicTableUI {
 				table.setRowSelectionInterval(sRow, sRow);        	
 			draggingRow = false;
 			table.repaint();
-
-				OperationPlan bean = ((BeanTableModel<OperationPlan>)table.getModel()).getSelectBean(table.convertRowIndexToModel(sRow));
-				if(bean!=null){
-					bean.getBillPlan().initPlanDate();
-				}
+			OperationPlan bean = ((BeanTableModel<OperationPlan>)table.getModel()).getSelectBean(table.convertRowIndexToModel(sRow));
+				
 		}
 	}
 }

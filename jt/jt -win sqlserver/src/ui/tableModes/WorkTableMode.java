@@ -74,7 +74,7 @@ public class WorkTableMode extends AbstractTableModel {
 			return plan.getBill().getWarehousedStr();
 
 		case 7:
-			return plan.getProduceDate();
+			return plan.getPlanProcessTime();
 
 		case 8:
 

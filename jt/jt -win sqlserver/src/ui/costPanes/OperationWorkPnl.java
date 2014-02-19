@@ -175,9 +175,7 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 	public void setOperationPlans(Collection< OperationPlan> operationPlans) {
 		operationPlan.removeAllItems();
 		for(OperationPlan operation:operationPlans){
-			if(operation.getUseTime()>0){
-				operationPlan.addItem(operation);
-			}
+			operationPlan.addItem(operation);
 
 		}
 

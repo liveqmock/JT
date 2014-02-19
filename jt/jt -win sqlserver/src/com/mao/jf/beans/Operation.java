@@ -2,11 +2,15 @@ package com.mao.jf.beans;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.Collection;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import com.mao.jf.beans.annotation.Caption;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Operation extends BeanMao {
@@ -14,10 +18,10 @@ public class Operation extends BeanMao {
 	@GeneratedValue(strategy = IDENTITY)
 	private int id;
 	private String name;  
-	private int  num ; 
-	private float cost   ;
+	private float cost ;
 	private String note  ;
-	
+	@OneToMany(mappedBy = "operation")
+	private Collection<Equipment> equipments;
 
 
 	
@@ -36,7 +40,7 @@ public class Operation extends BeanMao {
 
 	@Caption(order = 3, value= "设备数量")
 	public int getNum() {
-		return num;
+		return getEquipments().size();
 	}
 	@Caption(order = 5, value= "费用")
 	public float getCost() {
@@ -57,15 +61,20 @@ public class Operation extends BeanMao {
 	public void setNote(String note) {
 		this.note = note;
 	}
+	public Collection<Equipment> getEquipments() {
+		return equipments;
+	}
+
+	public void setEquipments(Collection<Equipment> equipments) {
+		this.equipments = equipments;
+	}
+
 	@Override
 	public String toString() {
 		return name;
 	}
 
-	public void setNum(int num) {
-		this.num = num;
-	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -91,7 +100,6 @@ public class Operation extends BeanMao {
 		return true;
 	}
 
-	
 	
 	
 	

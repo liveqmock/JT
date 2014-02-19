@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 public class BeanManager {
 
@@ -47,7 +48,13 @@ public class BeanManager {
 
 	}
 	public <T> List<T> getBeans(Class<T> beanClass,String whereString,Object[] objects) {
-		return em.createQuery( "FROM "+beanClass.getSimpleName() +" as a WHERE "+whereString,beanClass ).getResultList();
+		
+		 TypedQuery<T> query = em.createQuery( "FROM "+beanClass.getSimpleName() +" as a WHERE "+whereString,beanClass );
+		 if(objects!=null){
+			 for(int i=0;i<objects.length;i++)
+				 query.setParameter(i, objects[i]);
+		 }
+		return query.getResultList();
 
 	}
 	public <T> List<T> getBeans(Class<T> beanClass) {
@@ -55,7 +62,16 @@ public class BeanManager {
 		return em.createQuery( "FROM "+beanClass.getSimpleName() ,beanClass ).getResultList();
 
 	}
+	public <T> T getBean(Class<T> beanClass,String whereString,Object[] objects) {
+		
+		 TypedQuery<T> query = em.createQuery( "FROM "+beanClass.getSimpleName() +" as a WHERE "+whereString,beanClass );
+		 if(objects!=null){
+			 for(int i=0;i<objects.length;i++)
+				 query.setParameter(i, objects[i]);
+		 }
+		return query.getSingleResult();
 
+	}
 	public EntityManager getEm() {
 		return em;
 	}

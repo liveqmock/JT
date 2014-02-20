@@ -49,8 +49,16 @@ import validation.Validator;
  * 
  * @author Tim Boudreau
  */
-final class NumberRangeER implements Validator<String> {
+final public class NumberRangeER implements Validator<String> {
 	private Number max;
+	public void setMax(Number max) {
+		this.max = max;
+	}
+
+	public void setMin(Number min) {
+		this.min = min;
+	}
+
 	private Number min;
 
 	NumberRangeER(Number min, Number max) {

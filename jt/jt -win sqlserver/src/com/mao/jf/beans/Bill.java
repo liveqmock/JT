@@ -17,7 +17,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
-import javax.persistence.PostRemove;
 import javax.persistence.PrePersist;
 
 import com.mao.jf.beans.annotation.Caption;

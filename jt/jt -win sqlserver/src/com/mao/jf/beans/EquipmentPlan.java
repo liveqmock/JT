@@ -4,14 +4,14 @@ package com.mao.jf.beans;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.OneToOne;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
-import static javax.persistence.FetchType.LAZY;
 @Entity
 public class EquipmentPlan {
 	@Id
@@ -26,18 +26,18 @@ public class EquipmentPlan {
 	private Date planEndTime;
 	private int planUseTimes;
 	private long freeTime;
-	@OneToOne(fetch = LAZY)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "preEquipmentPlan", referencedColumnName = "id")
 	private EquipmentPlan	preEquipmentPlan;
-	@OneToOne(fetch = LAZY)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "nextEquipmentPlan", referencedColumnName = "id")
 	private EquipmentPlan	nextEquipmentPlan;
 	public EquipmentPlan	getFirstNextPlan(int useTime,int prepareTime) throws Exception {
 		EquipmentPlan equipmentPlan= new EquipmentPlan();
-		equipmentPlan.setPlanUseTimes(useTime);
-		equipmentPlan.setPlanStartTime(getPlanEndTime(),prepareTime);
+		equipmentPlan.setPlanUseTimes(useTime);		
+		setNextEquipmentPlan(equipmentPlan);
+		equipmentPlan.setPreEquipmentPlan(this);
 		if(freeTime>0){
-			freeTime=0;
 			equipmentPlan.setFreeTime( freeTime-useTime-prepareTime);
 			if(equipmentPlan.getFreeTime()<0)
 				throw new Exception("超出空间时间范围");
@@ -46,8 +46,7 @@ public class EquipmentPlan {
 			nextEquipmentPlan.setPreEquipmentPlan(equipmentPlan);
 			equipmentPlan.setNextEquipmentPlan(nextEquipmentPlan);
 		}
-		setNextEquipmentPlan(equipmentPlan);
-		equipmentPlan.setPreEquipmentPlan(this);
+		equipmentPlan.setPlanStartTime(getPlanEndTime(),prepareTime);
 		return equipmentPlan;
 		
 		

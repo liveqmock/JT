@@ -3,14 +3,13 @@ package com.mao.jf.beans;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Collection;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import com.mao.jf.beans.annotation.Caption;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Operation extends BeanMao {

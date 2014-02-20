@@ -488,31 +488,31 @@ public enum Validators implements Validator<String> {
 	 *            The maximum value
 	 * @return A validator for number ranges
 	 */
-	public static Validator<String> numberRange(Number min, Number max) {
+	public static NumberRange numberRange(Number min, Number max) {
 		return new NumberRange(min, max);
 	}
 
-	public static Validator<String> numberRangeE(Number min, Number max) {
+	public static NumberRangeE numberRangeE(Number min, Number max) {
 		return new NumberRangeE(min, max);
 	}
 
-	public static Validator<String> numberRangeER(Number min, Number max) {
+	public static NumberRangeER numberRangeER(Number min, Number max) {
 		return new NumberRangeER(min, max);
 	}
 
-	public static Validator<String> numberRangeEL(Number min, Number max) {
+	public static NumberRangeEL numberRangeEL(Number min, Number max) {
 		return new NumberRangeEL(min, max);
 	}
 
-	public static Validator<String> numberMin(Number min) {
+	public static NumberMin numberMin(Number min) {
 		return new NumberMin(min);
 	}
 
-	public static Validator<String> numberMinE(Number min) {
+	public static NumberMinE numberMinE(Number min) {
 		return new NumberMinE(min);
 	}
 
-	public static Validator<String> numberMax(Number max) {
+	public static NumberMax numberMax(Number max) {
 		return new NumberMax(max);
 	}
 
@@ -520,7 +520,7 @@ public enum Validators implements Validator<String> {
 		return new NotNull();
 	}
 
-	public static Validator<String> numberMaxE(Number max) {
+	public static NumberMaxE numberMaxE(Number max) {
 		return new NumberMaxE(max);
 	}
 

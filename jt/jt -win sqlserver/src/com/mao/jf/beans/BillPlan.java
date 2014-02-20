@@ -3,10 +3,8 @@ package com.mao.jf.beans;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,48 +16,59 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.Transient;
 
 import com.mao.jf.beans.annotation.Caption;
+
+import javax.persistence.OneToOne;
+
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 public class BillPlan extends BeanMao {
 
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
+	@Id @GeneratedValue(strategy = IDENTITY)
 	private int id;
+	
 	private int num;
 
 	private int sequenceNum;
 
-	@ManyToOne
-	@JoinColumn(name = "bill", referencedColumnName = "id")
+	@ManyToOne @JoinColumn(name = "bill", referencedColumnName = "id")
 	private Bill bill;
+	
+	@Transient
 	private Date startDate;
+	@Transient
 	private Date endDate;
 
-	@OneToMany(mappedBy = "billPlan", cascade = ALL)
-	@OrderBy("sequence")
+	@OneToMany(mappedBy = "billPlan", cascade = ALL) @OrderBy("sequence")
 	private Collection<OperationPlan> operationPlans;
+	
 	private int completed;
+	
 	@OneToMany(mappedBy = "plan", cascade = ALL)
 	private Collection<OperationWork> operationWorks;
-
+	
+	@OneToOne(fetch = LAZY)	@JoinColumn(name = "prePlan", referencedColumnName = "id")	
+	private BillPlan prePlan;
+	
+	@OneToOne(fetch = LAZY)	@JoinColumn(name = "nextPlan", referencedColumnName = "id")	
+	private BillPlan nextPlan;
+	
 	public BillPlan(Bill bill) {
 		this.bill=bill;
 	}
 
 	public BillPlan() {
 	}
-
-
-
+	
+	
+	
+	
 	public Bill getBill() {
-
 		return bill;
-
 	}
-
-
 
 	public int getId() {
 		return id;
@@ -68,14 +77,6 @@ public class BillPlan extends BeanMao {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	public HashMap<OperationPlan, Date> getPlanLastDate() {
-		HashMap<OperationPlan, Date> lastDateMap = null;
-
-
-		return lastDateMap;
-	}
-
 
 	public ArrayList<OperationPlan> getOperationPlans() {
 		if(!(operationPlans instanceof ArrayList<?>) && operationPlans!=null){
@@ -101,7 +102,6 @@ public class BillPlan extends BeanMao {
 	public boolean isCompleted() {
 		return completed==1?true:false;
 	}
-	@Transient
 	public float  getPlanCost() {
 		float cost = 0;
 		for(OperationPlan operationPlan:operationPlans){
@@ -114,7 +114,6 @@ public class BillPlan extends BeanMao {
 		return num;
 	}
 
-	@Transient
 	public int  getPlanTime() {
 		int time = 0;
 		for(OperationPlan operationPlan:operationPlans){
@@ -198,7 +197,6 @@ public class BillPlan extends BeanMao {
 	}
 
 
-	@Transient
 	public Collection<OperationWork> getOperationWorks() {
 		if(operationWorks==null)operationPlans=new ArrayList<>();
 		return operationWorks;
@@ -221,4 +219,21 @@ public class BillPlan extends BeanMao {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
+
+	public BillPlan getPrePlan() {
+		return prePlan;
+	}
+
+	public void setPrePlan(BillPlan prePlan) {
+		this.prePlan = prePlan;
+	}
+
+	public BillPlan getNextPlan() {
+		return nextPlan;
+	}
+
+	public void setNextPlan(BillPlan nextPlan) {
+		this.nextPlan = nextPlan;
+	}
+
 }

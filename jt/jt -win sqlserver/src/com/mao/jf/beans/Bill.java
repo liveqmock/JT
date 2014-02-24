@@ -20,6 +20,8 @@ import javax.persistence.OrderColumn;
 import javax.persistence.PrePersist;
 
 import com.mao.jf.beans.annotation.Caption;
+import javax.persistence.OneToOne;
+import javax.persistence.JoinColumn;
 @Entity
 public class Bill extends BeanMao {	
 	@Id
@@ -68,6 +70,16 @@ public class Bill extends BeanMao {
 
 	@OneToMany(mappedBy = "billItem")
 	private Collection<BackRepair> backRepairs;
+	
+	@OneToOne
+	@JoinColumn(name = "creator", referencedColumnName = "id")
+	@Caption(value="创建人",order=101)
+	private Userman creator;
+
+	@OneToOne
+	@JoinColumn(name = "changer", referencedColumnName = "id")
+	@Caption(value="修改人",order=102)
+	private Userman changer;
 	public Bill() {
 		custom = "";
 		billid = "";
@@ -513,6 +525,18 @@ public class Bill extends BeanMao {
 		return  plans;
 	}
 
+	public Userman getCreator() {
+		return creator;
+	}
+	public void setCreator(Userman creator) {
+		this.creator = creator;
+	}
+	public Userman getChanger() {
+		return changer;
+	}
+	public void setChanger(Userman changer) {
+		this.changer = changer;
+	}
 	public void setPlans(Collection<BillPlan> plans) {
 		this.plans = plans;
 	}

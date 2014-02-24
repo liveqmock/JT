@@ -965,6 +965,8 @@ public class BillPanel extends JSplitPane {
 			}
 
 		}
+		if(bean.getId()==0)bean.setCreator(Userman.loginUser);
+		bean.setChanger(Userman.loginUser);
 		bean.save();
 	}
 

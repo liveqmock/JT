@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dialog.ModalityType;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -18,6 +20,7 @@ import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetProvider;
 import javax.swing.AbstractAction;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
@@ -54,7 +57,25 @@ import com.mao.jf.beans.Userman;
 
 public class MenuAction extends AbstractAction {
 	private BillTable table;
+	private WindowAdapter windowAdapter= new WindowAdapter(){
 
+		@Override
+		public void windowOpened(WindowEvent e) {
+			// TODO 自动生成的方法存根
+			super.windowOpened(e);
+			BeanMao.beanManager.getEm().getTransaction().begin();
+		}
+
+		@Override
+		public void windowClosing(WindowEvent e) {
+			// TODO 自动生成的方法存根
+			super.windowClosing(e);
+
+			BeanMao.beanManager.getEm().flush();
+			BeanMao.beanManager.getEm().getTransaction().commit();
+		}
+		
+	};
 	public MenuAction(BillTable table) {
 		super();
 		this.table = table;
@@ -65,40 +86,18 @@ public class MenuAction extends AbstractAction {
 		if (((JMenuItem) e.getSource()).getText() != null)
 			switch (((JMenuItem) e.getSource()).getText()) {
 			case "蓝色":
-
-				if (table.getSelectBean() == null) {
-					JOptionPane.showMessageDialog(table, "未选择要加色的订单条目!");
-					break;
-				}
-				table.getSelectBean().setColor("hi-blue");
-				table.getSelectBean().save();
+				
+				addColor("hi-blue");
 				break;
 			case "绿色":
-
-				if (table.getSelectBean() == null) {
-					JOptionPane.showMessageDialog(table, "未选择要加色的订单条目!");
-					break;
-				}
-				table.getSelectBean().setColor("hi-green");
-				table.getSelectBean().save();
+				addColor("hi-green");
 				break;
 			case "橙色":
 
-				if (table.getSelectBean() == null) {
-					JOptionPane.showMessageDialog(table, "未选择要加色的订单条目!");
-					break;
-				}
-				table.getSelectBean().setColor("hi-orange");
-				table.getSelectBean().save();
+				addColor("hi-orange");
 				break;
 			case "去色":
-
-				if (table.getSelectBean() == null) {
-					JOptionPane.showMessageDialog(table, "未选择要去色的订单条目!");
-					break;
-				}
-				table.getSelectBean().setColor(null);
-				table.getSelectBean().save();
+				addColor(null);
 				break;
 			case "新建订单":
 				new BillFrame(new Bill());
@@ -128,6 +127,7 @@ public class MenuAction extends AbstractAction {
 						+ table.getSelectBean().getBillid() + "】吗？", "删除确认",
 						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 					table.removeSelectRow();
+					
 				break;
 
 			case "订单客户管理":
@@ -148,21 +148,7 @@ public class MenuAction extends AbstractAction {
 				}
 				break;
 			case "修改密码":
-				final ChangePasswdPanel userPanel = new ChangePasswdPanel(Userman.loginUser);
-				BeanDialog<Userman> userDialog=new BeanDialog<Userman>(userPanel,"修改用户密码") {
-
-					@Override
-					public boolean okButtonAction() {
-
-						return userPanel.isOk();
-					}
-				};
-				userDialog.setBounds(100, 100, 300,250);
-				userDialog.setLocationRelativeTo(null);
-				userDialog.setModalityType(ModalityType.APPLICATION_MODAL);
-				userDialog.setVisible(true);
-
-
+				changePasswd();
 				break;
 
 			case "关于":
@@ -234,6 +220,35 @@ public class MenuAction extends AbstractAction {
 
 	}
 
+	private void changePasswd() {
+		final ChangePasswdPanel userPanel = new ChangePasswdPanel(Userman.loginUser);
+		BeanDialog<Userman> userDialog=new BeanDialog<Userman>(userPanel,"修改用户密码") {
+
+			@Override
+			public boolean okButtonAction() {
+
+				return userPanel.isOk();
+			}
+		};
+		userDialog.setBounds(100, 100, 300,250);
+		userDialog.setLocationRelativeTo(null);
+		userDialog.setModalityType(ModalityType.APPLICATION_MODAL);
+		userDialog.setVisible(true);
+
+
+		
+	}
+
+	private void addColor(String color) {
+		if (table.getSelectBean() == null) {
+			JOptionPane.showMessageDialog(table, "未选择要加色的订单条目!");
+			return;
+		}
+		table.getSelectBean().setColor(color);
+		table.getSelectBean().save();
+		
+	}
+
 	private void showBillTime() {
 
 	}
@@ -272,7 +287,7 @@ public class MenuAction extends AbstractAction {
 	}
 
 	private void manageUser() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
-		BeansPanel<Userman> beansPanel=new BeansPanel<Userman>(BeanMao.loadAll(Userman.class),new UsermanPnl(new Userman()),Userman.class) {
+		BeansPanel<Userman> beansPanel=new BeansPanel<Userman>(BeanMao.getBeans(Userman.class),new UsermanPnl(new Userman()),Userman.class) {
 
 			@Override
 			public Userman saveBean() {
@@ -297,16 +312,7 @@ public class MenuAction extends AbstractAction {
 		dialog.setVisible(true);
 	}
 
-	private void workManager() {
-		JDialog dialog=new JDialog();
-		dialog.setTitle("工序管理");
-		dialog.setContentPane(new WorkCreatePanel());
-		dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
-		dialog.setLocationRelativeTo(null);
-		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-		dialog.setVisible(true);
-
-	}
+	
 	private void showWorkCostPanel(){
 		JDialog dialog=new JDialog();
 		dialog.setTitle("工序管理");
@@ -388,15 +394,26 @@ public class MenuAction extends AbstractAction {
 	}
 
 	private void planProduct() {
-		JDialog dialog=new JDialog();
+		JFrame dialog=new JFrame();
+		dialog.setTitle("排产计划录入");
 		dialog.add(new PlanCreatePanel());
-		dialog.setModal(true);
-		dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
+		dialog.setExtendedState(JFrame.MAXIMIZED_BOTH );
 		dialog.setLocationRelativeTo(null);
 		dialog.setVisible(true);
+		dialog.addWindowListener(windowAdapter);
 
 	}
+private void workManager() {
+		
+		JFrame dialog=new JFrame();
+		dialog.setTitle("生产工序录入");
+		dialog.setContentPane(new WorkCreatePanel());
+		dialog.setExtendedState(JFrame.MAXIMIZED_BOTH );
+		dialog.setLocationRelativeTo(null);
+		dialog.setVisible(true);
+		dialog.addWindowListener(windowAdapter);
 
+	}
 	private void showBillGroup() {
 
 		table.setBeans((Collection<Bill>) Bill.loadByGrp(table.getSelectBean().getBillgroup()));
@@ -407,7 +424,7 @@ public class MenuAction extends AbstractAction {
 
 	private void employeeManager()  {
 		EmployeePnl beanPanel = new EmployeePnl(new Employee());
-		BeansPanel<Employee> panel = new BeansPanel<Employee>(Employee.loadAll(Employee.class),beanPanel,Employee.class,true) {
+		BeansPanel<Employee> panel = new BeansPanel<Employee>(Employee.getBeans(Employee.class),beanPanel,Employee.class,true) {
 
 			@Override
 			public Employee saveBean() {
@@ -434,7 +451,7 @@ public class MenuAction extends AbstractAction {
 	private void operationManager() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
 
 		OperationPnl beanPanel = new OperationPnl(new Operation());
-		BeansPanel<Operation> panel = new BeansPanel<Operation>(Operation.loadAll(Operation.class),beanPanel,Operation.class,true) {
+		BeansPanel<Operation> panel = new BeansPanel<Operation>(Operation.getBeans(Operation.class),beanPanel,Operation.class,true) {
 
 
 			@Override
@@ -527,7 +544,7 @@ public class MenuAction extends AbstractAction {
 	}
 
 	public static void adminCustom(final int out) {
-		List<Custom> customs = BeanMao.loadAll(Custom.class, " a.out="+out);
+		List<Custom> customs = BeanMao.getBeans(Custom.class, " a.out="+out);
 		if(customs==null)customs=new ArrayList<>();
 		BeansPanel<Custom> beansPanel=new BeansPanel<Custom>(customs,new CustomPanel(null),Custom.class,true) {
 

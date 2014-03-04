@@ -74,7 +74,16 @@ public class Main extends JFrame {
 		setAutoRequestFocus(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setExtendedState(Frame.MAXIMIZED_BOTH);
-		
+		addWindowListener(new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// TODO 自动生成的方法存根
+				super.windowClosing(e);
+				BeanMao.beanManager.flush();
+			}
+			
+		});
 	}
 
 	public static void main(String[] args) {
@@ -128,7 +137,7 @@ public class Main extends JFrame {
 						public boolean okButtonAction() {
 							try{
 								
-								Userman loginUser = BeanMao.load(Userman.class, " a.name='"+getBean().getName()+"' and password='"+getBean().getPassword()+"'");
+								Userman loginUser = BeanMao.getBean(Userman.class, " a.name='"+getBean().getName()+"' and password='"+getBean().getPassword()+"'");
 								Userman.loginUser=loginUser;
 								try {
 									SerialiObject.save(getBean(), new File(

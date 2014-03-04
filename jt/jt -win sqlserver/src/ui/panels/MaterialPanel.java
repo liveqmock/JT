@@ -106,11 +106,11 @@ public class MaterialPanel extends BeanPanel<Material> {
 	}
 	protected  void dataBinding() {
 		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean, BeanProperty.create("name"), name,  BeanProperty.create("selectedItem")));
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean, BeanProperty.create("unitCost"), unitCost, jTextFieldBeanProperty));
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean, BeanProperty.create("unitName"), unitName, jTextFieldBeanProperty));
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean, BeanProperty.create("num"), num, jTextFieldBeanProperty));
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, editBean, BeanProperty.create("bill.picid"), bill, jTextFieldBeanProperty));
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("name"), name,  BeanProperty.create("selectedItem")));
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("unitCost"), unitCost, jTextFieldBeanProperty));
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("unitName"), unitName, jTextFieldBeanProperty));
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("num"), num, jTextFieldBeanProperty));
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, bean, BeanProperty.create("bill.picid"), bill, jTextFieldBeanProperty));
 		
 		
 	}

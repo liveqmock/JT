@@ -61,18 +61,18 @@ public class ChangePasswdPanel extends BeanPanel<Userman> {
 	}
 
 	protected void dataBinding() {
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
 				BeanProperty.create("name"), userNameField, BeanProperty.create("text")));
 		
 	}
 	public boolean isOk() {
-		if(editBean.getPassword().equals(passwordField.getText())&&passwordField1.getText().equals(passwordField2.getText())){
-			editBean.setPassword(passwordField1.getText());
+		if(bean.getPassword().equals(passwordField.getText())&&passwordField1.getText().equals(passwordField2.getText())){
+			bean.setPassword(passwordField1.getText());
 
 			BeanMao.saveBean(getBean());
 				
 			return true;
-		}else if(!editBean.getPassword().equals(passwordField.getText())){
+		}else if(!bean.getPassword().equals(passwordField.getText())){
 			JOptionPane.showMessageDialog(this, "原密码不正确！");
 		}else if(!passwordField1.getText().equals(passwordField2.getText())){
 			JOptionPane.showMessageDialog(this, "新密码再次输入不一样！");

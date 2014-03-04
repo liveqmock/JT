@@ -77,12 +77,12 @@ public class Employee extends BeanMao {
 	}
 	public static List<Employee> loadCheckers() {
 		
-			return loadAll(Employee.class, " a.employeeType='检验员'");
+			return getBeans(Employee.class, " a.employeeType='检验员'");
 		
 	}
 	public static List<Employee> loadOperaters() {
 		
-				return loadAll(Employee.class, "a.employeeType='操作员'");
+				return getBeans(Employee.class, "a.employeeType='操作员'");
 		
 	}
 	

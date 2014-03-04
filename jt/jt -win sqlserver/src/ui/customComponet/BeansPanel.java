@@ -13,12 +13,14 @@ import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
+public abstract class BeansPanel<T> extends JPanel {
 	private BeanTablePane<T> tablePane;
 	private BeanPanel<T> beanPanel;
 	private String[] filterColumns;
 	private boolean vertical=false;
 	private Class<T> class1;
+	private Collection<T> beans;
+	
 	public BeansPanel() {
 		super(null);
 	}
@@ -34,7 +36,6 @@ public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
 	}
 	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1,
 			String filterColumns[],boolean vertical) {
-		super(beans);
 		this.beanPanel=beanPanel;
 		this.filterColumns=filterColumns;
 		this.vertical=vertical;
@@ -48,7 +49,7 @@ public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
 		
 		beanPanel.setBorder(BorderFactory.createEtchedBorder());
 		setLayout(new BorderLayout(0, 0));
-		tablePane = new BeanTablePane<T>(editBean,class1, filterColumns);
+		tablePane = new BeanTablePane<T>(beans,class1, filterColumns);
 		ActionListener listener = new ActionListener() {
 
 			@Override
@@ -149,11 +150,10 @@ public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
 	 * 
 	 * @see com.mao.beanAdapter.BeanPanel#setBean(java.lang.Object)
 	 */
-	@Override
-	public void setBean(Collection<T> bean) {
-		// TODO Auto-generated method stub
-		super.setBean(bean);
-		tablePane.setBeans(bean);
+	
+	public void setBean(Collection<T> beans) {
+		this.beans=beans;
+		tablePane.setBeans(beans);
 		T newBean = createNewBean();
 		beanPanel.setBean(newBean);
 		
@@ -199,5 +199,11 @@ public abstract class BeansPanel<T> extends BeanPanel<Collection<T>> {
 	public void reset() {
 		BeansPanel.this.beanPanel.setBean(createNewBean());
 		
+	}
+	public Collection<T> getBeans() {
+		return beans;
+	}
+	public void setBeans(Collection<T> beans) {
+		this.beans = beans;
 	}
 }

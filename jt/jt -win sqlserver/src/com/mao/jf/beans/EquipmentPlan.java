@@ -1,6 +1,10 @@
 package com.mao.jf.beans;
 
 
+import static javax.persistence.CascadeType.MERGE;
+import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.CascadeType.REFRESH;
+
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -11,48 +15,49 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.PreRemove;
 
 @Entity
 public class EquipmentPlan {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	
 	@OneToOne
 	@JoinColumn(name = "equipment", referencedColumnName = "id")
 	private Equipment equipment;
+	private int num;
+	
 	@ManyToOne
+	@JoinColumn(name = "operationPlan", referencedColumnName = "id")
 	private OperationPlan operationPlan;
+	
 	private Date planStartTime;
 	private Date planEndTime;
 	private int planUseTimes;
-	private long freeTime;
-	@OneToOne(fetch = FetchType.LAZY)
+	private int freeTime;
+	
+	@OneToOne(fetch = FetchType.LAZY, cascade = { PERSIST, MERGE, REFRESH })
 	@JoinColumn(name = "preEquipmentPlan", referencedColumnName = "id")
 	private EquipmentPlan	preEquipmentPlan;
-	@OneToOne(fetch = FetchType.LAZY)
+	
+	@OneToOne(fetch = FetchType.LAZY, cascade = { PERSIST, MERGE, REFRESH })
 	@JoinColumn(name = "nextEquipmentPlan", referencedColumnName = "id")
 	private EquipmentPlan	nextEquipmentPlan;
-	public EquipmentPlan	getFirstNextPlan(int useTime,int prepareTime) throws Exception {
-		EquipmentPlan equipmentPlan= new EquipmentPlan();
-		equipmentPlan.setPlanUseTimes(useTime);		
+	
+	public EquipmentPlan	toNextPlan(EquipmentPlan equipmentPlan) throws Exception {
 		setNextEquipmentPlan(equipmentPlan);
+		equipmentPlan.setEquipment(equipment);
 		equipmentPlan.setPreEquipmentPlan(this);
-		if(freeTime>0){
-			equipmentPlan.setFreeTime( freeTime-useTime-prepareTime);
-			if(equipmentPlan.getFreeTime()<0)
-				throw new Exception("超出空间时间范围");
-		}
+		equipmentPlan.setPlanStartTime(getPlanEndTime());
 		if(nextEquipmentPlan!=null){
 			nextEquipmentPlan.setPreEquipmentPlan(equipmentPlan);
 			equipmentPlan.setNextEquipmentPlan(nextEquipmentPlan);
+			equipmentPlan.setFreeTime(((Long)(nextEquipmentPlan.getPlanStartTime().getTime()-equipmentPlan.getPlanEndTime().getTime())).intValue()/60000);
 		}
-		equipmentPlan.setPlanStartTime(getPlanEndTime(),prepareTime);
 		return equipmentPlan;
 		
 		
-	}
-	public EquipmentPlan	getNextPlan(int useTime) throws Exception {
-		return getFirstNextPlan(useTime, 0);		
 	}
 	public int getId() {
 		return id;
@@ -76,16 +81,12 @@ public class EquipmentPlan {
 		return planStartTime;
 	}
 	public void setPlanStartTime(Date planStartTime) {
-		setPlanStartTime(planStartTime,0);
-	}
-	public void setPlanStartTime(Date planStartTime,int prepareTime) {
 		this.planStartTime = planStartTime;
-		setPlanEndTime(new Date(getPlanStartTime().getTime()+(prepareTime+ planUseTimes)*60000));
+		setPlanEndTime(new Date(getPlanStartTime().getTime()+planUseTimes*60000));
 		if(getPreEquipmentPlan()!=null){
 			long c =( planStartTime.getTime()-getPreEquipmentPlan().getPlanEndTime().getTime())/60000;
-			if(c>0){
-				getPreEquipmentPlan().setFreeTime(c);
-			}
+			getPreEquipmentPlan().setFreeTime(((Long)c).intValue());
+			
 		}
 	}
 	public int getPlanUseTimes() {
@@ -112,12 +113,26 @@ public class EquipmentPlan {
 	public void setNextEquipmentPlan(EquipmentPlan nextEquipmentPlan) {
 		this.nextEquipmentPlan = nextEquipmentPlan;
 	}
-	public long getFreeTime() {
+	public int getFreeTime() {
 		return freeTime;
 	}
-	public void setFreeTime(long freeTime) {
+	public void setFreeTime(int freeTime) {
 		this.freeTime = freeTime;
 	}
-	
+	public int getNum() {
+		return num;
+	}
+	public void setNum(int num) {
+		this.num = num;
+	}
+	@PreRemove
+	private void preRemove(){
+		if(preEquipmentPlan!=null&&nextEquipmentPlan!=null){
+			preEquipmentPlan.setFreeTime((((Long)(nextEquipmentPlan.getPlanStartTime().getTime()-preEquipmentPlan.getPlanEndTime().getTime())).intValue()/60000));
+			preEquipmentPlan.setNextEquipmentPlan(nextEquipmentPlan);
+		}
+		if(nextEquipmentPlan!=null)
+			nextEquipmentPlan.setPreEquipmentPlan(preEquipmentPlan);
+	}
 	
 }

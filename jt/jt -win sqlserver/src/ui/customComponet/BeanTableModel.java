@@ -96,14 +96,8 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 		return heads[column].getCaption().value();
 	}
 
-	public T getSelectBean(int r) {			
-			Iterator<T> it = beans.iterator();
-		for(int i=0;i<beans.size();i++){
-			T t = it.next();
-			if(i==r)
-				return t;
-		}
-		return null;
+	public T getSelectBean(int r) {		
+		return (T) beans.toArray()[r];
 	}
 
 	@Override
@@ -122,17 +116,10 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	public Object getValueAt(int r, int c) {
 
 		try {			
-				 Iterator<T> it = beans.iterator();
-			for(int i=0;i<beans.size();i++){	
-				T t = it.next();
-				if(i==r)
-					return PropertyUtils.getSimpleProperty(t, heads[c].getField());
-			}
-
-		} catch (Exception e) {
-			
-		}
+			return PropertyUtils.getSimpleProperty(getSelectBean(r), heads[c].getField());
+		} catch (Exception e) {			
 			return null;
+		}
 	}
 
 	/**

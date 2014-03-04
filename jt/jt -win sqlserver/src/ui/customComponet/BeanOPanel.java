@@ -66,6 +66,7 @@ public abstract class BeanOPanel<T> extends JPanel {
 	 */
 	public void setBean(T bean) {
 		try{
+			if(bean==null) return;
 			bindingGroup.unbind();
 			for(Binding<?, ?, ?, ?> binding: bindingGroup.getBindings())
 				bindingGroup.removeBinding(binding);

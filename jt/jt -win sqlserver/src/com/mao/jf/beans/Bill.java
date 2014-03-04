@@ -15,13 +15,13 @@ import java.util.Vector;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
-import javax.persistence.PrePersist;
+import javax.persistence.PostRemove;
 
 import com.mao.jf.beans.annotation.Caption;
-import javax.persistence.OneToOne;
-import javax.persistence.JoinColumn;
 @Entity
 public class Bill extends BeanMao {	
 	@Id
@@ -106,7 +106,7 @@ public class Bill extends BeanMao {
 			searchString=(searchString==null?"":searchString+" and ")+" a.itemCompleteDate is null  order by a.itemCompleteDate ,a.requestDate";
 
 		}
-		billItems=loadAll(Bill.class,searchString);
+		billItems=getBeans(Bill.class,searchString);
 
 		return billItems;
 
@@ -548,9 +548,10 @@ public class Bill extends BeanMao {
 
 	}
 
-	@PrePersist
-	public void prePersist() {
+	@PostRemove
+	public void preremove() {
 		if(this.imageUrl!=null) new File(this.imageUrl).delete();
 	}
+
 
 }

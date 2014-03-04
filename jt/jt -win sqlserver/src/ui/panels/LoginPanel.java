@@ -19,8 +19,8 @@ public class LoginPanel extends BeanPanel<Userman> {
 	private JTextField userNameField;
 	private JPasswordField passwordField;
 
-	public LoginPanel(Userman editBean) {
-		super(editBean);
+	public LoginPanel(Userman bean) {
+		super(bean);
 	}
 	@Override
 	protected void createContents(){
@@ -56,7 +56,7 @@ public class LoginPanel extends BeanPanel<Userman> {
 		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty
 				.create("text");
 		bindingGroup.addBinding(Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,
+				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
 						userBeanProperty, userNameField, jTextFieldBeanProperty));
 		//
 		BeanProperty<Userman, String> userBeanProperty_1 = BeanProperty
@@ -64,7 +64,7 @@ public class LoginPanel extends BeanPanel<Userman> {
 		BeanProperty<JPasswordField, String> jPasswordFieldBeanProperty = BeanProperty
 				.create("text");
 		bindingGroup.addBinding(Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,
+				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
 						userBeanProperty_1, passwordField,
 						jPasswordFieldBeanProperty));
 	}

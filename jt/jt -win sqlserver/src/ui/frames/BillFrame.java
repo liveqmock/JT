@@ -16,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 
 import ui.panels.BillPanel;
 
+import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Bill;
 
 public class BillFrame extends JDialog {
@@ -68,6 +69,7 @@ public class BillFrame extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				if(billPanel.isValide()){
 					billPanel.saveBill();
+					BeanMao.beanManager.flush();
 					BillFrame.this.dispose();
 				}
 			}

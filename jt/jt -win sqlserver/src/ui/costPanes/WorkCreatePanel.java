@@ -82,7 +82,7 @@ public class WorkCreatePanel extends BillShowPnl {
 	@Override
 	public void searchAction(String search) {
 		try{
-			List<Bill> beans = Bill.loadAll(Bill.class,search+" and id in (select bill from BillPlan where completed=0)");
+			List<Bill> beans = Bill.getBeans(Bill.class,search+" and id in (select bill from BillPlan where completed=0)");
 			billTable.setBeans(beans);
 		}catch(Exception e){
 			e.printStackTrace();

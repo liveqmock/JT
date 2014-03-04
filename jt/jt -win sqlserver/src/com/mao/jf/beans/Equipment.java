@@ -13,10 +13,15 @@ public class Equipment {
 	@Id
 	@GeneratedValue(strategy = AUTO)
 	private int id;
-	private String name;
 	@ManyToOne
 	@JoinColumn(name = "operation", referencedColumnName = "id")
 	private Operation operation;
+	private int code;
+	public Equipment() {
+	}
+	public Equipment(Operation operation) {
+		this.operation=operation;
+	}
 	public int getId() {
 		return id;
 	}
@@ -24,10 +29,7 @@ public class Equipment {
 		this.id = id;
 	}
 	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
+		return operation.getName()+" #"+code;
 	}
 	public Operation getOperation() {
 		return operation;
@@ -35,5 +37,11 @@ public class Equipment {
 	public void setOperation(Operation operation) {
 		this.operation = operation;
 	}
-	
+	public int getCode() {
+		return code;
+	}
+	public void setCode(int code) {
+		this.code = code;
+	}
+
 }

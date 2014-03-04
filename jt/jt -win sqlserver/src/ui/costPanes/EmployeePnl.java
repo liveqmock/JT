@@ -56,10 +56,10 @@ public class EmployeePnl extends BeanPanel<Employee> {
 		JLabel label = new JLabel("\u5C97\u4F4D\uFF1A");
 		add(label, "2, 4, right, default");
 		
-		comboBox = new JComboBox<Operation>(new Vector<Operation>(Operation.loadAll(Operation.class)));
+		comboBox = new JComboBox<Operation>(new Vector<Operation>(Operation.getBeans(Operation.class)));
 		
 		add(comboBox, "4, 4, fill, default");
-		if(editBean.getOperation()==null) editBean.setOperation((Operation) comboBox.getSelectedItem());
+
 		JLabel label_1 = new JLabel("\u5DE5\u8D44\uFF1A");
 		add(label_1, "2, 6, right, default");
 		
@@ -90,10 +90,10 @@ public class EmployeePnl extends BeanPanel<Employee> {
 	@Override
 	protected void dataBinding() {
 		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,  BeanProperty.create("name"), name, jTextFieldBeanProperty));
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,  BeanProperty.create("monWage"), wage, jTextFieldBeanProperty));
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,  BeanProperty.create("operation"), comboBox, BeanProperty.create("selectedItem")));
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, editBean,  BeanProperty.create("employeeType"), type, BeanProperty.create("selectedItem")));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("name"), name, jTextFieldBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("monWage"), wage, jTextFieldBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("operation"), comboBox, BeanProperty.create("selectedItem")));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("employeeType"), type, BeanProperty.create("selectedItem")));
 		
 		
 	}

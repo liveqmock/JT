@@ -119,22 +119,22 @@ public class PlanCreatePanel extends BillShowPnl {
 
 	@Override
 	public void searchAction(String search) {
-		billTable.setBeans(Bill.loadAll(Bill.class,search));
+		billTable.setBeans(Bill.getBeans(Bill.class,search));
 	}
 
 	public void billItemSelectAction() {
 		Bill bill = billTable.getSelectBean();
 		Collection<BillPlan> plans = bill.getPlans();
 		plansTablePane.setBeans( plans);	
-		if(plans!=null&&plans.size()>0)
-			planPnl.setBean(plans.iterator().next());
-		else
+		if(plans!=null&&plans.size()>0){
+			plansTablePane.getTable().setRowSelectionInterval(0,0);
+			planItemSelectAction();
+		}else
 			planPnl.setBean(null);
 		
 	}
 	public void planItemSelectAction() {
 		BillPlan plan = plansTablePane.getSelectBean();
-
 		planPnl.setBean(plan);
 
 	}

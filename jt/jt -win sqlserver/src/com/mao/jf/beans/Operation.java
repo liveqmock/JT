@@ -1,13 +1,17 @@
 package com.mao.jf.beans;
 
+import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 
 import com.mao.jf.beans.annotation.Caption;
 
@@ -19,7 +23,8 @@ public class Operation extends BeanMao {
 	private String name;  
 	private float cost ;
 	private String note  ;
-	@OneToMany(mappedBy = "operation")
+	private int num  ;
+	@OneToMany(mappedBy = "operation", fetch = EAGER)
 	private Collection<Equipment> equipments;
 
 
@@ -39,7 +44,7 @@ public class Operation extends BeanMao {
 
 	@Caption(order = 3, value= "设备数量")
 	public int getNum() {
-		return getEquipments().size();
+		return num;
 	}
 	@Caption(order = 5, value= "费用")
 	public float getCost() {
@@ -62,6 +67,10 @@ public class Operation extends BeanMao {
 	}
 	public Collection<Equipment> getEquipments() {
 		return equipments;
+	}
+
+	public void setNum(int num) {
+		this.num = num;
 	}
 
 	public void setEquipments(Collection<Equipment> equipments) {
@@ -99,8 +108,19 @@ public class Operation extends BeanMao {
 		return true;
 	}
 
-	
-	
+	@PrePersist
+	@PreUpdate
+	public void postPersist() {
+		if(equipments==null )equipments=new ArrayList<>();
+		if(num>equipments.size()){
+			for(int i=equipments.size();i<num;i++){
+				Equipment equipment=new Equipment(this);
+				equipment.setCode(i+1);
+				equipments.add(equipment);
+			}
+				
+		}
+	}
 	
 	
 }

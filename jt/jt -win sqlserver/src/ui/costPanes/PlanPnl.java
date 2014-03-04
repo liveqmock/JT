@@ -17,15 +17,17 @@ import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Bindings;
 
 import ui.customComponet.BeanOPanel;
+import validation.builtin.NumberMaxE;
 import validation.builtin.Validators;
 
 import com.mao.jf.beans.BillPlan;
+import com.mao.jf.beans.OperationPlan;
 
 public class PlanPnl extends BeanOPanel<BillPlan>{
 
 	private JTextField numField;
 	private OperarionPlansPnl operationPlansPnl;
-
+	private NumberMaxE numberMaxE;
 	public PlanPnl(BillPlan bean) {
 		super(bean);
 		// TODO 自动生成的构造函数存根
@@ -60,14 +62,14 @@ public class PlanPnl extends BeanOPanel<BillPlan>{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				PlanPnl.this.getBean().save();
-				operationPlansPnl.setBean(PlanPnl.this.getBean().getOperationPlans());
 				
+				savePlan();
 			}
 		});
 		
 		try{
-			getValidationGroup().add(numField,Validators.numberMaxE(bean.getBill().getNum()));
+			numberMaxE = Validators.numberMaxE(1);
+			getValidationGroup().add(numField,numberMaxE);
 			getValidationGroup().add(numField,Validators.notNull());
 			getValidationGroup().add(numField,Validators.REQUIRE_VALID_INTEGER);
 			getValidationGroup().add(numField,Validators.numberMin(0));
@@ -77,8 +79,28 @@ public class PlanPnl extends BeanOPanel<BillPlan>{
 		
 	}
 	public void setBean(BillPlan plan) {
+		if(plan!=null){
+			numberMaxE.setMax(plan.getBill().getNum());
+		}
 		super.setBean(plan);
 		operationPlansPnl.setPlan(plan);
+	}
+	private void savePlan() {
+		if(!isValide()) return;
+		for(OperationPlan operationPlan: PlanPnl.this.getBean().getOperationPlans()){
+			try {
+				operationPlan.createPlan();
+			} catch (Exception e1) {
+				// TODO 自动生成的 catch 块
+				e1.printStackTrace();
+			}
+		}
+		PlanPnl.this.getBean().save();
+		
+		operationPlansPnl.setBean(PlanPnl.this.getBean().getOperationPlans());	
+		
+			
+		
 	}
 
 }

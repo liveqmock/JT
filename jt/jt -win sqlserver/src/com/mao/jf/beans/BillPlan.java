@@ -1,33 +1,29 @@
 package com.mao.jf.beans;
 
-import static javax.persistence.CascadeType.ALL;
-import static javax.persistence.GenerationType.IDENTITY;
+import static javax.persistence.FetchType.LAZY;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
 import com.mao.jf.beans.annotation.Caption;
 
-import javax.persistence.OneToOne;
-
-import static javax.persistence.FetchType.LAZY;
-
 @Entity
 public class BillPlan extends BeanMao {
 
-	@Id @GeneratedValue(strategy = IDENTITY)
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
 	private int num;
@@ -42,12 +38,12 @@ public class BillPlan extends BeanMao {
 	@Transient
 	private Date endDate;
 
-	@OneToMany(mappedBy = "billPlan", cascade = ALL) @OrderBy("sequence")
+	@OneToMany(mappedBy = "billPlan") @OrderBy("sequence")
 	private Collection<OperationPlan> operationPlans;
 	
 	private int completed;
 	
-	@OneToMany(mappedBy = "plan", cascade = ALL)
+	@OneToMany(mappedBy = "plan")
 	private Collection<OperationWork> operationWorks;
 	
 	@OneToOne(fetch = LAZY)	@JoinColumn(name = "prePlan", referencedColumnName = "id")	
@@ -203,7 +199,7 @@ public class BillPlan extends BeanMao {
 	}
 
 	public static List<BillPlan> getUnstartPlan() {
-		return BeanMao.loadAll(BillPlan.class, " a.id not in (select plan from OperationWork) order by produceDate");
+		return BeanMao.getBeans(BillPlan.class, " a.id not in (select plan from OperationWork) order by produceDate");
 		
 	}
 

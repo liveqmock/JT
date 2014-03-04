@@ -60,7 +60,7 @@ public class PlanWorkPnl extends JPanel {
 				SearchDlg searchDlg=	new SearchDlg();
 				searchDlg.setVisible(true);
 				String sql=" a.plans<>null and "+searchDlg.getSqlString();
-				billTable.setBeans(Bill.loadAll(Bill.class, sql));
+				billTable.setBeans(Bill.getBeans(Bill.class, sql));
 				
 			}
 		});	

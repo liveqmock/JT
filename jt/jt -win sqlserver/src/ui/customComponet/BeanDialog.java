@@ -14,6 +14,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.mao.jf.beans.BeanMao;
+
 public abstract class BeanDialog<T> extends JDialog {
 
 	/**
@@ -140,7 +142,7 @@ public abstract class BeanDialog<T> extends JDialog {
 
 	public BeanDialog(BeansPanel<T> panel, String title) {
 		this.contentPanel2 = panel;
-		this.beans = panel.getBean();
+		this.beans = panel.getBeans();
 		setTitle(title);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(BeanDialog.class.getResource("/ui/logo.PNG")));
 		getContentPane().setLayout(new BorderLayout());
@@ -162,8 +164,10 @@ public abstract class BeanDialog<T> extends JDialog {
 							return;
 						}
 
-						if (okButtonAction())
+						if (okButtonAction()){
+							BeanMao.beanManager.flush();
 							BeanDialog.this.dispose();
+						}
 
 					}
 				});

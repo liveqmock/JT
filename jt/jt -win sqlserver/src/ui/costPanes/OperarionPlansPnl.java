@@ -4,12 +4,12 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import ui.customComponet.BeansOPanel;
+import ui.customComponet.BeansPanel;
 
 import com.mao.jf.beans.BillPlan;
 import com.mao.jf.beans.OperationPlan;
 
-public class OperarionPlansPnl extends BeansOPanel<OperationPlan> {
+public class OperarionPlansPnl extends BeansPanel<OperationPlan> {
 	private BillPlan plan;
 	public OperarionPlansPnl(BillPlan plan) {
 		super(null, new OperationPlanPnl(null), OperationPlan.class);

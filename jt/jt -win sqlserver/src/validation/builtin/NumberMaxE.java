@@ -72,20 +72,22 @@ public class NumberMaxE implements Validator<String> {
 	}
 
 	public boolean validate(Problems problems, String compName, String model) {
+
+		boolean result=false;
 		try {
 			double val = Double.parseDouble(model);
 			double minn = max.doubleValue();
-			boolean result = val <= minn;
-			if (!result) {
-				problems.add(NbBundle.getMessage(NumberRange.class,
-						"VALUE_MAXE", new Object[] { // NOI18N
-						compName, model, max }));
-			}
-			return result;
+			result = val <= minn;
+			
 		} catch (NumberFormatException e) {
-			// should be handled by another validator
+			result= false;
 		}
-		return true;
+		if (!result) {
+			problems.add(NbBundle.getMessage(NumberRange.class,
+					"VALUE_MAXE", new Object[] { // NOI18N
+					compName, model, max }));
+		}
+		return result;
 	}
 
 }

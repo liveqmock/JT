@@ -615,9 +615,9 @@ public class BillPanel extends JSplitPane {
 			@Override
 			public void itemStateChanged(ItemEvent event) {
 				if(taxCheck.isSelected())
-					priceFld.setText((String.valueOf(Math.round(Float.valueOf(priceFld.getText())/1.17f))));
+					priceFld.setText(String.valueOf(Math.round(Float.valueOf(priceFld.getText())/0.0117f)/100.0f));
 				else 
-					priceFld.setText((String.valueOf(Math.round(Float.valueOf(priceFld.getText())*1.17f))));
+					priceFld.setText(String.valueOf(Math.round(Float.valueOf(priceFld.getText())*117f)/100.0f));
 					
 			}
 		});

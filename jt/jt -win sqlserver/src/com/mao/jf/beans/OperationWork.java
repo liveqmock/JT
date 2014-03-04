@@ -20,7 +20,7 @@ public class OperationWork extends BeanMao {
 	@GeneratedValue(strategy = IDENTITY)
 	private int id;
 	
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "operationPlan", referencedColumnName = "id")
 	private OperationPlan operationPlan;	
 	@OneToOne

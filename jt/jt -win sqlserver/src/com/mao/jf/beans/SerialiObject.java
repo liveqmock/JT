@@ -29,7 +29,8 @@ public class SerialiObject {
 				in.close();
 				fs.close();
 			} catch (Exception|ExceptionInInitializerError e) {
-
+				file.delete();
+				System.exit(0);
 			}
 		return object;
 	}

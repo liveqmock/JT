@@ -77,7 +77,7 @@ public class OperationPlan extends BeanMao {
 
 	public EquipmentPlan getEarliestEquipmentPlan() {
 		return BeanMao.getBean(EquipmentPlan.class, " equipment.operation=?1 and "
-				+ "planEndTime=(select min(planEndTime) from EquipmentPlan where nextEquipmentPlan is null) "
+				+ "planEndTime=(select min(planEndTime) from EquipmentPlan where  equipment.operation=?1 and nextEquipmentPlan is null) "
 				,operation);
 	}
 	public EquipmentPlan getFreeEquipmentPlan(int userTime) {
@@ -107,9 +107,16 @@ public class OperationPlan extends BeanMao {
 			equipmentPlan.setNum(num);
 			equipmentPlan.setPlanUseTimes(prepareTime+unitUseTime*num);
 			equipmentPlan.setOperationPlan(this);
-			if(equipment!=null){//有没有排产的设备，时间从现在开始
+			if(equipment==null){//有没有排产的设备，时间从现在开始
 				equipmentPlan.setEquipment(equipment);
-				equipmentPlan.setPlanStartTime(new Date());
+				Calendar calendar=Calendar.getInstance();
+				if(calendar.get(Calendar.HOUR_OF_DAY)>=17){
+					calendar.add(Calendar.DAY_OF_MONTH, 1);			
+					calendar.set(Calendar.HOUR_OF_DAY, 8);
+					calendar.set(Calendar.MINUTE, 0);
+					calendar.set(Calendar.SECOND, 0);
+				}
+				equipmentPlan.setPlanStartTime(calendar.getTime());
 
 			}else{
 				EquipmentPlan theEarliestEquipmentPlan=getFreeEquipmentPlan(equipmentPlan.getPlanUseTimes());//有中间空闲时间可以满足完成此排产的设备
@@ -136,55 +143,19 @@ public class OperationPlan extends BeanMao {
 		Calendar calendarStart=Calendar.getInstance();
 		calendarStart.setTime(equipmentPlan.getPlanStartTime());
 		//如果用时小于等于8小时并且结束时间已经是下班时间，则安排到第二天排产
-		if(equipmentPlan.getPlanUseTimes()<9*3_600_000 
-				&&calendarStart.get(Calendar.HOUR_OF_DAY)==8&&
-				(calendarStart.get(Calendar.HOUR_OF_DAY)>=17||
-						calendarEnd.get(Calendar.HOUR_OF_DAY)>=17||
-						calendarEnd.get(Calendar.HOUR_OF_DAY)<8||
-						calendarStart.get(Calendar.HOUR_OF_DAY)<8)){
-			if(calendarStart.get(Calendar.HOUR_OF_DAY)>8){				
-				calendarStart.add(Calendar.DAY_OF_MONTH, 1);
-			}
-			EquipmentPlan preEquipmentPlan = equipmentPlan.getPreEquipmentPlan();
-			if(preEquipmentPlan!=null)
-				preEquipmentPlan.setFreeTime((((Long)(calendarStart.getTimeInMillis()-preEquipmentPlan.getPlanEndTime().getTime())).intValue())/60000);
+		if(equipmentPlan.getPlanUseTimes()<9*60&&
+				(calendarEnd.get(Calendar.HOUR_OF_DAY)>=17||
+				calendarEnd.get(Calendar.HOUR_OF_DAY)<8)){
+			calendarStart.add(Calendar.DAY_OF_MONTH, 1);			
 			calendarStart.set(Calendar.HOUR_OF_DAY, 8);
 			calendarStart.set(Calendar.MINUTE, 0);
 			calendarStart.set(Calendar.SECOND, 0);
 			equipmentPlan.setPlanStartTime(calendarStart.getTime());
 			adjustTime(equipmentPlan);
-
-			return;
-		}else if(calendarEnd.get(Calendar.HOUR_OF_DAY)>=17||
-				equipmentPlan.getPlanUseTimes()>9*3600000){
-			calendarEnd.set(Calendar.HOUR_OF_DAY, 17);
-			calendarEnd.set(Calendar.MINUTE, 0);
-			calendarEnd.set(Calendar.SECOND, 0);
+		}else if(equipmentPlan.getPlanUseTimes()>9*60){
+			int workDays = equipmentPlan.getPlanUseTimes()/540;
+			calendarEnd.setTimeInMillis(calendarEnd.getTimeInMillis()+workDays*15*3_600_000);
 			equipmentPlan.setPlanEndTime(calendarEnd.getTime());
-			int useTime=equipmentPlan.getPlanUseTimes()- ((Long)((equipmentPlan.getPlanEndTime().getTime()-equipmentPlan.getPlanStartTime().getTime())/60000)).intValue();
-			equipmentPlan.setPlanUseTimes( ((Long)((equipmentPlan.getPlanEndTime().getTime()-equipmentPlan.getPlanStartTime().getTime())/60000)).intValue());
-			equipmentPlan.setFreeTime(0);
-			
-			
-			calendarStart.add(Calendar.DAY_OF_MONTH, 1);
-			calendarStart.set(Calendar.HOUR_OF_DAY, 8);
-			calendarStart.set(Calendar.MINUTE, 0);
-			calendarStart.set(Calendar.SECOND, 0);
-			
-			EquipmentPlan equipmentPlan2=new EquipmentPlan();			
-			equipmentPlan2.setNum(equipmentNum);
-			equipmentPlan2.setPlanUseTimes(useTime);
-			equipmentPlan2.setOperationPlan(this);
-			equipmentPlan2.setEquipment(equipmentPlan.getEquipment());
-			equipmentPlan2.setPlanStartTime(calendarStart.getTime());
-			equipmentPlan2.setPreEquipmentPlan(equipmentPlan);			
-			if(equipmentPlan.getNextEquipmentPlan()!=null) 
-				equipmentPlan2.setNextEquipmentPlan(equipmentPlan.getNextEquipmentPlan());
-			equipmentPlan.setNextEquipmentPlan(equipmentPlan2);
-			equipmentPlans.add(equipmentPlan2);
-
-			adjustTime(equipmentPlan2);
-
 		}
 
 

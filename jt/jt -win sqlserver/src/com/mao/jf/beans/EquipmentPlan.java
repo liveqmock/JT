@@ -44,7 +44,6 @@ public class EquipmentPlan {
 	@OneToOne(fetch = FetchType.LAZY, cascade = { PERSIST, MERGE, REFRESH })
 	@JoinColumn(name = "nextEquipmentPlan", referencedColumnName = "id")
 	private EquipmentPlan	nextEquipmentPlan;
-	
 	public EquipmentPlan	toNextPlan(EquipmentPlan equipmentPlan) throws Exception {
 		setNextEquipmentPlan(equipmentPlan);
 		equipmentPlan.setEquipment(equipment);

@@ -19,6 +19,8 @@
 			<property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://192.168.1.103:1433;databaseName=bill;"/>
 			<property name="javax.persistence.jdbc.user" value="rdp"/>
 			<property name="javax.persistence.jdbc.password" value="mao564864"/>
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="true" />
 		</properties>
 	</persistence-unit>
 </persistence>

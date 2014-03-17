@@ -5,6 +5,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +16,8 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
 import com.mao.jf.beans.annotation.Caption;
+
+import javax.persistence.OrderBy;
 
 @Entity
 public class Operation extends BeanMao {
@@ -25,6 +29,7 @@ public class Operation extends BeanMao {
 	private String note  ;
 	private int num  ;
 	@OneToMany(mappedBy = "operation", fetch = EAGER)
+	@OrderBy("code")
 	private Collection<Equipment> equipments;
 
 
@@ -110,15 +115,33 @@ public class Operation extends BeanMao {
 
 	@PrePersist
 	@PreUpdate
-	public void postPersist() {
+	public void prePersist() {
 		if(equipments==null )equipments=new ArrayList<>();
 		if(num>equipments.size()){
 			for(int i=equipments.size();i<num;i++){
 				Equipment equipment=new Equipment(this);
 				equipment.setCode(i+1);
+				BeanMao.saveBean(equipment);
 				equipments.add(equipment);
 			}
 				
+		}
+		if(num<equipments.size()){
+			ArrayList<Equipment> newEquipments = new ArrayList<>();
+			int i=0;
+			Iterator<Equipment> it = equipments.iterator();
+			while(i<num){
+				newEquipments.add(it.next());
+				i++;
+			}
+			for(Equipment equipment:equipments){
+				if(!newEquipments.contains(equipment)){
+					BeanMao.removeBean(equipment);
+				}
+					
+			}
+			equipments.clear();
+			equipments.addAll(newEquipments);
 		}
 	}
 	

@@ -38,6 +38,7 @@ public abstract class BeanDialog<T> extends JDialog {
 	public BeanDialog(BeanTablePane<T> panel, String title) {
 		this.contentPanel3 = panel;
 		this.bean = null;
+		setDefaultCloseOperation(JDialog. DO_NOTHING_ON_CLOSE);
 		setTitle(title);
 		getContentPane().setLayout(new BorderLayout());
 		setIconImage(Toolkit.getDefaultToolkit().getImage(BeanDialog.class.getResource("/ui/logo.PNG")));
@@ -59,8 +60,9 @@ public abstract class BeanDialog<T> extends JDialog {
 							return;
 						}
 
-						if (okButtonAction())
-							BeanDialog.this.dispose();
+						if (okButtonAction()){
+							 ok();
+						}
 
 					}
 				});
@@ -72,8 +74,7 @@ public abstract class BeanDialog<T> extends JDialog {
 				JButton cancelButton = new JButton("取消");
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						BeanDialog.this.bean = null;
-						BeanDialog.this.dispose();
+						cancel();
 					}
 				});
 				cancelButton.setActionCommand("Cancel");
@@ -89,11 +90,13 @@ public abstract class BeanDialog<T> extends JDialog {
 		// setBounds(0, 0, aaa.width, aaa.height);
 		setLocationRelativeTo(null);
 		// setResizable(false);
+		BeanMao.beanManager.getEm().getTransaction().begin();
 	}
 
 	public BeanDialog(BeanPanel<T> panel, String title) {
 		this.contentPanel = panel;
 		this.bean = (T) contentPanel.getBean();
+		setDefaultCloseOperation(JDialog. DO_NOTHING_ON_CLOSE);
 		setTitle(title);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(BeanDialog.class.getResource("/ui/logo.PNG")));
 		getContentPane().setLayout(new BorderLayout());
@@ -111,8 +114,9 @@ public abstract class BeanDialog<T> extends JDialog {
 							return;
 						}
 						
-						if (okButtonAction())
-							BeanDialog.this.dispose();
+						if (okButtonAction()){
+							 ok();
+						}
 
 					}
 				});
@@ -137,12 +141,14 @@ public abstract class BeanDialog<T> extends JDialog {
 
 		pack();
 		setLocationRelativeTo(null);
+		BeanMao.beanManager.getEm().getTransaction().begin();
 		// setResizable(false);
 	}
 
 	public BeanDialog(BeansPanel<T> panel, String title) {
 		this.contentPanel2 = panel;
 		this.beans = panel.getBeans();
+		setDefaultCloseOperation(JDialog. DO_NOTHING_ON_CLOSE);
 		setTitle(title);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(BeanDialog.class.getResource("/ui/logo.PNG")));
 		getContentPane().setLayout(new BorderLayout());
@@ -165,11 +171,12 @@ public abstract class BeanDialog<T> extends JDialog {
 						}
 
 						if (okButtonAction()){
-							BeanMao.beanManager.flush();
-							BeanDialog.this.dispose();
+							ok();
 						}
 
 					}
+
+					
 				});
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
@@ -179,8 +186,8 @@ public abstract class BeanDialog<T> extends JDialog {
 				JButton cancelButton = new JButton("取消");
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						BeanDialog.this.beans = null;
-						BeanDialog.this.dispose();
+						cancel();
+						
 					}
 				});
 				cancelButton.setActionCommand("Cancel");
@@ -195,6 +202,7 @@ public abstract class BeanDialog<T> extends JDialog {
 		// if (aaa.height < 500) aaa.height = 500;
 		// setBounds(0, 0, aaa.width, aaa.height);
 		setLocationRelativeTo(null);
+		BeanMao.beanManager.getEm().getTransaction().begin();
 		// setResizable(false);
 	}
 
@@ -202,6 +210,13 @@ public abstract class BeanDialog<T> extends JDialog {
 	public void cancel() {
 		BeanDialog.this.bean = null;
 		BeanDialog.this.dispose();
+		BeanMao.beanManager.getEm().getTransaction().rollback();
+		
+	}
+	private void ok() {
+		BeanDialog.this.dispose();
+		BeanMao.beanManager.getEm().flush();;
+		BeanMao.beanManager.getEm().getTransaction().commit();
 		
 	}
 	public T getBean() {

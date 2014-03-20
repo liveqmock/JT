@@ -11,6 +11,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +35,9 @@ import javax.swing.RowFilter;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+
+import ui.costPanes.DateCellRenderer;
+import ui.costPanes.NumberCellRenderer;
 
 public class BeanTablePane<T> extends JPanel {
 
@@ -56,6 +62,13 @@ public class BeanTablePane<T> extends JPanel {
 		this.beans = beans;
 		this.filterColoums = filterColoums;
 		table = new JXTable(new BeanTableModel<>(beans,class1,headers));
+
+		table.setDefaultRenderer(float.class, new NumberCellRenderer() );
+		table.setDefaultRenderer(double.class, new NumberCellRenderer() );
+		table.setDefaultRenderer(Timestamp.class, new DateCellRenderer() );
+		table.setDefaultRenderer(Date.class, new DateCellRenderer() );
+		table.setDefaultRenderer(Time.class, new DateCellRenderer() );
+		table.setDefaultRenderer(java.util.Date.class, new DateCellRenderer() );
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {

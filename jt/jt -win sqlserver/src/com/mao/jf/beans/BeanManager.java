@@ -99,7 +99,7 @@ public class BeanManager {
 
 
 	public void removeBean(Object object) {
-		em.remove(em.merge(object));
+		em.remove(object);
 	}
 
 

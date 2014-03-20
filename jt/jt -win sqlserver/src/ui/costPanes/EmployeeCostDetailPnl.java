@@ -17,6 +17,7 @@ import javax.sql.rowset.RowSetProvider;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -28,6 +29,8 @@ import org.jdesktop.swingx.JXTable;
 
 import ui.customComponet.RsTablePane;
 
+import com.mao.jf.beans.BeanMao;
+import com.mao.jf.beans.Employee;
 import com.mao.jf.beans.SessionData;
 
 public class EmployeeCostDetailPnl extends JPanel {
@@ -49,8 +52,8 @@ public class EmployeeCostDetailPnl extends JPanel {
 	
 	private JXDatePicker sDate;
 	private RsTablePane tablePane;
-	private JTextField name;
-	private JPopupMenu popupMenu;
+	private JComboBox<String> name;
+//	private JPopupMenu popupMenu;
 	private JXDatePicker eDate;
 
 
@@ -71,11 +74,12 @@ public class EmployeeCostDetailPnl extends JPanel {
 		JLabel label_1 = new JLabel("\u5458\u5DE5\uFF1A");
 		panel.add(label_1);
 
-		name = new JTextField();
+		name = new JComboBox<>(Employee.getNames());
+		
 		panel.add(name);
-		name.setMinimumSize(new Dimension(60, 20));
-		name.setColumns(30);
-		name.setMaximumSize(new Dimension(100, 40));
+//		name.setMinimumSize(new Dimension(60, 20));
+//		name.setColumns(30);
+//		name.setMaximumSize(new Dimension(100, 40));
 		JLabel label_2 = new JLabel("\u65E5\u671F\uFF1A");
 		panel.add(label_2);
 
@@ -140,8 +144,8 @@ public class EmployeeCostDetailPnl extends JPanel {
 					int row = table.rowAtPoint(e.getPoint());
 					if (row >= 0) {
 						table.setRowSelectionInterval(row, row);
-						popupMenu.show(e.getComponent(),
-								e.getX(), e.getY());
+//						popupMenu.show(e.getComponent(),
+//								e.getX(), e.getY());
 					}
 				}
 			}
@@ -163,7 +167,7 @@ public class EmployeeCostDetailPnl extends JPanel {
 
 		});
 
-		name.setText(nameStr);
+		name.setSelectedItem(nameStr);
 		sDate.setDate(startDate);
 		eDate.setDate(endDate);
 		search();
@@ -171,10 +175,10 @@ public class EmployeeCostDetailPnl extends JPanel {
 	private void search() {
 		if(sDate.getDate()==null||eDate.getDate()==null) JOptionPane.showMessageDialog(EmployeeCostDetailPnl.this, "必须输入日期");
 		try(PreparedStatement pst=SessionData.getConnection().prepareStatement(sql)){
-			pst.setString(1, "%"+name.getText()+"%");
+			pst.setString(1, "%"+name.getSelectedItem()+"%");
 			pst.setDate(2, new java.sql.Date(sDate.getDate().getTime()));
 			pst.setDate(3, new java.sql.Date(eDate.getDate().getTime()));
-			pst.setString(4, "%"+name.getText()+"%");
+			pst.setString(4, "%"+name.getSelectedItem()+"%");
 			pst.setDate(5, new java.sql.Date(sDate.getDate().getTime()));
 			pst.setDate(6, new java.sql.Date(eDate.getDate().getTime()));
 			RowSetFactory rowSetFactory = RowSetProvider.newFactory();

@@ -38,7 +38,7 @@ public class Main extends JFrame {
 	 * Launch the application.
 	 */
 
-	public  static int ver=47;
+	public  static int ver=49;
  
 
 	public Main() {
@@ -202,5 +202,6 @@ public class Main extends JFrame {
 			}
 		}
 		JOptionPane.showMessageDialog(null, "更新完成，请重新打开程序");
+		System.exit(0);
 	}
 }

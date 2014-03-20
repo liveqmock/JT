@@ -70,9 +70,15 @@ public class MenuAction extends AbstractAction {
 		public void windowClosing(WindowEvent e) {
 			// TODO 自动生成的方法存根
 			super.windowClosing(e);
-
-			BeanMao.beanManager.getEm().flush();
+			try{
+//			BeanMao.beanManager.getEm().flush();
 			BeanMao.beanManager.getEm().getTransaction().commit();
+			}catch(Exception e1){
+				try{
+					BeanMao.beanManager.getEm().getTransaction().rollback();
+					JOptionPane.showMessageDialog(null, "保存数据库失败,请重新操作!");
+				}catch(Exception e2){}
+			}
 		}
 		
 	};

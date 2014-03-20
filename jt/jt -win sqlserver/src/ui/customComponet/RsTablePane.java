@@ -6,7 +6,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 
 import javax.sql.rowset.CachedRowSet;
 import javax.swing.AbstractAction;
@@ -17,6 +20,9 @@ import javax.swing.ListSelectionModel;
 
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+
+import ui.costPanes.DateCellRenderer;
+import ui.costPanes.NumberCellRenderer;
 
 public class RsTablePane extends JPanel {
 
@@ -33,6 +39,14 @@ public class RsTablePane extends JPanel {
 		this.rs = rs;
 		model=new RsTableModel(rs);
 		table = new JXTable(model);
+		
+		table.setDefaultRenderer(float.class, new NumberCellRenderer() );
+		table.setDefaultRenderer(double.class, new NumberCellRenderer() );
+		table.setDefaultRenderer(Timestamp.class, new DateCellRenderer() );
+		table.setDefaultRenderer(Date.class, new DateCellRenderer() );
+		table.setDefaultRenderer(Time.class, new DateCellRenderer() );
+		table.setDefaultRenderer(java.util.Date.class, new DateCellRenderer() );
+		
 		table.setHorizontalScrollEnabled(true);
 		table.setHighlighters(HighlighterFactory.createAlternateStriping());
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

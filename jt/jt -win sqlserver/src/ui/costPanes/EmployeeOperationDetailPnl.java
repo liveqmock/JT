@@ -3,6 +3,8 @@ package ui.costPanes;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
+import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -19,37 +21,31 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.util.StringUtil;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXTable;
 
 import ui.customComponet.RsTablePane;
+import ui.panels.ImagePanel;
+import ui.panels.MyImageView;
 
 import com.mao.jf.beans.BeanMao;
+import com.mao.jf.beans.Bill;
+import com.mao.jf.beans.Custom;
 import com.mao.jf.beans.Employee;
 import com.mao.jf.beans.SessionData;
 
-public class EmployeeCostOperationDetailPnl extends JPanel {
-	private static String sql="select isnull(a.name,b.name) 姓名,isnull(a.finishdate,b.finishdate)  工作时间,操作时间,a.oper 工序,操作时间,preparetime 调机时间 ,"
-			+"cast(wage as decimal(18,2)) \"工资/分\",cast(isnull(wages,0)+isnull(工资,0) as decimal(18,2)) 工资,"
-			+"cast(产值 as decimal(18,2)) 产值,报废数量, 报废成本 from  "
-			+"(select b.wage,b.name,finishdate,c.name oper,a.employee,sum(a.worktime) 操作时间,"
-			+"sum(a.worktime)*wage 工资,sum(a.worktime*c.cost) 产值,sum(a.scrapnum) 报废数量,"
-			+"SUM(e.reportprice*a.scrapnum) 报废成本 	from employee b left join operationwork "
-			+" a on a.employee=b.id  join operationplan c on a.operationplan = c.id 	join "
-			+"\"billplan\" d on c.\"billplan\"=d.id join bill e on d.bill =e.id  where b.name like ?"
-			+" and finishdate between ? and ?   group by a.employee,wage,"
-			+"b.name ,finishdate,c.name	) a  full  join (select a.id employee,a.name,finishdate,"
-			+"c.name oper, sum(b.preparetime) preparetime,sum(b.preparetime)*wage wages from "
-			+"employee a  left join operationwork b on b.prepareemployee =a.id join operationplan "
-			+"c on b.operationplan = c.id  where a.name like ? and finishdate between ?"
-			+" and ?  group by a.id,wage,a.name,finishdate,c.name) as b on b.employee=a.employee and"
-			+" a.finishdate=b.finishdate and a.oper=b.oper order by 工作时间 ";
+public class EmployeeOperationDetailPnl extends JPanel {
+	private static String sql="select b.name 员工,e.id,e.custom 客户,e.picid 图号,c.name 工序,finishdate 完成日期,a.worktime 操作时间, a.worktime*wage 工资,a.worktime*c.cost 产值,a.scrapnum 报废数量, e.reportprice*a.scrapnum 报废成本 	from employee b left join operationwork   a on a.employee=b.id  join operationplan c on a.operationplan = c.id 	join  billplan d on c.billplan=d.id join bill e on d.bill =e.id   where b.name like ?  and finishdate between ? and ?  union select  a.name,e.id,e.custom 客户,e.picid,c.name+'_调机' oper,finishdate,b.worktime 操作时间, b.worktime*wage 工资,b.worktime*c.cost 产值,null,null from  employee a  left join operationwork b on b.prepareemployee =a.id join operationplan  c on b.operationplan = c.id join  billplan d on c.billplan=d.id join bill e on d.bill =e.id  where a.name like ? and finishdate between ?  and ?";
 	private JXDatePicker sDate;
 	private RsTablePane tablePane;
 	private JComboBox<String> name;
@@ -60,7 +56,7 @@ public class EmployeeCostOperationDetailPnl extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public EmployeeCostOperationDetailPnl(String nameStr,Date startDate,Date endDate) {
+	public EmployeeOperationDetailPnl(String nameStr,Date startDate,Date endDate) {
 
 		setLayout(new BorderLayout(0, 0));
 
@@ -75,10 +71,8 @@ public class EmployeeCostOperationDetailPnl extends JPanel {
 		panel.add(label_1);
 
 		name = new JComboBox<>(Employee.getNames());
-		
 		panel.add(name);
 //		name.setMinimumSize(new Dimension(60, 20));
-//		name.setColumns(30);
 //		name.setMaximumSize(new Dimension(100, 40));
 		JLabel label_2 = new JLabel("\u65E5\u671F\uFF1A");
 		panel.add(label_2);
@@ -106,11 +100,11 @@ public class EmployeeCostOperationDetailPnl extends JPanel {
 		searchBt.setMnemonic('s');
 		panel.add(searchBt);
 
-		tablePane= new RsTablePane(null,"员工产出统计");
+		tablePane= new RsTablePane(null,"员工产出明细");
 		add(tablePane, BorderLayout.CENTER);
 		final JXTable table = tablePane.getTable();
 		popupMenu=new JPopupMenu();
-		popupMenu.add(new AbstractAction("查看员工明细"){
+		popupMenu.add(new AbstractAction("查看图纸"){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -119,7 +113,7 @@ public class EmployeeCostOperationDetailPnl extends JPanel {
 			}
 
 		});
-		addMouseListener(new MouseAdapter() {
+		tablePane.getTable().addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				showPopup(e);
@@ -165,7 +159,7 @@ public class EmployeeCostOperationDetailPnl extends JPanel {
 		search();
 	}
 	private void search() {
-		if(sDate.getDate()==null||eDate.getDate()==null) JOptionPane.showMessageDialog(EmployeeCostOperationDetailPnl.this, "必须输入日期");
+		if(sDate.getDate()==null||eDate.getDate()==null) JOptionPane.showMessageDialog(EmployeeOperationDetailPnl.this, "必须输入日期");
 		try(PreparedStatement pst=SessionData.getConnection().prepareStatement(sql)){
 			pst.setString(1, "%"+name.getSelectedItem()+"%");
 			pst.setDate(2, new java.sql.Date(sDate.getDate().getTime()));
@@ -184,7 +178,20 @@ public class EmployeeCostOperationDetailPnl extends JPanel {
 
 	}
 	private void dbClick() {
-		tablePane.getTable().getValueAt(tablePane.getTable().getSelectedRow(), 0);
+		int billId=(int) tablePane.getTable().getValueAt(tablePane.getTable().getSelectedRow(), 1);
+		Bill bill=BeanMao.beanManager.find(Bill.class, billId);
+		if(StringUtils.isNoneBlank(bill.getImageUrl())){
+			
+			JDialog dialog=new JDialog();
+			MyImageView imageView=new MyImageView();
+			dialog.setContentPane(imageView);
+			dialog.setLocationRelativeTo(null);
+			dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
 
+			imageView.showFile(bill.getImageUrl());
+			dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+			dialog.setVisible(true);
+			
+		}
 	}
 }

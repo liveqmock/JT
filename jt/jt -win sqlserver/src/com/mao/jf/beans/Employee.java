@@ -4,6 +4,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.beans.Transient;
 import java.util.List;
+import java.util.Vector;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -86,5 +87,11 @@ public class Employee extends BeanMao {
 		
 	}
 	
-	
+	public static Vector<String> getNames() {
+		List<String> nameList = BeanMao.beanManager.getEm().createQuery("select name from Employee", String.class).getResultList();
+		Vector<String> names=new Vector<>();
+		names.add("");
+		names.addAll(nameList);
+		return names;
+	}
 }

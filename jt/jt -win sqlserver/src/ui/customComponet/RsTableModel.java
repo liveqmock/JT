@@ -5,7 +5,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 
 import javax.sql.RowSet;
 import javax.sql.rowset.CachedRowSet;
@@ -81,7 +84,11 @@ public class RsTableModel extends AbstractTableModel {
 			case java.sql.Types.REAL:
 				return Number.class;
 			case java.sql.Types.DATE:
-				return java.util.Date.class;
+				return Date.class;
+			case java.sql.Types.TIMESTAMP:
+				return Timestamp.class;
+			case java.sql.Types.TIME:
+				return Time.class;
 			case java.sql.Types.BOOLEAN:
 				return boolean.class;
 			case java.sql.Types.LONGNVARCHAR:

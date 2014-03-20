@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PreRemove;
+import static javax.persistence.CascadeType.ALL;
 
 @Entity
 public class EquipmentPlan {
@@ -37,24 +38,23 @@ public class EquipmentPlan {
 	private int planUseTimes;
 	private int freeTime;
 	
-	@OneToOne(fetch = FetchType.LAZY, cascade = { PERSIST, MERGE, REFRESH })
+	@OneToOne(fetch = FetchType.LAZY, cascade = { PERSIST, MERGE, REFRESH }, orphanRemoval = true)
 	@JoinColumn(name = "preEquipmentPlan", referencedColumnName = "id")
 	private EquipmentPlan	preEquipmentPlan;
 	
-	@OneToOne(fetch = FetchType.LAZY, cascade = { PERSIST, MERGE, REFRESH })
+	@OneToOne(fetch = FetchType.LAZY,cascade = { PERSIST, MERGE, REFRESH }, orphanRemoval = true)
 	@JoinColumn(name = "nextEquipmentPlan", referencedColumnName = "id")
 	private EquipmentPlan	nextEquipmentPlan;
-	public EquipmentPlan	toNextPlan(EquipmentPlan equipmentPlan) throws Exception {
-		setNextEquipmentPlan(equipmentPlan);
+	public void	toNextPlan(EquipmentPlan equipmentPlan) throws Exception {
 		equipmentPlan.setEquipment(equipment);
-		equipmentPlan.setPreEquipmentPlan(this);
 		equipmentPlan.setPlanStartTime(getPlanEndTime());
 		if(nextEquipmentPlan!=null){
 			nextEquipmentPlan.setPreEquipmentPlan(equipmentPlan);
-			equipmentPlan.setNextEquipmentPlan(nextEquipmentPlan);
+			equipmentPlan.setNextEquipmentPlan(nextEquipmentPlan);			
 			equipmentPlan.setFreeTime(((Long)(nextEquipmentPlan.getPlanStartTime().getTime()-equipmentPlan.getPlanEndTime().getTime())).intValue()/60000);
 		}
-		return equipmentPlan;
+		equipmentPlan.setPreEquipmentPlan(this);
+		this.setNextEquipmentPlan(equipmentPlan);
 		
 		
 	}

@@ -20,6 +20,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Query;
 
 import com.mao.jf.beans.annotation.Caption;
+import static javax.persistence.CascadeType.ALL;
 
 @Entity
 public class OperationPlan extends BeanMao {
@@ -37,7 +38,7 @@ public class OperationPlan extends BeanMao {
 
 	private int equipmentNum;
 
-	@OneToMany(mappedBy = "operationPlan")	@OrderBy("planStartTime")
+	@OneToMany(mappedBy = "operationPlan", cascade = ALL, orphanRemoval = true)	@OrderBy("planStartTime")
 
 	private Collection<EquipmentPlan> equipmentPlans;
 
@@ -77,7 +78,7 @@ public class OperationPlan extends BeanMao {
 
 	public EquipmentPlan getEarliestEquipmentPlan() {
 		return BeanMao.getBean(EquipmentPlan.class, " equipment.operation=?1 and "
-				+ "planEndTime=(select min(planEndTime) from EquipmentPlan where  equipment.operation=?1 and nextEquipmentPlan is null) "
+				+ "planEndTime=(select min(planEndTime) from EquipmentPlan a where  a.equipment.operation=?1 and a.nextEquipmentPlan is null) "
 				,operation);
 	}
 	public EquipmentPlan getFreeEquipmentPlan(int userTime) {
@@ -107,7 +108,7 @@ public class OperationPlan extends BeanMao {
 			equipmentPlan.setNum(num);
 			equipmentPlan.setPlanUseTimes(prepareTime+unitUseTime*num);
 			equipmentPlan.setOperationPlan(this);
-			if(equipment==null){//有没有排产的设备，时间从现在开始
+			if(equipment!=null){//有没有排产的设备，时间从现在开始
 				equipmentPlan.setEquipment(equipment);
 				Calendar calendar=Calendar.getInstance();
 				if(calendar.get(Calendar.HOUR_OF_DAY)>=17){

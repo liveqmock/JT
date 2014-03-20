@@ -26,9 +26,6 @@ public class BillTable extends BeanTablePane<Bill> {
 	public BillTable(Vector<Bill> beans) {
 		super(beans,Bill.class);
 		
-		getTable().setDefaultRenderer(float.class, new NumberCellRenderer() );
-		getTable().setDefaultRenderer(double.class, new NumberCellRenderer() );
-		
 		getTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		

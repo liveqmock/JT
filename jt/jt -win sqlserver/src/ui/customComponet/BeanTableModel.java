@@ -266,7 +266,6 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	}
 	public void insertRow( T t) {
 		int row =0;
-		
 		if(beans.contains(t)){
 			Iterator<T> it = beans.iterator();
 			int p=0;

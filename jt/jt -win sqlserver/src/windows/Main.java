@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.persistence.EntityManager;
@@ -39,15 +40,18 @@ public class Main extends JFrame {
 	 */
 
 	public  static int ver=49;
- 
+
 
 	public Main() {
 		setBounds(100, 100, 700, 400);
 		setTitle("津田精密机构订单管理系统"); 
 		setIconImage(Toolkit.getDefaultToolkit().getImage(About.class.getResource("/ui/logo.PNG")));
 		final BillManagerPnl billManagerPnl=new BillManagerPnl();
-		setJMenuBar(new MainMenu(billManagerPnl.getTable()));
 		setContentPane(billManagerPnl);
+		setJMenuBar(new MainMenu(billManagerPnl.getTable()));
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setExtendedState(Frame.MAXIMIZED_BOTH);
+		setVisible(true);
 
 		addWindowListener(new WindowAdapter(){
 
@@ -56,43 +60,19 @@ public class Main extends JFrame {
 				// TODO 自动生成的方法存根
 				super.windowClosing(arg0);
 				billManagerPnl.saveTableStatus();
-			}
-
-			@Override
-			public void windowClosed(WindowEvent e) {
-				// TODO 自动生成的方法存根
-				super.windowClosed(e);
-				billManagerPnl.saveTableStatus();
-			}
-
-
-		});
-
-
-		setVisible(true);
-		toFront();
-		setAutoRequestFocus(true);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setExtendedState(Frame.MAXIMIZED_BOTH);
-		addWindowListener(new WindowAdapter() {
-
-			@Override
-			public void windowClosing(WindowEvent e) {
-				// TODO 自动生成的方法存根
-				super.windowClosing(e);
 				BeanMao.beanManager.flush();
+				BeanMao.close();
 			}
-			
+
 		});
 	}
 
 	public static void main(String[] args) {
-		 EntityManager a = BeanMao.beanManager.getEm();
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					 new Runnable() {
+					new Runnable() {
 						public void run() {
 							jcifs.Config.setProperty("jcifs.smb.client.domain",
 									"192.168.1.103");
@@ -103,21 +83,15 @@ public class Main extends JFrame {
 									"jcifs.smb.client.responseTimeout", "5000");
 							jcifs.Config.setProperty("jcifs.smb.client.soTimeout",
 									"5000");
-							BeanMao.beanManager.getEm();
+
 						}
 					}.run();
-					
-					
-					try(Statement st=SessionData.getConnection().createStatement();){
-						ResultSet rs=st.executeQuery("select * from version");
-						if(rs.next()){
-							if(ver<rs.getInt(1)){
-								try{
-								update();
-								}catch(Exception exception){
-									
-								}
-							}
+
+					int dbVer= (int) BeanMao.beanManager.getEm().createNativeQuery("select * from version").getSingleResult();
+					if(ver<dbVer){
+						try{
+							update();
+						}catch(Exception exception){
 
 						}
 					}
@@ -136,12 +110,11 @@ public class Main extends JFrame {
 						@Override
 						public boolean okButtonAction() {
 							try{
-								
+
 								Userman loginUser = BeanMao.getBean(Userman.class, " a.name='"+getBean().getName()+"' and password='"+getBean().getPassword()+"'");
 								Userman.loginUser=loginUser;
 								try {
-									SerialiObject.save(getBean(), new File(
-											"user.dat"));
+									SerialiObject.save(getBean(), new File("user.dat"));
 								} catch (Exception e) {
 									// TODO 自动生成的 catch 块
 									e.printStackTrace();
@@ -156,15 +129,20 @@ public class Main extends JFrame {
 
 						@Override
 						public void cancel() {
+							try {
+								BeanMao.close();
+								SessionData.getConnection().close();
+							} catch (SQLException e) {
+							}
 							System.exit(0);
 						}
-						
-						
+
+
 					};
 					dialog.setVisible(true);
-					dialog.toFront();
-					
-					
+					dialog.setAlwaysOnTop(true);
+
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -174,7 +152,7 @@ public class Main extends JFrame {
 		});
 	}
 	private static void update() throws IOException {
-		
+
 		SmbFileInputStream smbFile=new SmbFileInputStream("smb://192.168.1.103/pics/main.jar");
 
 		int byteread = 0;
@@ -202,6 +180,7 @@ public class Main extends JFrame {
 			}
 		}
 		JOptionPane.showMessageDialog(null, "更新完成，请重新打开程序");
+		BeanMao.close();
 		System.exit(0);
 	}
 }

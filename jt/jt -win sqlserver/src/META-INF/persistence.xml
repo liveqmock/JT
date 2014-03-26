@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 	<persistence-unit name="jt-win-sqlserver" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		
 		<class>com.mao.jf.beans.Custom</class>
 		<class>com.mao.jf.beans.BackRepair</class>
 		<class>com.mao.jf.beans.Bill</class>
@@ -14,13 +18,32 @@
 		<class>com.mao.jf.beans.Equipment</class>
 		<class>com.mao.jf.beans.EquipmentPlan</class>
 		<properties>
-			<property name="javax.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
-			<!--<property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://jxjtjm.com:5432;databaseName=bill;"/>-->
-			<property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://192.168.1.103:1433;databaseName=bill;"/>
-			<property name="javax.persistence.jdbc.user" value="rdp"/>
-			<property name="javax.persistence.jdbc.password" value="mao564864"/>
+			<property name="javax.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+			<!--<property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://jxjtjm.com:5432;databaseName=bill;"/> -->
+			<property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://192.168.1.103:1433;databaseName=bill" />
+			<property name="javax.persistence.jdbc.user" value="rdp" />
+			<property name="javax.persistence.jdbc.password" value="mao564864" />
+			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider" />
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.connection.provider_class"
+				value="org.hibernate.connection.C3P0ConnectionProvider" />
+			<!-- 最小连接数 -->
+			<property name="c3p0.min_size" value="1" />
+			<!-- 最大连接数 -->
+			<property name="c3p0.max_size" value="10" />
+			<!--最大空闲时间,60秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->
+			<property name="c3p0.maxIdleTime" value="60" />
+			<!-- 获得连接的超时时间,如果超过这个时间,会抛出异常，单位毫秒 -->
+			<property name="c3p0.timeout" value="3000" />
+			<!-- 最大的PreparedStatement的数量 -->
+			<property name="c3p0.max_statements" value="50" />
+			<!-- 每隔120秒检查连接池里的空闲连接 ，单位是秒 -->
+			<property name="c3p0.idle_test_period" value="300" />
+			<!-- 当连接池里面的连接用完的时候，C3P0一下获取的新的连接数 -->
+			<property name="c3p0.acquire_increment" value="1" />
+			<!-- 是否每次都验证连接是否可用 -->
+			<property name="c3p0.validate" value="false" />
 		</properties>
 	</persistence-unit>
 </persistence>

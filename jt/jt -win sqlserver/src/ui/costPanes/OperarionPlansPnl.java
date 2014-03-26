@@ -36,7 +36,8 @@ public class OperarionPlansPnl extends BeansPanel<OperationPlan> {
 				return;
 			}
 			bean.save();
-			plan.getOperationPlans().add(bean);
+			if(index<0)
+				plan.getOperationPlans().add(bean);
 			getTablePane().setBeans(plan.getOperationPlans());
 			setPanelBean(createNewBean());
 		

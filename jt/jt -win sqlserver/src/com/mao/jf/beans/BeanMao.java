@@ -41,7 +41,9 @@ public class BeanMao implements Serializable {
 	public static <T> T getBean(Class<T> cls,String sql,Object... objects) {
 		return beanManager.getBean(cls, sql,objects);
 	}
-
+	public static void close() {
+		 beanManager.close();
+	}
 
 	
 	

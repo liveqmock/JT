@@ -20,6 +20,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.PostRemove;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 
 import com.mao.jf.beans.annotation.Caption;
 @Entity
@@ -303,16 +305,22 @@ public class Bill extends BeanMao {
 		return picid;
 	}
 	@Transient
-	@Caption(order = 12, value= "订单总价")
+	@Caption(order = 13, value= "订单总价")
 	public float getReportMoney() {
 
 		return Userman.loginUser.isManager()? reportPrice * num:0;
 	}
 
-	@Caption(order = 11, value= "订单单价")
+	@Caption(order = 11, value= "订单单价(含税)")
 	public float getReportPrice() {
 
 		return Userman.loginUser.isManager()? reportPrice:0;
+	}
+
+	@Caption(order = 12, value= "订单单价(不含税)")
+	public float getReportPriceS() {
+
+		return Userman.loginUser.isManager()? (reportPrice/0.0117f)/100.0f:0;
 	}
 
 	@Caption(order = 6, value= "要求交货日期")
@@ -544,13 +552,21 @@ public class Bill extends BeanMao {
 		if(custom!=null&&picid!=null)
 			return beanManager.getBean(Bill.class, "custom='"+custom+"' and picid='"+picid+"'");
 		else
-			return null;
-
+			return null;//org.hibernate.connection.C3P0ConnectionProvide
+		
 	}
 
 	@PostRemove
 	public void preremove() {
 		if(this.imageUrl!=null) new File(this.imageUrl).delete();
+	}
+	@PrePersist
+	public void prePersist() {
+		creator=Userman.loginUser;
+	}
+	@PreUpdate
+	public void preUpdate() {
+		changer=Userman.loginUser;
 	}
 
 

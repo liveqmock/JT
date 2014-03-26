@@ -1,5 +1,7 @@
 package com.mao.jf.beans;
 
+import static javax.persistence.CascadeType.ALL;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,7 +22,6 @@ import javax.persistence.OrderBy;
 import javax.persistence.Query;
 
 import com.mao.jf.beans.annotation.Caption;
-import static javax.persistence.CascadeType.ALL;
 
 @Entity
 public class OperationPlan extends BeanMao {
@@ -144,7 +145,7 @@ public class OperationPlan extends BeanMao {
 		Calendar calendarStart=Calendar.getInstance();
 		calendarStart.setTime(equipmentPlan.getPlanStartTime());
 		//如果用时小于等于8小时并且结束时间已经是下班时间，则安排到第二天排产
-		if(equipmentPlan.getPlanUseTimes()<9*60&&
+		if(equipmentPlan.getPlanUseTimes()<=9*60&&
 				(calendarEnd.get(Calendar.HOUR_OF_DAY)>=17||
 				calendarEnd.get(Calendar.HOUR_OF_DAY)<8)){
 			calendarStart.add(Calendar.DAY_OF_MONTH, 1);			
@@ -156,10 +157,19 @@ public class OperationPlan extends BeanMao {
 		}else if(equipmentPlan.getPlanUseTimes()>9*60){
 			int workDays = equipmentPlan.getPlanUseTimes()/540;
 			calendarEnd.setTimeInMillis(calendarEnd.getTimeInMillis()+workDays*15*3_600_000);
-			equipmentPlan.setPlanEndTime(calendarEnd.getTime());
-		}
-
-
+			
+		}			
+		//双休日延迟
+		int weeks = equipmentPlan.getPlanUseTimes()/(24*60*5);
+		calendarEnd.add(Calendar.DAY_OF_MONTH, weeks*2);	
+		if(calendarEnd.get(Calendar.DAY_OF_WEEK)<calendarStart.get(Calendar.DAY_OF_WEEK)||
+				(calendarEnd.get(Calendar.DAY_OF_WEEK)==calendarStart.get(Calendar.DAY_OF_WEEK)&&
+					calendarEnd.getTimeInMillis()-calendarStart.getTimeInMillis()>(1000*60*60*24+1000*60*60*24*7*weeks)
+				))
+			calendarEnd.add(Calendar.DAY_OF_MONTH, 2);	
+		if(calendarEnd.get(Calendar.DAY_OF_WEEK)>=Calendar.SATURDAY)
+			calendarEnd.add(Calendar.DAY_OF_MONTH, 2);	
+		equipmentPlan.setPlanEndTime(calendarEnd.getTime());
 	}
 	public int getSequence() {
 		return sequence;
@@ -282,28 +292,6 @@ public class OperationPlan extends BeanMao {
 
 		}
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		OperationPlan other = (OperationPlan) obj;
-		if (billPlan == null) {
-			if (other.billPlan != null)
-				return false;
-		} else if (!billPlan.equals(other.billPlan))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		return true;
-	}
 	public int getIndex() {
 		return getBillPlan().getOperationPlans().indexOf(this);
 	}
@@ -330,4 +318,27 @@ public class OperationPlan extends BeanMao {
 			return o1.getPlanEndTime().compareTo(o2.getPlanEndTime());
 		}
 	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OperationPlan other = (OperationPlan) obj;
+		if (billPlan == null) {
+			if (other.billPlan != null)
+				return false;
+		} else if (!billPlan.equals(other.billPlan))
+			return false;
+		if (operation == null) {
+			if (other.operation != null)
+				return false;
+		} else if (!operation.equals(other.operation))
+			return false;
+		return true;
+	}
+	
+	
 }

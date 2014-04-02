@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="jt-win-sqlserver" transaction-type="RESOURCE_LOCAL">
+		<class>com.mao.jf.beans.Custom</class>
+		<class>com.mao.jf.beans.BackRepair</class>
+		<class>com.mao.jf.beans.Bill</class>
+		<class>com.mao.jf.beans.Employee</class>
+		<class>com.mao.jf.beans.Material</class>
+		<class>com.mao.jf.beans.Operation</class>
+		<class>com.mao.jf.beans.OperationPlan</class>
+		<class>com.mao.jf.beans.OperationWork</class>
+		<class>com.mao.jf.beans.BillPlan</class>
+		<class>com.mao.jf.beans.Userman</class>
+		<class>com.mao.jf.beans.Equipment</class>
+		<class>com.mao.jf.beans.EquipmentPlan</class>
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+			<property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://jxjtjm.com:5432;databaseName=bill;"/>
+			<!--<property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://192.168.1.103:1433;databaseName=bill;"/>-->
+			<property name="javax.persistence.jdbc.user" value="rdp"/>
+			<property name="javax.persistence.jdbc.password" value="mao564864"/>
+		</properties>
+	</persistence-unit>
+</persistence>

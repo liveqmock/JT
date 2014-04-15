@@ -102,9 +102,10 @@ public class BillPanel extends JSplitPane {
 	private JTextField techCondition;
 	private JTextField meterialz;
 	private JTextField meterialType;
+	private JTextField meterialCode;
 	private JComboBox<String> meterial;
 	private JCheckBox taxCheck;
-
+	private JCheckBox complete;
 	public BillPanel(Bill bean) {
 		this.bean = bean;
 		createContents();
@@ -136,7 +137,7 @@ public class BillPanel extends JSplitPane {
 		addCustomButton.setEnabled(Userman.loginUser.isManager());
 		addOutCustomBt.setEnabled(Userman.loginUser.isManager());
 		taxCheck.setEnabled(Userman.loginUser.isManager());
-
+		complete.setEnabled(Userman.loginUser.isManager());
 	}
 
 	private void outEnable(boolean b) {
@@ -418,6 +419,7 @@ public class BillPanel extends JSplitPane {
 				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,}));
 
 		JLabel lblNewLabel = new JLabel("\u8BA2\u5355\u5BA2\u6237\uFF1A");
@@ -608,7 +610,7 @@ public class BillPanel extends JSplitPane {
 		JLabel billgroupLabel = new JLabel("订单组：");
 		billgroup=new JTextField();
 		cost=new JTextField();
-		
+		complete=new JCheckBox("完结标志");
 		taxCheck=new JCheckBox("含税折算");
 		taxCheck.addItemListener(new ItemListener() {
 			
@@ -634,6 +636,7 @@ public class BillPanel extends JSplitPane {
 		gjh=new JTextField();
 		meterialz=new JTextField();
 		meterialType=new JTextField();
+		meterialCode=new JTextField();
 		techCondition=new JTextField();
 		partName=new JTextField();
 		meterial.setEditable(true);
@@ -685,8 +688,8 @@ public class BillPanel extends JSplitPane {
 		panel.add(outBilledDate, "8, 26");
 		panel.add(new JLabel("材料类型"), "2, 28");
 		panel.add(meterial, "4, 28,  fill, default");
-		panel.add(new JLabel("技术条件"), "6, 28, right, default");
-		panel.add(techCondition, "8, 28");
+		panel.add(new JLabel("材料编号"), "6, 28, right, default");
+		panel.add(meterialCode, "8, 28");
 		panel.add(new JLabel("工件号"), "2, 30, right, default");
 		panel.add(gjh, "4, 30");
 		panel.add(new JLabel("零件名称"), "6, 30, right, default");
@@ -695,8 +698,12 @@ public class BillPanel extends JSplitPane {
 		panel.add(meterialz, "4, 32");
 		panel.add(new JLabel("材料规格"), "6, 32, right, default");
 		panel.add(meterialType, "8, 32");
-		panel.add(new JLabel("备注"), "2, 34, right, default");
-		panel.add(noteFld, "4, 34, 5, 1, fill, default");
+		panel.add(new JLabel("技术条件"), "2, 34, right, default");
+		panel.add(techCondition, "4, 34");
+		panel.add(new JLabel("完成标志"), "6, 34, right, default");
+		panel.add(complete, "8, 34");
+		panel.add(new JLabel("备注"), "2, 36, right, default");
+		panel.add(noteFld, "4, 36, 5, 1, fill, default");
 		
 //		billcreateDate.addPropertyChangeListener("date",new PropertyChangeListener() {
 //			
@@ -945,6 +952,8 @@ public class BillPanel extends JSplitPane {
 		 Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("techCondition"), techCondition, jTextFieldBeanProperty).bind();
 		 Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("partName"), partName, jTextFieldBeanProperty).bind();
 		 Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("gjh"), gjh, jTextFieldBeanProperty).bind();
+		 Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("meterialCode"), meterialCode, jTextFieldBeanProperty).bind();
+		 Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("complete"), complete, checkBoxBeanProperty).bind();
 	}
 
 	public void saveBill() {
@@ -992,9 +1001,5 @@ public class BillPanel extends JSplitPane {
 		// TODO 自动生成的方法存根
 		return bean;
 	}
-
-public static void main(String[] a) {
-	BeanMao.beanManager.queryList("select * from Equipment ", Equipment.class);
-}
 
 }

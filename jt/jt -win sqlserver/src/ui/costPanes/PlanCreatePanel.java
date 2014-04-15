@@ -119,7 +119,7 @@ public class PlanCreatePanel extends BillShowPnl {
 
 	@Override
 	public void searchAction(String search) {
-		billTable.setBeans(Bill.getBeans(Bill.class,search));
+		billTable.setBeans(Bill.loadBySearch(search));
 	}
 
 	public void billItemSelectAction() {

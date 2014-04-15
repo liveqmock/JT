@@ -37,6 +37,9 @@ public class MainMenu extends JMenuBar {
 			menu.add("订单返修").addActionListener(action);	
 			menu.add("查看订单组").addActionListener(action);
 			menu.addSeparator();
+			menu.add("添加发货信息").addActionListener(action);
+			menu.add("添加发票信息").addActionListener(action);
+			menu.addSeparator();
 			menu.add("导出显示的订单").addActionListener(action);
 			menu.addSeparator();
 			JMenu colorMenu=new JMenu("标记颜色");
@@ -45,7 +48,9 @@ public class MainMenu extends JMenuBar {
 			colorMenu.add("绿色").addActionListener(action);
 			colorMenu.add("橙色").addActionListener(action);
 			colorMenu.add("去色").addActionListener(action);
-
+			
+			menu.add("取消订单").addActionListener(action);
+			
 			menu = new JMenu("统计");
 			add(menu);
 			menu.add("月度统计").addActionListener(action);
@@ -148,12 +153,16 @@ public class MainMenu extends JMenuBar {
 			colorMenu.add("蓝色").addActionListener(action);
 			colorMenu.add("绿色").addActionListener(action);
 			colorMenu.add("橙色").addActionListener(action);
-			colorMenu.add("去色").addActionListener(action);
+			colorMenu.add("去色").addActionListener(action);			
+			menu.add("取消订单").addActionListener(action);
 		}else if(Userman.loginUser.getLevelStr().equals("仓库管理员")) {
 			menu.add("生产材料管理").addActionListener(action);
 			
 		}
 
+		menu.addSeparator();
+		menu.add("添加发货信息").addActionListener(action);
+		menu.add("添加发票信息").addActionListener(action);
 	}
 
 }

@@ -82,8 +82,7 @@ public class WorkCreatePanel extends BillShowPnl {
 	@Override
 	public void searchAction(String search) {
 		try{
-			List<Bill> beans = Bill.getBeans(Bill.class,search+" and id in (select bill from BillPlan where completed=0)");
-			billTable.setBeans(beans);
+			billTable.setBeans(Bill.loadBySearch(search));
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -104,24 +103,5 @@ public class WorkCreatePanel extends BillShowPnl {
 		operarionWorksPnl.setPlan(plan);
 
 	}
-	private void addNewPlan() {
-		try{
-			Bill bill = billTable.getSelectBean();
-			if(bill==null)return;
-			BillPlan plan = new BillPlan(bill);
-			plan.save();
-			 ((BeanTableModel<BillPlan>) plansTablePane.getTable().getModel()).insertRow(plan);
-			
-			operarionWorksPnl.setBean(plan.getOperationWorks());
-		}catch(Exception e1){
-			e1.printStackTrace();
-		}
-		
-	}
-	private void removeSelectRow() {
-		((BeanTableModel<BillPlan>) plansTablePane.getTable().getModel()).removeRow(
-				plansTablePane.getTable()
-				.convertRowIndexToModel(plansTablePane.getTable().getSelectedRow()));
-		
-	}
+	
 }

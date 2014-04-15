@@ -18,28 +18,18 @@ public class OperarionPlansPnl extends BeansPanel<OperationPlan> {
 	}
 	@Override
 	public OperationPlan saveBean() {
-		return null;
-	}
-
-	
-
-	@Override
-	public void addNew() {
 		if (!getBeanPanel().isValide()) {
-			return;
+			return null;
 		}
 			List<OperationPlan> beans = (List<OperationPlan>) (getTablePane().getBeans());
 			OperationPlan bean = getPanelBean();
 			int index = beans.indexOf(bean);
 			if(index>-1&&beans.get(index)!=bean){
 				JOptionPane.showMessageDialog(this, "此工序已经存在，不能再添加！","错误",JOptionPane.ERROR_MESSAGE);
-				return;
+				return null;
 			}
 			bean.save();
-			if(index<0)
-				plan.getOperationPlans().add(bean);
-			getTablePane().setBeans(plan.getOperationPlans());
-			setPanelBean(createNewBean());
+			return bean;
 		
 			
 	}

@@ -40,7 +40,7 @@ public class OperationPlan extends BeanMao {
 
 	private int equipmentNum;
 
-	@OneToMany(mappedBy = "operationPlan", cascade = ALL, orphanRemoval = true)	@OrderBy("planStartTime")
+	@OneToMany(mappedBy = "operationPlan")	@OrderBy("planStartTime")
 
 	private Collection<EquipmentPlan> equipmentPlans;
 

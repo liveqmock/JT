@@ -26,6 +26,7 @@ public abstract class BeanPanel<T> extends JPanel {
 
 	public BeanPanel(T bean) {
 		super();
+		this.bean=bean;
 		try{
 			vPanel = new ValidationPanel();
 			vPanel.setInnerComponent(this);
@@ -61,11 +62,15 @@ public abstract class BeanPanel<T> extends JPanel {
 	 * @param origBean
 	 *            the origBean to set
 	 */
-	public void setBean(T bean) {
-		try{
-			bindingGroup.unbind();
+	protected void unBind() {
+		bindingGroup.unbind();
 			for(Binding<?, ?, ?, ?> binding: bindingGroup.getBindings())
 				bindingGroup.removeBinding(binding);
+			
+	}
+	public void setBean(T bean) {
+		try{
+			unBind();
 			this.bean = bean;
 			dataBinding();
 			bindingGroup.bind();

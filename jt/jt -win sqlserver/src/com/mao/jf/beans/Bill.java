@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -52,7 +53,7 @@ public class Bill extends BeanMao {
 	private Date itemCompleteDate;
 	private Date billedDate;
 	private String meterial;	
-	private int warehoused;
+	private boolean warehoused;
 	@javax.persistence.Transient
 	private String status;
 	@javax.persistence.Transient
@@ -63,15 +64,23 @@ public class Bill extends BeanMao {
 	private String meterialType;
 	private String techCondition;
 	private String partName;
+	
+	private String meterialCode;
+	private boolean complete;
+	private boolean cancel;
 	@OneToMany(mappedBy = "bill")
 	private Collection<Material> materials;
 
-	@OneToMany(mappedBy = "bill", orphanRemoval = true, cascade = {  ALL })
+	@OneToMany(mappedBy = "bill", cascade = {  ALL })
 	@OrderColumn(name = "sequenceNum")
 	private Collection<BillPlan> plans;
 
 	@OneToMany(mappedBy = "billItem")
 	private Collection<BackRepair> backRepairs;
+	@OneToMany(mappedBy = "bill")
+	private Collection<FpBean> fpBeans;
+	@OneToMany(mappedBy = "pic")
+	private Collection<ShipingBean> shipingBeans;
 	
 	@OneToOne
 	@JoinColumn(name = "creator", referencedColumnName = "id")
@@ -102,10 +111,10 @@ public class Bill extends BeanMao {
 
 		List<Bill> billItems=null;
 		if(Userman.loginUser.isManager()|| isShowCompelete){
-			searchString=(searchString==null?"":searchString+" ")+" order by a.itemCompleteDate ,a.requestDate";
+			searchString=(searchString==null?" cancel=false ":searchString+" and cancel=false ")+"  order by a.itemCompleteDate ,a.requestDate";
 
 		}else{
-			searchString=(searchString==null?"":searchString+" and ")+" a.itemCompleteDate is null  order by a.itemCompleteDate ,a.requestDate";
+			searchString=(searchString==null?"  cancel=false and ":searchString+" and cancel=false and ")+" a.itemCompleteDate is null  order by a.itemCompleteDate ,a.requestDate";
 
 		}
 		billItems=getBeans(Bill.class,searchString);
@@ -160,6 +169,12 @@ public class Bill extends BeanMao {
 		return color;
 	}
 
+	public boolean isWarehoused() {
+		return warehoused;
+	}
+	public void setWarehoused(boolean warehoused) {
+		this.warehoused = warehoused;
+	}
 	@Caption(order = -1, value= "客户名称")
 	public String getCustom() {
 		return custom;
@@ -194,6 +209,12 @@ public class Bill extends BeanMao {
 		return num;
 	}
 
+	public String getMeterialCode() {
+		return meterialCode;
+	}
+	public void setMeterialCode(String meterialCode) {
+		this.meterialCode = meterialCode;
+	}
 	@Caption(order = 25, value= "外协订单日期")
 	public Date getOutBillDate() {
 		return outBillDate;
@@ -304,23 +325,23 @@ public class Bill extends BeanMao {
 	public String getPicid() {
 		return picid;
 	}
-	@Transient
-	@Caption(order = 13, value= "订单总价")
-	public float getReportMoney() {
 
-		return Userman.loginUser.isManager()? reportPrice * num:0;
-	}
-
-	@Caption(order = 11, value= "订单单价(含税)")
+	@Caption(order = 11, value= "订单单价(不含税)")
 	public float getReportPrice() {
 
 		return Userman.loginUser.isManager()? reportPrice:0;
 	}
 
-	@Caption(order = 12, value= "订单单价(不含税)")
+	@Caption(order = 12, value= "订单单价(含税)")
 	public float getReportPriceS() {
 
-		return Userman.loginUser.isManager()? (reportPrice/0.0117f)/100.0f:0;
+		return Userman.loginUser.isManager()? (Math.round(reportPrice*117f))/100.0f:0;
+	}
+	@Transient
+	@Caption(order = 13, value= "订单总价")
+	public float getReportMoney() {
+
+		return Userman.loginUser.isManager()? getReportPriceS() * num:0;
 	}
 
 	@Caption(order = 6, value= "要求交货日期")
@@ -355,7 +376,7 @@ public class Bill extends BeanMao {
 	@Transient
 	@Caption(order = 51, value= "入库状态")
 	public String getWarehousedStr() {
-		return warehoused==1 ? "已入库" : "未入库";
+		return warehoused ? "已入库" : "未入库";
 	}
 	@Transient
 	@Caption(order = 52, value= "开票状态")
@@ -497,9 +518,6 @@ public class Bill extends BeanMao {
 		this.requestDate = requestDate;
 	}
 
-	public void setWarehoused(int warehoused) {
-		this.warehoused = warehoused;
-	}
 	@Caption(order=0,value="订单组")
 	public String getBillgroup() {
 		return billgroup;
@@ -568,6 +586,47 @@ public class Bill extends BeanMao {
 	public void preUpdate() {
 		changer=Userman.loginUser;
 	}
+	public boolean isComplete() {
+		return complete;
+	}
+	public Collection<FpBean> getFpBeans() {
+		return fpBeans;
+	}
+	public void setFpBeans(Collection<FpBean> fpBeans) {
+		this.fpBeans = fpBeans;
+	}
+	public Collection<ShipingBean> getShipingBeans() {
+		return shipingBeans;
+	}
+	public void setShipingBeans(Collection<ShipingBean> shipingBeans) {
+		this.shipingBeans = shipingBeans;
+	}
+	public void setComplete(boolean complete) {
+		this.complete = complete;
+	}
+	public boolean isCancel() {
+		return cancel;
+	}
+	public void setCancel(boolean cancel) {
+		this.cancel = cancel;
+	}
+	public Number getRemainNotFbMoney() {
+		if(getFpBeans()==null)return getReportMoney();
+		
+		float remainNotFbMoney=getReportMoney();
+		for( FpBean fp:getFpBeans()){
+			remainNotFbMoney-=fp.getMoney();
+		}
+		return remainNotFbMoney;
+	}
 
-
+	public Number getRemainNotShipingNum() {
+		if(getShipingBeans()==null)return num;
+		
+		int remainNotShipingNum=num;
+		for( ShipingBean shipingBean:getShipingBeans()){
+			remainNotShipingNum-=shipingBean.getNum();
+		}
+		return remainNotShipingNum;
+	}
 }

@@ -26,6 +26,7 @@ public class OperarionWorksPnl extends BeansPanel<OperationWork> {
 	}
 	public void setPlan(BillPlan plan) {
 		this.plan = plan;
+		
 		setBean(plan==null?null:plan.getOperationWorks());
 	}
 	

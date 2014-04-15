@@ -29,7 +29,6 @@ import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 
-import org.icepdf.core.views.DocumentViewController;
 import org.icepdf.ri.common.MyAnnotationCallback;
 import org.icepdf.ri.common.SwingController;
 import org.icepdf.ri.common.SwingViewBuilder;
@@ -153,14 +152,14 @@ public class MyImageView extends JScrollPane {
 	private void buildPdfViewer() {
 		controller = new SwingController();
 		SwingViewBuilder factory = new SwingViewBuilder(controller);
-		controller.getDocumentViewController().setFitMode(DocumentViewController.PAGE_FIT_WINDOW_WIDTH);
 		controller.getDocumentViewController().setAnnotationCallback(
 				new org.icepdf.ri.common.MyAnnotationCallback(
 						controller.getDocumentViewController()));
 		MyAnnotationCallback myAnnotationCallback = new MyAnnotationCallback(
 				controller.getDocumentViewController());
 		controller.getDocumentViewController().setAnnotationCallback(myAnnotationCallback);
-
+		controller.getDocumentViewController().setFitMode(org.icepdf.ri.common.views.DocumentViewController.PAGE_FIT_WINDOW_WIDTH);
+		
 		pdfViewPanel = factory.buildViewerPanel();
 
 	}

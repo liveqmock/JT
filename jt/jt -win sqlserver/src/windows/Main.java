@@ -3,12 +3,16 @@ package windows;
 import java.awt.Dialog;
 import java.awt.EventQueue;
 import java.awt.Frame;
+import java.awt.SplashScreen;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -19,6 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
+import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
 import ui.MainMenu;
@@ -39,7 +44,7 @@ public class Main extends JFrame {
 	 * Launch the application.
 	 */
 
-	public  static int ver=49;
+	public  static int ver=53;
 
 
 	public Main() {
@@ -68,6 +73,9 @@ public class Main extends JFrame {
 	}
 
 	public static void main(String[] args) {
+
+		final Spash splash=new Spash();
+		splash.setVisible(true);
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -83,7 +91,12 @@ public class Main extends JFrame {
 									"jcifs.smb.client.responseTimeout", "5000");
 							jcifs.Config.setProperty("jcifs.smb.client.soTimeout",
 									"5000");
-
+							try {
+								fileCheck();
+							} catch (IOException e1) {
+								// TODO 自动生成的 catch 块
+								e1.printStackTrace();
+							}
 						}
 					}.run();
 
@@ -139,6 +152,7 @@ public class Main extends JFrame {
 
 
 					};
+					splash.dispose();
 					dialog.setVisible(true);
 					dialog.setAlwaysOnTop(true);
 
@@ -153,6 +167,12 @@ public class Main extends JFrame {
 	}
 	private static void update() throws IOException {
 
+		fileUpdateCheck();
+		JOptionPane.showMessageDialog(null, "更新完成，请重新打开程序");
+		BeanMao.close();
+		System.exit(0);
+	}
+	private static void fileUpdateCheck() throws IOException {
 		SmbFileInputStream smbFile=new SmbFileInputStream("smb://192.168.1.103/pics/main.jar");
 
 		int byteread = 0;
@@ -166,7 +186,8 @@ public class Main extends JFrame {
 		fs.close();
 		for(SmbFile file: new SmbFile("smb://192.168.1.103/pics/main_lib/").listFiles()) {
 			File localFile= new File("main_lib/"+file.getName());
-			if(!localFile.exists()) {
+
+			if((!localFile.exists())||file.length()!=localFile.length()) {
 				smbFile=new SmbFileInputStream(file);
 
 				byteread = 0;
@@ -179,8 +200,29 @@ public class Main extends JFrame {
 				fs.close();
 			}
 		}
-		JOptionPane.showMessageDialog(null, "更新完成，请重新打开程序");
-		BeanMao.close();
-		System.exit(0);
+
+	}
+	private static void fileCheck() throws IOException {
+
+		int byteread = 0;
+		byte[] buffer = new byte[2048];
+
+		for(SmbFile file: new SmbFile("smb://192.168.1.103/pics/main_lib/").listFiles()) {
+			File localFile= new File("main_lib/"+file.getName());
+
+			if((!localFile.exists())||file.length()!=localFile.length()) {
+				SmbFileInputStream smbFile = new SmbFileInputStream(file);
+
+				byteread = 0;
+				FileOutputStream fs = new FileOutputStream(localFile);
+				while ((byteread = smbFile.read(buffer)) != -1) {
+
+					fs.write(buffer, 0, byteread);
+				}
+				smbFile.close();
+				fs.close();
+			}
+		}
+
 	}
 }

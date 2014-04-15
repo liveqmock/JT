@@ -172,19 +172,15 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 
 
 	}
-	public void setOperationPlans(Collection< OperationPlan> operationPlans) {
-		operationPlan.removeAllItems();
-		for(OperationPlan operation:operationPlans){
-			operationPlan.addItem(operation);
-
-		}
-
-	}
 	@Override
-	public void setBean(OperationWork origBean) {
-		if(origBean.getPlan()!=null)
-			operationPlan.setModel(new DefaultComboBoxModel<>(new Vector<>(origBean.getPlan().getOperationPlans())));
-		super.setBean(origBean);
+	public void setBean(OperationWork bean) {
+		unBind();
+		try{
+		operationPlan.setModel(new DefaultComboBoxModel<>(new Vector<>(bean.getPlan().getOperationPlans())));
+		}catch(Exception e){
+			operationPlan.removeAllItems();
+		}
+		super.setBean(bean);
 	}
 
 }

@@ -19,7 +19,7 @@ public abstract class BeansPanel<T> extends JPanel {
 	private String[] filterColumns;
 	private boolean vertical=false;
 	private Class<T> class1;
-	private Collection<T> beans;
+	protected Collection<T> beans;
 	
 	public BeansPanel() {
 		super(null);
@@ -120,7 +120,7 @@ public abstract class BeansPanel<T> extends JPanel {
 		
 		
 	}
-	protected void addNew() {
+	private void addNew() {
 		if (!beanPanel.isValide()) {
 			return;
 		}
@@ -158,7 +158,7 @@ public abstract class BeansPanel<T> extends JPanel {
 		beanPanel.setBean(newBean);
 		
 	}
-	public T createNewBean() {
+	protected T createNewBean() {
 		try {
 			return class1.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {

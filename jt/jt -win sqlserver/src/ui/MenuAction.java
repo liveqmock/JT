@@ -42,7 +42,9 @@ import ui.frames.BillFrame;
 import ui.panels.BackRepairPanel;
 import ui.panels.ChangePasswdPanel;
 import ui.panels.CustomPanel;
+import ui.panels.FpPanel;
 import ui.panels.MaterialsPanel;
+import ui.panels.ShipingPanel;
 import ui.panels.UsermanPnl;
 import ui.tables.BillTable;
 
@@ -51,8 +53,10 @@ import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Bill;
 import com.mao.jf.beans.Custom;
 import com.mao.jf.beans.Employee;
+import com.mao.jf.beans.FpBean;
 import com.mao.jf.beans.Operation;
 import com.mao.jf.beans.SessionData;
+import com.mao.jf.beans.ShipingBean;
 import com.mao.jf.beans.Userman;
 
 public class MenuAction extends AbstractAction {
@@ -68,7 +72,7 @@ public class MenuAction extends AbstractAction {
 		if (((JMenuItem) e.getSource()).getText() != null)
 			switch (((JMenuItem) e.getSource()).getText()) {
 			case "蓝色":
-				
+
 				addColor("hi-blue");
 				break;
 			case "绿色":
@@ -86,6 +90,12 @@ public class MenuAction extends AbstractAction {
 				break;
 			case "订单返修":
 				editBackRepair();
+				break;
+			case "添加发票信息":
+				editFp();
+				break;
+			case "添加发货信息":
+				editShiping();
 				break;
 			case "查看设备使用情况":
 				showEquipmentUsing();
@@ -112,7 +122,7 @@ public class MenuAction extends AbstractAction {
 						+ table.getSelectBean().getBillid() + "】吗？", "删除确认",
 						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 					table.removeSelectRow();
-					
+
 				break;
 
 			case "订单客户管理":
@@ -171,6 +181,9 @@ public class MenuAction extends AbstractAction {
 			case "月度统计":
 				monStatistic();
 				break;
+			case "取消订单":
+				cancelBill();
+				break;
 			case "排产时间查看":
 				showBillTime();
 				break;
@@ -205,6 +218,101 @@ public class MenuAction extends AbstractAction {
 
 	}
 
+	private void editFp() {
+		FpBean fpBean=new FpBean();
+		final Bill bill=table.getSelectBean();
+		fpBean.setBill(bill);
+		BeansPanel<FpBean> panel=new BeansPanel<FpBean>(bill.getFpBeans(),new FpPanel(fpBean),FpBean.class) {
+
+			@Override
+			public FpBean saveBean() {
+				getPanelBean().setInputUser(Userman.loginUser);
+				BeanMao.saveBean(getPanelBean());
+				return getPanelBean();
+			}
+
+			@Override
+			protected FpBean createNewBean() {
+				FpBean fpBean=new FpBean();
+				fpBean.setBill(bill);
+				return fpBean;
+			}
+			
+		};
+		
+		BeanDialog<FpBean> dialog =new BeanDialog<FpBean>(panel,"发票管理") {
+			
+			@Override
+			public boolean okButtonAction() {
+				// TODO 自动生成的方法存根
+				return true;
+			}
+		};
+		dialog.setBounds(100, 100, 500,500);
+		dialog.setLocationRelativeTo(null);
+		dialog.setVisible(true);
+		
+		
+		
+	}
+	private void editShiping() {
+		
+		
+		final Bill bill=table.getSelectBean();
+		ShipingBean shipingBean=new ShipingBean();
+		shipingBean.setPic(bill);
+		BeansPanel<ShipingBean> panel=new BeansPanel<ShipingBean>(bill.getShipingBeans(),new ShipingPanel(shipingBean),ShipingBean.class) {
+
+			@Override
+			public ShipingBean saveBean() {
+				getPanelBean().setCreateUser(Userman.loginUser);
+				BeanMao.saveBean(getPanelBean());
+				return getPanelBean();
+			}
+
+			@Override
+			protected ShipingBean createNewBean() {
+				ShipingBean shipingBean=new ShipingBean();
+				shipingBean.setPic(bill);
+				return shipingBean;
+			}
+			
+		};
+		
+		BeanDialog<ShipingBean> dialog =new BeanDialog<ShipingBean>(panel,"发票管理") {
+			
+			@Override
+			public boolean okButtonAction() {
+				// TODO 自动生成的方法存根
+				return true;
+			}
+		};
+		dialog.setBounds(100, 100, 500,500);
+		dialog.setLocationRelativeTo(null);
+		dialog.setVisible(true);
+		
+		
+		
+	}
+
+	private void cancelBill() {
+		if (table.getSelectBean() == null) {
+			JOptionPane.showMessageDialog(table, "未选择要修改的订单条目!");
+			return;
+		}
+		if (table.getSelectBean().isItemComplete()
+				&& Userman.loginUser.getLevel() > 0) {
+			JOptionPane.showMessageDialog(table, "该订单已经完成，不能再修改!");
+			return;
+		}
+		if(JOptionPane.showConfirmDialog(null, "确定取消此订单吗？","取消确认",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+			table.getSelectBean().setCancel(true);
+			table.getSelectBean().save();
+		}
+
+
+	}
+
 	private void showEquipmentUsing() {
 		String sql = "select NAME 设备编号,a.code 设备编号, endtime 计划完工时间 from "
 				+ "dbo.equipment a join operation b on a.operation=b.id left "
@@ -229,7 +337,7 @@ public class MenuAction extends AbstractAction {
 		userDialog.setVisible(true);
 
 
-		
+
 	}
 
 	private void addColor(String color) {
@@ -239,7 +347,7 @@ public class MenuAction extends AbstractAction {
 		}
 		table.getSelectBean().setColor(color);
 		table.getSelectBean().save();
-		
+
 	}
 
 	private void showBillTime() {
@@ -305,7 +413,7 @@ public class MenuAction extends AbstractAction {
 		dialog.setVisible(true);
 	}
 
-	
+
 	private void showWorkCostPanel(){
 		JDialog dialog=new JDialog();
 		dialog.setTitle("工序管理");
@@ -395,8 +503,8 @@ public class MenuAction extends AbstractAction {
 		dialog.setVisible(true);
 
 	}
-private void workManager() {
-		
+	private void workManager() {
+
 		JFrame dialog=new JFrame();
 		dialog.setTitle("生产工序录入");
 		dialog.setContentPane(new WorkCreatePanel());
@@ -508,9 +616,9 @@ private void workManager() {
 			@Override
 			public BackRepair saveBean() {
 				BackRepair backRepair=getPanelBean();
-				
+
 				backRepair.save();
-				
+
 				return backRepair;
 			}
 			@Override

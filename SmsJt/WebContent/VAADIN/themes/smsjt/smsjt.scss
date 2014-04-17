@@ -1,0 +1,20 @@
+/* Import the reindeer theme.*/
+/* This only allows us to use the mixins defined in it and does not add any styles by itself. */
+@import "../reindeer/reindeer.scss";
+
+/* This contains all of your theme.*/
+/* If somebody wants to extend the theme she will include this mixin. */
+@mixin smsjt {
+  /* Include all the styles from the reindeer theme */
+  @include reindeer;
+
+	  .form {
+		margin:10px;
+		border: 1px solid #aaa;
+		background-color: #ebebeb;
+	}
+	
+ .login {
+	background-image : url(img/login_bk.jpg);
+}
+}

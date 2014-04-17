@@ -31,6 +31,7 @@ public class GroupableTableHeader extends JXTableHeader {
 		setUI(new GroupableTableHeaderUI());
 		setReorderingAllowed(false);
 	}
+	@Override
 	public void updateUI(){
 
 		super.updateUI();
@@ -38,6 +39,7 @@ public class GroupableTableHeader extends JXTableHeader {
 
 	}
 
+	@Override
 	public void setReorderingAllowed(boolean b) {
 		reorderingAllowed = false;
 	}
@@ -54,7 +56,7 @@ public class GroupableTableHeader extends JXTableHeader {
 		Enumeration e = columnGroups.elements();
 		while (e.hasMoreElements()) {
 			ColumnGroup cGroup = (ColumnGroup)e.nextElement();
-			Vector v_ret = (Vector)cGroup.getColumnGroups(col,new Vector());
+			Vector v_ret = cGroup.getColumnGroups(col,new Vector());
 			if (v_ret != null) { 
 				return v_ret.elements();
 			}

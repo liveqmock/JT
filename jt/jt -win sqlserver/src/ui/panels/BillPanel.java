@@ -3,7 +3,9 @@ package ui.panels;
 
 
 import java.awt.BorderLayout;
+import java.awt.GraphicsEnvironment;
 import java.awt.Label;
+import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -21,7 +23,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 
-import javax.persistence.Query;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -48,6 +49,10 @@ import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingx.JXDatePicker;
 
 import ui.MenuAction;
+import ui.customComponet.BeanDialog;
+import ui.customComponet.BeanTablePane;
+import ui.customComponet.BeansPanel;
+import ui.customComponet.BeansTable;
 import validation.Problem;
 import validation.Severity;
 import validation.builtin.Validators;
@@ -58,341 +63,51 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 import com.mao.jf.beans.BeanMao;
-import com.mao.jf.beans.Bill;
+import com.mao.jf.beans.BillBean;
 import com.mao.jf.beans.Custom;
-import com.mao.jf.beans.Equipment;
+import com.mao.jf.beans.FpBean;
+import com.mao.jf.beans.PicBean;
 import com.mao.jf.beans.SerialiObject;
 import com.mao.jf.beans.SessionData;
 import com.mao.jf.beans.Userman;
 
-public class BillPanel extends JSplitPane {
+public class BillPanel extends JPanel {
 	private JTextField noteFld;
 	private JTextField billidFld;
-	private JTextField billNoFld;
-	private JButton toAllSameBill;
-	private JTextField itemNoFld;
-	private JTextField priceFld;
-	private JTextField outPriceFld;
-	private JTextField outBillNoFld;
 	private JTextField billgroup;
-	private JTextField outNumFld;
-	private JTextField picNoFld;
-	private JTextField numFld;
-	private JTextField imgFld;
 	private JComboBox<Object> customCombox;
 	private JComboBox<Object> contactManCombox;
-	private JComboBox<Object> outCustomCombox;
-	private MyImageView imageView;
 	private ValidationPanel vPanel;
 	private JXDatePicker billcreateDate;
 	private JXDatePicker requestDate;
 	private JXDatePicker billgetDate;
-	private JXDatePicker outgetDate;
-	private JXDatePicker outBilledDate;
-	private JXDatePicker billedDate;
-	private Bill bean;
+	private BillBean bean;
 	private JButton addCustomButton;
-	private JButton addOutCustomBt;
 	private JCheckBox warehousCheckBox;
-	private JFileChooser fileChooser;
-	private File imgFile;
-	private JTextField cost;
-	private JTextField gjh;
-	private JTextField partName;
-	private JTextField techCondition;
-	private JTextField meterialz;
-	private JTextField meterialType;
-	private JTextField meterialCode;
-	private JComboBox<String> meterial;
-	private JCheckBox taxCheck;
 	private JCheckBox complete;
-	public BillPanel(Bill bean) {
+	private BeanTablePane<PicBean> picBeansTable;
+	public BillPanel(BillBean bean) {
 		this.bean = bean;
 		createContents();
 		setFieldName();
 		initDataBindings();
 		addEnterKeyAction();
-		outAdminEnable();
 		addValitors();
-		
 
-	}
 
-	private void outAdminEnable() {
-		billidFld.setEnabled(Userman.loginUser.isManager());
-		billNoFld.setEnabled(Userman.loginUser.isManager());
-		toAllSameBill.setEnabled(Userman.loginUser.isManager());
-		itemNoFld.setEnabled(Userman.loginUser.isManager());
-		billgroup.setEnabled(Userman.loginUser.isManager());
-		priceFld.setEnabled(Userman.loginUser.isManager());
-		picNoFld.setEnabled(Userman.loginUser.isManager());
-		numFld.setEnabled(Userman.loginUser.isManager());
-		customCombox.setEnabled(Userman.loginUser.isManager());
-		contactManCombox.setEnabled(Userman.loginUser.isManager());
-		billcreateDate.setEnabled(Userman.loginUser.isManager());
-		requestDate.setEnabled(Userman.loginUser.isManager());
-		billedDate.setEnabled(Userman.loginUser.isManager());
-		outPriceFld.setEnabled(Userman.loginUser.isManager());
-		outBillNoFld.setEnabled(Userman.loginUser.isManager());
-		addCustomButton.setEnabled(Userman.loginUser.isManager());
-		addOutCustomBt.setEnabled(Userman.loginUser.isManager());
-		taxCheck.setEnabled(Userman.loginUser.isManager());
-		complete.setEnabled(Userman.loginUser.isManager());
-	}
-
-	private void outEnable(boolean b) {
-		outBilledDate.setEnabled(b && Userman.loginUser.isManager()
-				&& outBillNoFld.getText() != null
-				&& !outBillNoFld.getText().equals(""));
-		outBillNoFld.setEnabled(b && Userman.loginUser.isManager());
-		outgetDate.setEnabled(b);
-		outNumFld.setEnabled(b);
-		outPriceFld.setEnabled(b && Userman.loginUser.isManager());
-
-		if (!b) {
-			outBilledDate.setDate(null);
-			outBillNoFld.setText(null);
-			outgetDate.setDate(null);
-			outNumFld.setText(null);
-			outPriceFld.setText(null);
-		}
-
-	}
-
-	private void addValitors() {
-
-		toAllSameBill.setEnabled(StringUtils.isNoneBlank(billNoFld.getText()));
-		outBilledDate.setEnabled(Userman.loginUser.isManager()
-				&& StringUtils.isNoneBlank(outBillNoFld.getText()));
-		billedDate.setEnabled(Userman.loginUser.isManager()
-				&& StringUtils.isNoneBlank(billNoFld.getText()));
-		outEnable(outCustomCombox.getSelectedItem() != null);
-		outCustomCombox.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				outEnable(outCustomCombox.getSelectedItem() != null);
-			}
-
-		});
-		billNoFld.getDocument().addDocumentListener(new DocumentListener() {
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				enableField();
-
-			}
-
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				enableField();
-
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				enableField();
-
-			}
-
-			private void enableField() {
-				if (StringUtils.isNoneBlank(billNoFld.getText())) {
-					billedDate.setEnabled(true);
-					toAllSameBill.setEnabled(true);
-				} else {
-					billedDate.setDate(null);
-					billedDate.setEnabled(false);
-					toAllSameBill.setEnabled(false);
-				}
-				
-			}
-		});
-		outBillNoFld.getDocument().addDocumentListener(new DocumentListener() {
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				enableField();
-
-			}
-
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				enableField();
-
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				enableField();
-
-			}
-			private void enableField() {
-				if (StringUtils.isNoneBlank(outBillNoFld.getText())) {
-					outBilledDate.setEnabled(true);
-				} else {
-					outBilledDate.setDate(null);
-					outBilledDate.setEnabled(false);
-				}
-				
-			}
-		});
-		picNoFld.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				// TODO 自动生成的方法存根
-				Bill bill = bean.getSamePicBill();
-				if(bill!=null)
-					imageView.showFile(bill.getImageUrl());
-				
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				
-			}
-		});
-		
-		vPanel.getValidationGroup().add(customCombox, Validators.notNull());
-
-		// vPanel.getValidationGroup().add(billidFld,Validators.REQUIRE_NON_EMPTY_STRING);
-		// vPanel.getValidationGroup().add(itemNoFld,Validators.REQUIRE_NON_EMPTY_STRING);
-		// vPanel.getValidationGroup().add(picNoFld,Validators.REQUIRE_NON_EMPTY_STRING);
-		// vPanel.getValidationGroup().add(contactManCombox,Validators.REQUIRE_NON_EMPTY_STRING);
-		//
-		// vPanel.getValidationGroup().add(outBillNoFld,Validators.REQUIRE_NON_EMPTY_STRING);
-		// vPanel.getValidationGroup().add(outCustomCombox,Validators.REQUIRE_NON_EMPTY_STRING);
-		//
-		//
-		//
-		// vPanel.getValidationGroup().add(priceFld,Validators.REQUIRE_NON_EMPTY_STRING);
-		// vPanel.getValidationGroup().add(outPriceFld,Validators.REQUIRE_NON_EMPTY_STRING);
-		// vPanel.getValidationGroup().add(outNumFld,Validators.REQUIRE_NON_EMPTY_STRING);
-		// vPanel.getValidationGroup().add(numFld,Validators.REQUIRE_NON_EMPTY_STRING);
-		//
-		// vPanel.getValidationGroup().add(billcreateDate,Validators.notNull());
-		// vPanel.getValidationGroup().add(requestDate,Validators.REQUIRE_NON_EMPTY_STRING);
-		// vPanel.getValidationGroup().add(billgetDate,Validators.REQUIRE_NON_EMPTY_STRING);
-		// vPanel.getValidationGroup().add(outgetDate,Validators.REQUIRE_NON_EMPTY_STRING);
-		// vPanel.getValidationGroup().add(outBilledDate,Validators.REQUIRE_NON_EMPTY_STRING);
-		//
-		vPanel.getValidationGroup().add(priceFld,
-				Validators.REQUIRE_VALID_NUMBER);
-		vPanel.getValidationGroup().add(outPriceFld,
-				Validators.REQUIRE_VALID_NUMBER);
-		vPanel.getValidationGroup().add(outNumFld,
-				Validators.REQUIRE_VALID_INTEGER);
-		vPanel.getValidationGroup().add(numFld,
-				Validators.REQUIRE_VALID_INTEGER);
-	}
-
-	private void addEnterKeyAction() {
-		KeyListener enterKeyListener = new KeyListener() {
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					((JComponent) e.getSource()).transferFocus();
-				}
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				// TODO 自动生成的方法存根
-
-			}
-		};
-		billidFld.addKeyListener(enterKeyListener);
-		billNoFld.addKeyListener(enterKeyListener);
-		itemNoFld.addKeyListener(enterKeyListener);
-		billgroup.addKeyListener(enterKeyListener);
-		priceFld.addKeyListener(enterKeyListener);
-		outPriceFld.addKeyListener(enterKeyListener);
-		outBillNoFld.addKeyListener(enterKeyListener);
-		outNumFld.addKeyListener(enterKeyListener);
-		picNoFld.addKeyListener(enterKeyListener);
-		numFld.addKeyListener(enterKeyListener);
-		customCombox.addKeyListener(enterKeyListener);
-		contactManCombox.addKeyListener(enterKeyListener);
-		outCustomCombox.addKeyListener(enterKeyListener);
-		billcreateDate.getEditor().addKeyListener(enterKeyListener);
-		requestDate.getEditor().addKeyListener(enterKeyListener);
-		billgetDate.getEditor().addKeyListener(enterKeyListener);
-		outgetDate.getEditor().addKeyListener(enterKeyListener);
-		billedDate.getEditor().addKeyListener(enterKeyListener);
-		outBilledDate.getEditor().addKeyListener(enterKeyListener);
-		warehousCheckBox.addKeyListener(enterKeyListener);
-		addCustomButton.addKeyListener(enterKeyListener);
-		addOutCustomBt.addKeyListener(enterKeyListener);
-		toAllSameBill.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				BeanMao.beanManager.executeUpdate("update Bill set billNo=?1,billedDate=?2 where billid=?3", bean.getBillNo(),bean.getBilledDate(),bean.getBillid());
-				for(Bill bill: BeanMao.beanManager.getBeans(Bill.class, " billid=?1", bean.getBillid()))
-					BeanMao.beanManager.refresh(bill);
-			}
-		});
-	}
-
-	private void setFieldName() {
-
-		billidFld.setName("订单号");
-		billNoFld.setName("发票号码");
-		itemNoFld.setName("项目号");
-		billgetDate.setName("订单组");
-		priceFld.setName("订单价格");
-		outPriceFld.setName("外协价格");
-		outBillNoFld.setName("外协发票号");
-		outNumFld.setName("外协数量");
-		picNoFld.setName("图号");
-		numFld.setName("数量");
-		customCombox.setName("订单客户");
-		contactManCombox.setName("联系人");
-		outCustomCombox.setName("外协客户");
-		billcreateDate.setName("订单日期");
-		requestDate.setName("要求交货日期");
-		billgetDate.setName("订单交货日期");
-		outgetDate.setName("外协交货日期");
-		outBilledDate.setName("外协开票日期");
-
-	}
-
-	public boolean isValide() {
-		boolean validate = false;
-		Problem p = vPanel.getProblem();
-		Problem p2 = vPanel.getValidationGroup().validateAll();
-
-		validate = (p == null ? true : p.severity() != Severity.FATAL);
-		if (!validate)
-			JOptionPane.showMessageDialog(null, p.getMessage(), "错误",
-					JOptionPane.ERROR_MESSAGE);
-		if (validate) {
-			validate = (p2 == null ? true : p2.severity() != Severity.FATAL);
-
-			if (!validate)
-				JOptionPane.showMessageDialog(null, p2.getMessage(), "错误",
-						JOptionPane.ERROR_MESSAGE);
-		}
-
-		return validate;
 	}
 
 	private void createContents() {
-		setDividerSize(10);
-		setOneTouchExpandable(true);
-
-		JPanel panel = new JPanel();
+		setLayout(new BorderLayout(0, 0));
 		vPanel = new ValidationPanel();
+		JPanel panel=new JPanel();
 		vPanel.setInnerComponent(panel);
-		setLeftComponent(vPanel);
+		picBeansTable = new BeanTablePane<PicBean>(bean.getPicBeans(),PicBean.class);
+		JSplitPane splitPane=new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,vPanel,picBeansTable);
+		splitPane.setOneTouchExpandable(true);
+		splitPane.setDividerLocation(500);
+
+		add(splitPane);
 
 		panel.setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
@@ -402,25 +117,23 @@ public class BillPanel extends JSplitPane {
 				FormFactory.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("right:default"),
 				FormFactory.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("default:grow"), }, new RowSpec[] {
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, 
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,}));
+				ColumnSpec.decode("default:grow"),},
+				new RowSpec[] {
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,}));
 
 		JLabel lblNewLabel = new JLabel("\u8BA2\u5355\u5BA2\u6237\uFF1A");
 
@@ -428,6 +141,7 @@ public class BillPanel extends JSplitPane {
 		panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.X_AXIS));
 
 		customCombox = new JComboBox<>(Custom.getCustomerNames(0).toArray());
+		//		customCombox = new JComboBox<>();
 		customCombox.setName("\u8BA2\u5355\u5BA2\u6237");
 		panel_1.add(customCombox);
 		customCombox.addItemListener(new ItemListener() {
@@ -464,114 +178,87 @@ public class BillPanel extends JSplitPane {
 		billcreateDate = new JXDatePicker();
 		billcreateDate.setFormats(new String[] { "yyyy-MM-dd" });
 
+
+		JLabel billgroupLabel = new JLabel("订单组：");
+		billgroup=new JTextField();
+
+		panel.add(lblNewLabel, "2, 2, right, default");
+		panel.add(panel_1, "4, 2, 5, 1, fill, fill");
+		panel.add(lblNewLabel_1, "2, 4, right, default");
+		panel.add(contactManCombox, "4, 4, fill, default");
+		panel.add(lblNewLabel_2, "6, 4, right, default");
+		panel.add(billcreateDate, "8, 4, fill, fill");
+		panel.add(billgroupLabel, "2, 6,right, default");
+		panel.add(billgroup, "4, 6, fill, fill");
+
 		JLabel label = new JLabel("\u8BA2\u5355\u53F7\uFF1A");
+		panel.add(label, "6, 6, right, default");
 
 
 		billidFld = new JTextField();
 		billidFld.setColumns(10);
-
-		JLabel label_1 = new JLabel("\u56FE\u53F7\uFF1A");
-
-		picNoFld = new JTextField();
-		picNoFld.setColumns(10);
-
-
-		JLabel lblNewLabel_4 = new JLabel("\u9879\u76EE\u53F7\uFF1A");
-
-
-		itemNoFld = new JTextField();
-		itemNoFld.setColumns(10);
-
-		numFld = new JTextField();
-		numFld.setColumns(10);
-
-		JLabel lblNewLabel_3 = new JLabel("\u8BA2\u5355\u4EF7\u683C\uFF1A");
-
-		priceFld = new JTextField();
-		priceFld.setColumns(10);
+		panel.add(billidFld, "8, 6, fill, default");
 
 
 
 		JLabel label_2 = new JLabel(
 				"\u8981\u6C42\u4EA4\u8D27\u65E5\u671F\uFF1A");
-		JLabel lblNewLabel_5 = new JLabel("\u6570\u91CF\uFF1A");
+		panel.add(label_2, "2, 8");
 
 
 		requestDate = new JXDatePicker();
 		requestDate.setFormats(new String[] { "yyyy-MM-dd" });
+		panel.add(requestDate, "4, 8");
 
 		JLabel label_10 = new JLabel(
 				"\u8BA2\u5355\u4EA4\u8D27\u65E5\u671F\uFF1A");
+		panel.add(label_10, "6, 8");
 
 		billgetDate = new JXDatePicker();
 		billgetDate.setFormats(new String[] { "yyyy-MM-dd" });
+		panel.add(billgetDate, "8, 8");
 
 		JLabel label_9 = new JLabel("\u5165\u5E93\uFF1A");
+		panel.add(label_9, "2, 10, right, default");
 		warehousCheckBox = new JCheckBox("\u5DF2\u5165\u5E93");
+		panel.add(warehousCheckBox, "4, 10");	
 
+		JLabel label_1 = new JLabel("\u5B8C\u6210\u6807\u5FD7\uFF1A");
+		panel.add(label_1, "6, 10, right, default");
+		complete=new JCheckBox("完结标志");
+		panel.add(complete, "8, 10");
 
-		JLabel label_101 = new JLabel("开票日期：");
-
-		billedDate = new JXDatePicker();
-		billedDate.setFormats(new String[] { "yyyy-MM-dd" });
-
-		JLabel label_91 = new JLabel("发票号码：");
-
-		billNoFld = new JTextField();
-		toAllSameBill=new JButton("发票匹配相同订单号");
-		JPanel panel_3 = new JPanel();
-		JLabel label_3 = new JLabel("\u5916\u534F\u5BA2\u6237\uFF1A");
-		panel_3.setLayout(new BoxLayout(panel_3, BoxLayout.X_AXIS));
-
-		outCustomCombox = new JComboBox<>(Custom.getCustomerNames(1).toArray());
-		panel_3.add(outCustomCombox);
-
-		addOutCustomBt = new JButton("\u65B0\u589E\u5BA2\u6237");
-		addOutCustomBt.addActionListener(new ActionListener() {
-
-			@Override
+		JButton btnNewButton = new JButton("\u65B0\u589E\u56FE\u7EB8");
+		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				MenuAction.adminCustom(1);
-
+				createPic();
 			}
+
+
 		});
-		panel_3.add(addOutCustomBt);
+		panel.add(btnNewButton, "2, 12");
 
-		JLabel label_6 = new JLabel("\u5916\u534F\u4EF7\u683C\uFF1A");
+		JButton button = new JButton("\u7BA1\u7406\u53D1\u7968");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				editFp();
+			}
 
-		outPriceFld = new JTextField();
-		outPriceFld.setColumns(10);
 
 
+		});
+		panel.add(button, "6, 12");
+		JLabel label_3 = new JLabel("备注");
+		panel.add(label_3, "2, 14, right, default");
 
-		JLabel label_7 = new JLabel("\u5916\u534F\u6570\u91CF\uFF1A");
-		outNumFld = new JTextField();
-		outNumFld.setColumns(10);
 
-		JLabel label_4 = new JLabel(
-				"\u5916\u534F\u4EA4\u8D27\u65E5\u671F\uFF1A");
-		outgetDate = new JXDatePicker();
-		outgetDate.setFormats(new String[] { "yyyy-MM-dd" });
-
-		JLabel label_5 = new JLabel("\u5916\u534F\u53D1\u7968\u53F7\uFF1A");
-
-		outBillNoFld = new JTextField();
-		outBillNoFld.setColumns(10);
-
-		JLabel label_8 = new JLabel(
-				"\u5916\u534F\u5F00\u7968\u65E5\u671F\uFF1A");
-
-		outBilledDate = new JXDatePicker();
-		outBilledDate.setFormats(new String[] { "yyyy-MM-dd" });
-
-		JLabel label_11 = new JLabel("\u5907\u6CE8\uFF1A");
 
 		noteFld = new JTextField();
 		noteFld.setColumns(10);
+		panel.add(noteFld, "4, 14, 5, 1, fill, default");
+		JLabel lblNewLabel_5 = new JLabel("\u6570\u91CF\uFF1A");
 
 		JPanel panel_2 = new JPanel();
-		setRightComponent(panel_2);
 		panel_2.setLayout(new BorderLayout(0, 0));
 
 		JPanel panel_4 = new JPanel();
@@ -581,144 +268,83 @@ public class BillPanel extends JSplitPane {
 		JLabel lblNewLabel_6 = new JLabel("\u56FE\u7EB8\u6587\u4EF6\uFF1A");
 		panel_4.add(lblNewLabel_6);
 
-		imgFld = new JTextField();
-		imgFld.setText("");
-		imgFld.setEditable(false);
-		panel_4.add(imgFld);
-		imgFld.setColumns(10);
 
-		JButton btnNewButton = new JButton("\u6D4F\u89C8...");
-		btnNewButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				getFile();
-
-			}
-
-		});
-		panel_4.add(btnNewButton);
-		setDividerLocation(500);
-		imageView = new MyImageView();
-
-		if(bean.getImageUrl()!=null){
-			imageView.showFile(bean.getImageUrl());
-		}
-		panel_2.add(imageView, BorderLayout.CENTER);
-
-		JLabel billgroupLabel = new JLabel("订单组：");
-		billgroup=new JTextField();
-		cost=new JTextField();
-		complete=new JCheckBox("完结标志");
-		taxCheck=new JCheckBox("含税折算");
-		taxCheck.addItemListener(new ItemListener() {
-			
-			@Override
-			public void itemStateChanged(ItemEvent event) {
-				if(taxCheck.isSelected())
-					priceFld.setText(String.valueOf(Math.round(Float.valueOf(priceFld.getText())/0.0117f)/100.0f));
-				else 
-					priceFld.setText(String.valueOf(Math.round(Float.valueOf(priceFld.getText())*117f)/100.0f));
-					
-			}
-		});
-		meterial=new JComboBox<>(new String[] {"包工包料","来料加工"});
-		try(Statement st=SessionData.getConnection().createStatement()){
-			ResultSet rs = st.executeQuery("Select distinct meterial from bill");
-			while(rs.next()) {
-				meterial.addItem(rs.getString(1));
-			}
-		} catch (SQLException e1) {
-			// TODO 自动生成的 catch 块
-			e1.printStackTrace();
-		}
-		gjh=new JTextField();
-		meterialz=new JTextField();
-		meterialType=new JTextField();
-		meterialCode=new JTextField();
-		techCondition=new JTextField();
-		partName=new JTextField();
-		meterial.setEditable(true);
-		panel.add(lblNewLabel, "2, 2, right, default");
-		panel.add(panel_1, "4, 2, 5, 1, fill, fill");
-		panel.add(lblNewLabel_1, "2, 4, right, default");
-		panel.add(contactManCombox, "4, 4, fill, default");
-		panel.add(lblNewLabel_2, "6, 4, right, default");
-		panel.add(billcreateDate, "8, 4, fill, fill");
-		panel.add(billgroupLabel, "2, 6,right, default");
-		panel.add(billgroup, "4, 6, fill, fill");
-		panel.add(new JLabel("单件生产费用"), "6, 6,right, default");
-		panel.add(cost, "8, 6, fill, fill");
-		panel.add(label, "2, 8, right, default");
-		panel.add(billidFld, "4, 8, fill, default");
-		panel.add(label_1, "6, 8, right, default");
-		panel.add(picNoFld, "8, 8, fill, default");
-		panel.add(lblNewLabel_4, "2, 10, right, default");
-		panel.add(itemNoFld, "4, 10, fill, default");
-		panel.add(lblNewLabel_5, "6, 10, right, default");
-		panel.add(numFld, "8, 10, fill, default");
-		panel.add(lblNewLabel_3, "2, 12, right, default");
-		panel.add(priceFld, "4, 12, fill, default");
-		panel.add(new Label("含税折算"), "6, 12, right, default");
-		panel.add(taxCheck, "8, 12, fill, default");		
-		
-		panel.add(label_2, "2, 14");
-		panel.add(requestDate, "4, 14");
-		panel.add(label_10, "6, 14");
-		panel.add(billgetDate, "8, 14");
-		panel.add(label_9, "2, 16, right, default");
-		panel.add(warehousCheckBox, "4, 16");	
-		panel.add(toAllSameBill, "6, 16,3,1,fill,fill");	
-		panel.add(label_101, "6, 18");
-		panel.add(billedDate, "8, 18");
-		panel.add(label_91, "2, 18, right, default");
-		panel.add(billNoFld, "4, 18");
-		panel.add(label_3, "2, 20");
-		panel.add(panel_3, "4, 20, 5, 1, fill, fill");
-		panel.add(label_6, "2, 22, right, default");
-		panel.add(outPriceFld, "4, 22, fill, default");
-		panel.add(label_7, "6, 22");
-		panel.add(outNumFld, "8, 22, fill, default");
-		panel.add(label_4, "2, 24");
-		panel.add(outgetDate, "4, 24");
-		panel.add(label_5, "2, 26, right, default");
-		panel.add(outBillNoFld, "4, 26, fill, default");
-		panel.add(label_8, "6, 26");
-		panel.add(outBilledDate, "8, 26");
-		panel.add(new JLabel("材料类型"), "2, 28");
-		panel.add(meterial, "4, 28,  fill, default");
-		panel.add(new JLabel("材料编号"), "6, 28, right, default");
-		panel.add(meterialCode, "8, 28");
-		panel.add(new JLabel("工件号"), "2, 30, right, default");
-		panel.add(gjh, "4, 30");
-		panel.add(new JLabel("零件名称"), "6, 30, right, default");
-		panel.add(partName, "8, 30");
-		panel.add(new JLabel("材质"), "2, 32, right, default");
-		panel.add(meterialz, "4, 32");
-		panel.add(new JLabel("材料规格"), "6, 32, right, default");
-		panel.add(meterialType, "8, 32");
-		panel.add(new JLabel("技术条件"), "2, 34, right, default");
-		panel.add(techCondition, "4, 34");
-		panel.add(new JLabel("完成标志"), "6, 34, right, default");
-		panel.add(complete, "8, 34");
-		panel.add(new JLabel("备注"), "2, 36, right, default");
-		panel.add(noteFld, "4, 36, 5, 1, fill, default");
-		
-//		billcreateDate.addPropertyChangeListener("date",new PropertyChangeListener() {
-//			
-//			@Override
-//			public void propertyChange(PropertyChangeEvent evt) {
-//				try{
-//				billgroup.setText( new SimpleDateFormat("yyyyMMdd").format(bean.getBillDate())+Custom.Load(bean.getCustom()).getSysId()+"001");
-//				}catch(Exception e){
-//					
-//				}
-//				
-//			}
-//		});
-		
 	}
+
+	private void addValitors() {
+
+
+
+		vPanel.getValidationGroup().add(customCombox, Validators.notNull());
+
+	}
+
+	private void addEnterKeyAction() {
+		KeyListener enterKeyListener = new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					((JComponent) e.getSource()).transferFocus();
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO 自动生成的方法存根
+
+			}
+		};
+		billidFld.addKeyListener(enterKeyListener);
+		billgroup.addKeyListener(enterKeyListener);
+		customCombox.addKeyListener(enterKeyListener);
+		contactManCombox.addKeyListener(enterKeyListener);
+		billcreateDate.getEditor().addKeyListener(enterKeyListener);
+		requestDate.getEditor().addKeyListener(enterKeyListener);
+		billgetDate.getEditor().addKeyListener(enterKeyListener);
+		warehousCheckBox.addKeyListener(enterKeyListener);
+		addCustomButton.addKeyListener(enterKeyListener);
+
+	}
+
+	private void setFieldName() {
+
+		billidFld.setName("订单号");
+		customCombox.setName("订单客户");
+		contactManCombox.setName("联系人");
+		billcreateDate.setName("订单日期");
+		requestDate.setName("要求交货日期");
+		billgetDate.setName("订单交货日期");
+
+	}
+
+	public boolean isValide() {
+		boolean validate = false;
+		Problem p = vPanel.getProblem();
+		Problem p2 = vPanel.getValidationGroup().validateAll();
+
+		validate = (p == null ? true : p.severity() != Severity.FATAL);
+		if (!validate)
+			JOptionPane.showMessageDialog(null, p.getMessage(), "错误",
+					JOptionPane.ERROR_MESSAGE);
+		if (validate) {
+			validate = (p2 == null ? true : p2.severity() != Severity.FATAL);
+
+			if (!validate)
+				JOptionPane.showMessageDialog(null, p2.getMessage(), "错误",
+						JOptionPane.ERROR_MESSAGE);
+		}
+
+		return validate;
+	}
+
+
 
 	public void saveFile(File selectFile) throws IOException {
 		try {
@@ -739,267 +365,90 @@ public class BillPanel extends JSplitPane {
 		return selectFile;
 	}
 
-	private void getFile() {
-		if (fileChooser == null) {
-			fileChooser = new JFileChooser(loadFile());
-			fileChooser.setDialogTitle("选择图片名称");
-			fileChooser.setAcceptAllFileFilterUsed(false);
-			fileChooser.setFileFilter(new FileFilter() {
 
-				@Override
-				public String getDescription() {
-					return "图片或PDF文件";
-				}
-
-				@Override
-				public boolean accept(File f) {
-					// TODO 自动生成的方法存根
-					return (f.getName().toLowerCase().endsWith(".gif")
-							|| f.getName().toLowerCase().endsWith(".jpg")
-							|| f.getName().toLowerCase().endsWith(".jpeg")
-							|| f.getName().toLowerCase().endsWith(".png")
-							|| f.getName().toLowerCase().endsWith(".pdf")
-							|| f.getName().toLowerCase().endsWith(".bmp") || f
-							.isDirectory());
-				}
-			});
-			fileChooser.setApproveButtonText("确定");
-		}
-		if (fileChooser.showOpenDialog(BillPanel.this) == JFileChooser.APPROVE_OPTION) {
-			try {
-				saveFile(fileChooser.getSelectedFile());
-				imgFile = fileChooser.getSelectedFile();
-				imgFld.setText(imgFile.getCanonicalPath());
-				imageView.showFile(imgFile);
-			} catch (IOException e1) {
-				// TODO 自动生成的 catch 块
-				e1.printStackTrace();
-			}
-		}
-
-	}
 
 	protected void initDataBindings() {
 
-		BeanProperty<Bill, Boolean> billItemBeanProperty_0 = BeanProperty
-				.create("warehoused");
-		BeanProperty<JCheckBox, Boolean> checkBoxBeanProperty = BeanProperty
-				.create("selected");
-		AutoBinding<Bill, Boolean, JCheckBox, Boolean> autoBinding0 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_0, warehousCheckBox,
-						checkBoxBeanProperty);
-		autoBinding0.bind();
-
-		BeanProperty<Bill, String> billItemBeanProperty = BeanProperty
-				.create("note");
-		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty
-				.create("text");
-		AutoBinding<Bill, String, JTextField, String> autoBinding = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty, noteFld, jTextFieldBeanProperty);
-		autoBinding.bind();
-		//
-		BeanProperty<Bill, String> billItemBeanProperty_1 = BeanProperty
-				.create("billNo");
-		AutoBinding<Bill, String, JTextField, String> autoBinding_1 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_1, billNoFld,
-						jTextFieldBeanProperty);
-		autoBinding_1.bind();
-		//
-		BeanProperty<Bill, String> billItemBeanProperty_2 = BeanProperty
-				.create("item");
-		AutoBinding<Bill, String, JTextField, String> autoBinding_2 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_2, itemNoFld,
-						jTextFieldBeanProperty);
-		autoBinding_2.bind();
-		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-				BeanProperty.create("billgroup"), billgroup,
-				jTextFieldBeanProperty).bind();
-		//
-		BeanProperty<Bill, Float> billItemBeanProperty_3 = BeanProperty
-				.create("reportPrice");
-		AutoBinding<Bill, Float, JTextField, String> autoBinding_3 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_3, priceFld,
-						jTextFieldBeanProperty);
-		autoBinding_3.bind();
-		//
-		BeanProperty<Bill, Float> billItemBeanProperty_4 = BeanProperty
-				.create("outPrice");
-		AutoBinding<Bill, Float, JTextField, String> autoBinding_4 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_4, outPriceFld,
-						jTextFieldBeanProperty);
-		autoBinding_4.bind();
-		//
-		BeanProperty<Bill, String> billItemBeanProperty_5 = BeanProperty
-				.create("outBillNo");
-		AutoBinding<Bill, String, JTextField, String> autoBinding_5 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_5, outBillNoFld,
-						jTextFieldBeanProperty);
-		autoBinding_5.bind();
-		//
-		BeanProperty<Bill, Long> billItemBeanProperty_6 = BeanProperty
-				.create("outNum");
-		AutoBinding<Bill, Long, JTextField, String> autoBinding_6 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_6, outNumFld,
-						jTextFieldBeanProperty);
-		autoBinding_6.bind();
-		//
-		BeanProperty<Bill, String> billItemBeanProperty_7 = BeanProperty
-				.create("picid");
-		AutoBinding<Bill, String, JTextField, String> autoBinding_7 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_7, picNoFld,
-						jTextFieldBeanProperty);
-		autoBinding_7.bind();
-		//
-		BeanProperty<Bill, Long> billItemBeanProperty_8 = BeanProperty
-				.create("num");
-		AutoBinding<Bill, Long, JTextField, String> autoBinding_8 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_8, numFld, jTextFieldBeanProperty);
-		autoBinding_8.bind();
-		//
-		BeanProperty<Bill, String> billItemBeanProperty_9 = BeanProperty
-				.create("custom");
-		BeanProperty<JComboBox<Object>, String> jComboBoxBeanProperty = BeanProperty
-				.create("selectedItem");
-		AutoBinding<Bill, String, JComboBox<Object>, String> autoBinding_9 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_9, customCombox,
-						jComboBoxBeanProperty);
-		autoBinding_9.bind();
-		//
-		BeanProperty<Bill, String> billItemBeanProperty_10 = BeanProperty
-				.create("customMan");
-		AutoBinding<Bill, String, JComboBox<Object>, String> autoBinding_10 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_10, contactManCombox,
-						jComboBoxBeanProperty);
-		autoBinding_10.bind();
-		//
-		BeanProperty<Bill, String> billItemBeanProperty_11 = BeanProperty
-				.create("outCustom");
-		AutoBinding<Bill, String, JComboBox<Object>, String> autoBinding_11 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_11, outCustomCombox,
-						jComboBoxBeanProperty);
-		autoBinding_11.bind();
-
-		//
-		BeanProperty<Bill, String> billItemBeanProperty_12 = BeanProperty
-				.create("billid");
-		AutoBinding<Bill, String, JTextField, String> autoBinding_12 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_12, billidFld,
-						jTextFieldBeanProperty);
-		autoBinding_12.bind();
-		//
-		BeanProperty<Bill, Date> billItemBeanProperty_13 = BeanProperty
-				.create("billedDate");
-		BeanProperty<JXDatePicker, Date> dateBeanProperty = BeanProperty
-				.create("date");
-
-		BeanProperty<Bill, Date> billItemBeanProperty_14 = BeanProperty
-				.create("billDate");
-		BeanProperty<Bill, Date> billItemBeanProperty_15 = BeanProperty
-				.create("outGetDate");
-		BeanProperty<Bill, Date> billItemBeanProperty_16 = BeanProperty
-				.create("outBillDate");
-		BeanProperty<Bill, Date> billItemBeanProperty_17 = BeanProperty
-				.create("itemCompleteDate");
-		BeanProperty<Bill, Date> billItemBeanProperty_18 = BeanProperty
-				.create("requestDate");
-
-		AutoBinding<Bill, Date, JXDatePicker, Date> autoBinding_13 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_13, billedDate, dateBeanProperty);
-		autoBinding_13.bind();
-		AutoBinding<Bill, Date, JXDatePicker, Date> autoBinding_14 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_14, billcreateDate,
-						dateBeanProperty);
-		autoBinding_14.bind();
-		AutoBinding<Bill, Date, JXDatePicker, Date> autoBinding_15 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_15, outgetDate, dateBeanProperty);
-		autoBinding_15.bind();
-		AutoBinding<Bill, Date, JXDatePicker, Date> autoBinding_16 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_16, outBilledDate,
-						dateBeanProperty);
-		autoBinding_16.bind();
-		AutoBinding<Bill, Date, JXDatePicker, Date> autoBinding_17 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_17, billgetDate, dateBeanProperty);
-		autoBinding_17.bind();
-		AutoBinding<Bill, Date, JXDatePicker, Date> autoBinding_18 = Bindings
-				.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-						billItemBeanProperty_18, requestDate, dateBeanProperty);
-		autoBinding_18.bind();
-		 Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-				 BeanProperty.create("planCost"), cost, jTextFieldBeanProperty).bind();
-		 Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
-				 BeanProperty.create("meterial"), (JTextField)meterial.getEditor().getEditorComponent(), jTextFieldBeanProperty).bind();
-		 Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("meterialz"), meterialz, jTextFieldBeanProperty).bind();
-		 Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("meterialType"), meterialType, jTextFieldBeanProperty).bind();
-		 Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("techCondition"), techCondition, jTextFieldBeanProperty).bind();
-		 Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("partName"), partName, jTextFieldBeanProperty).bind();
-		 Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("gjh"), gjh, jTextFieldBeanProperty).bind();
-		 Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("meterialCode"), meterialCode, jTextFieldBeanProperty).bind();
-		 Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("complete"), complete, checkBoxBeanProperty).bind();
+		BeanProperty<JCheckBox, Boolean> checkBoxBeanProperty = BeanProperty.create("selected");
+		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
+		BeanProperty<JComboBox<Object>, String> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+		BeanProperty<JXDatePicker, Date> dateBeanProperty = BeanProperty.create("date");
+		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("custom"), customCombox,jComboBoxBeanProperty).bind();
+		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("customMan"), contactManCombox,jComboBoxBeanProperty).bind();
+		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("billDate"), billcreateDate, dateBeanProperty).bind();
+		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("requestDate"), requestDate, dateBeanProperty).bind();
+		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("billGetDate"), billgetDate, dateBeanProperty).bind();
+		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("billid"), billidFld, jTextFieldBeanProperty).bind();
+		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("note"), noteFld, jTextFieldBeanProperty).bind();
+		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("billgroup"), billgroup, jTextFieldBeanProperty).bind();
+		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("complete"), complete, checkBoxBeanProperty).bind();
+		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("warehoused"), warehousCheckBox, checkBoxBeanProperty).bind();
 	}
 
-	public void saveBill() {
-		if (imgFile != null) {
-			String[] sub = imgFile.getName().split("\\.");
-			String pifName = sub[sub.length - 1];
-			String newName = new Date().getTime()
-					+ "_"
-					+ ((Integer) imgFile.getName().hashCode()).toString()
-					.replaceAll("-", "0") + "." + pifName;
-			try {
-				smbCopy(imgFile, newName);
-				bean.setImageUrl("D:\\webApp\\webappsInner\\ROOT\\pics\\"
-						+ newName);
-			} catch (IOException e) {
-				// TODO 自动生成的 catch 块
-				e.printStackTrace();
-			}
 
-		}
-		if(bean.getId()==0)bean.setCreator(Userman.loginUser);
-		bean.setChanger(Userman.loginUser);
-		bean.save();
-	}
 
-	public static void smbCopy(File localFile, String smbFile)
-			throws IOException {
-
-		if (localFile.exists()) {
-			int byteread = 0;
-			InputStream inStream = new FileInputStream(localFile);
-			SmbFileOutputStream fs = new SmbFileOutputStream(
-					"smb://192.168.1.103/pics/" + smbFile);
-			byte[] buffer = new byte[2048];
-			while ((byteread = inStream.read(buffer)) != -1) {
-
-				fs.write(buffer, 0, byteread);
-			}
-			inStream.close();
-			fs.close();
-		}
-	}
-
-	public Bill getBean() {
+	public BillBean getBean() {
 		// TODO 自动生成的方法存根
 		return bean;
 	}
+	private void createPic() {
+		saveBill();
+		PicBean picBean=new PicBean();
+		picBean.setBill(bean);
+		BeanDialog<PicBean> dialog=new BeanDialog<PicBean>(new PicPanel(picBean),"管理图纸") {
 
+			@Override
+			public boolean okButtonAction() {
+				// TODO 自动生成的方法存根
+				((PicPanel)getContentPanel()).saveBill();
+				picBeansTable.addNew(getBean());
+				return true;
+			}
+		};
+		dialog.setLocationRelativeTo(null);
+		dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
+
+		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+		dialog.setVisible(true);
+
+	}
+	private void editFp() {
+		FpBean fpBean=new FpBean();
+		fpBean.setBill(bean);
+		BeansPanel<FpBean> panel=new BeansPanel<FpBean>(bean.getFpBeans(),new FpPanel(fpBean),FpBean.class) {
+
+			@Override
+			public FpBean saveBean() {
+				getPanelBean().setInputUser(Userman.loginUser);
+				BeanMao.saveBean(getPanelBean());
+				return getPanelBean();
+			}
+
+			@Override
+			protected FpBean createNewBean() {
+				FpBean fpBean=new FpBean();
+				fpBean.setBill(bean);
+				return fpBean;
+			}
+
+		};
+
+		BeanDialog<FpBean> dialog =new BeanDialog<FpBean>(panel,"发票管理") {
+
+			@Override
+			public boolean okButtonAction() {
+				// TODO 自动生成的方法存根
+				return true;
+			}
+		};
+		dialog.setBounds(100, 100, 500,500);
+		dialog.setLocationRelativeTo(null);
+		dialog.setVisible(true);
+
+	}
+
+	public void saveBill() {
+		bean.save();
+
+	}
 }

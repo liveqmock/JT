@@ -51,6 +51,7 @@ import validation.Validator;
  */
 final class MayNotContainSpacesValidator implements Validator<String> {
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		char[] chars = model.toCharArray();
 		for (char c : chars) {

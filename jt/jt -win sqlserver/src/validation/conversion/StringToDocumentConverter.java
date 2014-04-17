@@ -64,6 +64,7 @@ final class StringToDocumentConverter extends Converter<String, Document> {
 			this.wrapped = from;
 		}
 
+		@Override
 		public boolean validate(Problems problems, String compName,
 				Document model) {
 			try {

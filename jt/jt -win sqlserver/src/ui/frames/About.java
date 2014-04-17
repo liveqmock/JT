@@ -55,6 +55,7 @@ public class About extends JDialog {
 			{
 				JButton okButton = new JButton("\u786E\u5B9A(O)");
 				okButton.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent e) {
 						About.this.dispose();
 					}

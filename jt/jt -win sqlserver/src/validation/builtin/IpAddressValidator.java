@@ -51,6 +51,7 @@ import validation.Validator;
  */
 final class IpAddressValidator implements Validator<String> {
 
+	@Override
 	public boolean validate(Problems problems, String compName, String s) {
 		if (s.charAt(0) == '.' || s.endsWith(".")) { // NOI18N
 			problems.add(NbBundle.getMessage(IpAddressValidator.class,

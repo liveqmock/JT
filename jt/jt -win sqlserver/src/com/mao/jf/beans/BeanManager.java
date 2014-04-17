@@ -46,6 +46,9 @@ public class BeanManager {
 		return query.getResultList();
 	}
 
+	public List<?> queryNativeList(String queryString,Object... objects ) {
+		return queryNativeList(queryString,null,objects);
+	}
 	public Object querySingle(String queryString,Class<?> class1,Object... objects ) {
 		Query query = em.createQuery( queryString ,class1);
 		if(objects!=null){
@@ -204,7 +207,7 @@ public class BeanManager {
 	}
 
 
-
+	
 
 	
 

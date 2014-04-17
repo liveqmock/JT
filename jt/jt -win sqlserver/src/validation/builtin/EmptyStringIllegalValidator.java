@@ -50,6 +50,7 @@ import validation.Validator;
  * @author Tim Boudreau
  */
 final class EmptyStringIllegalValidator implements Validator<String> {
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		boolean result = model.length() > 0;
 		if (!result) {

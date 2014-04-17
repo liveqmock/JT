@@ -5,18 +5,6 @@
 	<persistence-unit name="jt-win-sqlserver" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		
-		<class>com.mao.jf.beans.Custom</class>
-		<class>com.mao.jf.beans.BackRepair</class>
-		<class>com.mao.jf.beans.Bill</class>
-		<class>com.mao.jf.beans.Employee</class>
-		<class>com.mao.jf.beans.Material</class>
-		<class>com.mao.jf.beans.Operation</class>
-		<class>com.mao.jf.beans.OperationPlan</class>
-		<class>com.mao.jf.beans.OperationWork</class>
-		<class>com.mao.jf.beans.BillPlan</class>
-		<class>com.mao.jf.beans.Userman</class>
-		<class>com.mao.jf.beans.Equipment</class>
-		<class>com.mao.jf.beans.EquipmentPlan</class>
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
 			<!--<property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://jxjtjm.com:5432;databaseName=bill;"/> -->
@@ -24,8 +12,8 @@
 			<property name="javax.persistence.jdbc.user" value="rdp" />
 			<property name="javax.persistence.jdbc.password" value="mao564864" />
 			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider" />
-			<property name="hibernate.show_sql" value="true" />
-			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="false" />
 			<property name="hibernate.connection.provider_class"
 				value="org.hibernate.connection.C3P0ConnectionProvider" />
 			<!-- 最小连接数 -->

@@ -54,6 +54,7 @@ final class NotJavaIdentifierValidator implements Validator<String> {
 	public NotJavaIdentifierValidator() {
 	}
 
+	@Override
 	public boolean validate(Problems problems, String compName, String text) {
 		if (text.trim().length() == 0) {
 			return true;

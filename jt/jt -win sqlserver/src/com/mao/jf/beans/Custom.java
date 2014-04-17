@@ -2,16 +2,12 @@ package com.mao.jf.beans;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.swing.ComboBoxModel;
 
 import com.mao.jf.beans.annotation.Caption;
 

@@ -58,6 +58,7 @@ final class OrValidator<T> implements Validator<T> {
 		validators.addAll(Arrays.asList(initial));
 	}
 
+	@Override
 	public boolean validate(Problems problems, String compName, T model) {
 		boolean result = true;
 		for (Validator v : validators) {

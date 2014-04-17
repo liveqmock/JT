@@ -2,8 +2,6 @@ package com.mao.jf.beans;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.beans.Transient;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -21,8 +19,9 @@ public class Material  extends BeanMao{
 	
 	@ManyToOne
 	@JoinColumn(name = "bill", referencedColumnName = "id")
-	private Bill bill; 
-	@Caption("材料（工序）名称")
+	private PicBean pic; 
+	
+	@Caption("材料名称")
 	private String name ;
 	@Caption("计价单位")
 	private String unitName ;
@@ -37,15 +36,12 @@ public class Material  extends BeanMao{
 	
 	public Material() {
 	}
-	public Material(Bill bill) {
+	public Material(PicBean pic) {
 		super();
-		this.bill = bill;
+		this.pic = pic;
 	}
 	public int getId() {
 		return id;
-	}
-	public Bill getBill() {
-		return bill;
 	}
 	public String getName() {
 		return name;
@@ -65,9 +61,6 @@ public class Material  extends BeanMao{
 	public void setId(int id) {
 		this.id = id;
 	}
-	public void setBill(Bill bill) {
-		this.bill = bill;
-	}
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -83,10 +76,10 @@ public class Material  extends BeanMao{
 	public void setEnterEmployee(Userman enterEmployee) {
 		this.enterEmployee = enterEmployee;
 	}
-	
-	@Transient
-	@Caption(value="图号",order=-1)
-	public String getBillNo() {
-		return bill.getPicid();
+	public PicBean getPic() {
+		return pic;
+	}
+	public void setPic(PicBean pic) {
+		this.pic = pic;
 	}
 }

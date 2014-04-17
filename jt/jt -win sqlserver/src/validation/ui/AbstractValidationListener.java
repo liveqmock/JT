@@ -112,6 +112,7 @@ public abstract class AbstractValidationListener<CompType extends JComponent, T>
 		return result;
 	}
 
+	@Override
 	public abstract boolean validate(Problems problems, String compName, T model);
 
 }

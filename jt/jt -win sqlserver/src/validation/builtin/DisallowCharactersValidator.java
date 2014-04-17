@@ -60,6 +60,7 @@ final class DisallowCharactersValidator implements Validator<String> {
 		return "'" + new String(chars) + "' "; // NOI18N
 	}
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		for (char c : chars) {
 			for (char cc : model.toCharArray()) {

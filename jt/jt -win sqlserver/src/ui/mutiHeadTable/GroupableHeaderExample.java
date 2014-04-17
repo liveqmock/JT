@@ -43,7 +43,8 @@ public class GroupableHeaderExample extends JFrame {
     new Object[]{"SNo.","AAA","BBB","Native","CCC","DDD"});
 
     JTable table = new JTable( dm ) {
-      protected JTableHeader createDefaultTableHeader() {
+      @Override
+	protected JTableHeader createDefaultTableHeader() {
           return new GroupableTableHeader(columnModel);
       }
     };
@@ -76,7 +77,8 @@ public class GroupableHeaderExample extends JFrame {
   public static void main(String[] args) {
     GroupableHeaderExample frame = new GroupableHeaderExample();
     frame.addWindowListener( new WindowAdapter() {
-      public void windowClosing( WindowEvent e ) {
+      @Override
+	public void windowClosing( WindowEvent e ) {
   System.exit(0);
       }
     });

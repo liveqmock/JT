@@ -2,7 +2,6 @@ package ui.costPanes;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -21,15 +20,12 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
 
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXTable;
 
 import ui.customComponet.RsTablePane;
 
-import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Employee;
 import com.mao.jf.beans.SessionData;
 
@@ -97,6 +93,7 @@ public class EmployeeCostDetailPnl extends JPanel {
 		eDate.setFormats("yyyyÄêMMÔÂddÈÕ");
 		JButton searchBt = new JButton("ËÑË÷(S)");
 		searchBt.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				search();
 			}

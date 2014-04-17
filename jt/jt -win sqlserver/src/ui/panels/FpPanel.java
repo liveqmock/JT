@@ -1,7 +1,5 @@
 package ui.panels;
 
-import java.util.Date;
-
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
@@ -18,9 +16,7 @@ import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
-import com.mao.jf.beans.BackRepair;
 import com.mao.jf.beans.FpBean;
-import com.mao.jf.beans.ShipingBean;
 
 public class FpPanel extends BeanPanel<FpBean> {
 private JTextField fbNoFld;
@@ -84,6 +80,7 @@ private NumberMaxE moneyMaxE;
 		getValidationGroup().add(money,moneyMaxE);
 		getValidationGroup().add(createDate.getEditor(),Validators.REQUIRE_NON_EMPTY_STRING);
 	}
+	@Override
 	protected  void dataBinding() {
 		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ, bean, BeanProperty.create("bill.billid"), billNoFld, jTextFieldBeanProperty));

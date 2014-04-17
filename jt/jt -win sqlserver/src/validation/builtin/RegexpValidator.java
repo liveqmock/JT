@@ -62,6 +62,7 @@ final class RegexpValidator implements Validator<String> {
 		this.acceptPartialMatches = acceptPartialMatches;
 	}
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		Matcher m = pattern.matcher(model);
 		boolean result = acceptPartialMatches ? m.lookingAt() : m.matches();

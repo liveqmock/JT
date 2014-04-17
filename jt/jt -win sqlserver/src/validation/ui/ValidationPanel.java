@@ -156,6 +156,7 @@ public final class ValidationPanel extends JPanel implements
 
 		dlg.getRootPane().getActionMap().put("esc", new AbstractAction() { // NOI18N
 
+					@Override
 					public void actionPerformed(ActionEvent e) {
 						cancel.doClick();
 					}
@@ -169,6 +170,7 @@ public final class ValidationPanel extends JPanel implements
 		final boolean[] result = new boolean[1];
 		ok.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				result[0] = true;
 				dlg.setVisible(false);
@@ -177,6 +179,7 @@ public final class ValidationPanel extends JPanel implements
 		});
 		cancel.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				result[0] = false;
 				dlg.setVisible(false);
@@ -185,6 +188,7 @@ public final class ValidationPanel extends JPanel implements
 		});
 		ChangeListener cl = new ChangeListener() {
 
+			@Override
 			public void stateChanged(ChangeEvent e) {
 				ok.setEnabled(!isProblem());
 			}
@@ -251,6 +255,7 @@ public final class ValidationPanel extends JPanel implements
 	 * 
 	 * @return The validation group
 	 */
+	@Override
 	public final ValidationGroup getValidationGroup() {
 		return group;
 	}
@@ -304,6 +309,7 @@ public final class ValidationPanel extends JPanel implements
 
 	private class VUI implements ValidationUI {
 
+		@Override
 		public final void clearProblem() {
 			problemLabel.setText("  "); // NOI18N
 			problemLabel.setIcon(null);
@@ -314,6 +320,7 @@ public final class ValidationPanel extends JPanel implements
 			}
 		}
 
+		@Override
 		public void setProblem(Problem problem) {
 			if (problem == null) {
 				throw new NullPointerException("Null problem");

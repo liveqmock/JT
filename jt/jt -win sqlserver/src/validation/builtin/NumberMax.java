@@ -56,6 +56,7 @@ final class NumberMax implements Validator<String> {
 		this.max = max;
 	}
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		try {
 			double val = Double.parseDouble(model);

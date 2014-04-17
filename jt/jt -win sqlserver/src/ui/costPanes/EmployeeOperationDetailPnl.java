@@ -2,9 +2,8 @@ package ui.costPanes;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GraphicsEnvironment;
 import java.awt.Dialog.ModalityType;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -22,26 +21,21 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.util.StringUtil;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXTable;
 
 import ui.customComponet.RsTablePane;
-import ui.panels.ImagePanel;
 import ui.panels.MyImageView;
 
 import com.mao.jf.beans.BeanMao;
-import com.mao.jf.beans.Bill;
-import com.mao.jf.beans.Custom;
 import com.mao.jf.beans.Employee;
+import com.mao.jf.beans.PicBean;
 import com.mao.jf.beans.SessionData;
 
 public class EmployeeOperationDetailPnl extends JPanel {
@@ -91,6 +85,7 @@ public class EmployeeOperationDetailPnl extends JPanel {
 		eDate.setFormats("yyyyÄêMMÔÂddÈÕ");
 		JButton searchBt = new JButton("ËÑË÷(S)");
 		searchBt.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				search();
 			}
@@ -178,9 +173,9 @@ public class EmployeeOperationDetailPnl extends JPanel {
 
 	}
 	private void dbClick() {
-		int billId=(int) tablePane.getTable().getValueAt(tablePane.getTable().getSelectedRow(), 1);
-		Bill bill=BeanMao.beanManager.find(Bill.class, billId);
-		if(StringUtils.isNoneBlank(bill.getImageUrl())){
+		int picId=(int) tablePane.getTable().getValueAt(tablePane.getTable().getSelectedRow(), 1);
+		PicBean pic=BeanMao.beanManager.find(PicBean.class, picId);
+		if(StringUtils.isNoneBlank(pic.getImageUrl())){
 			
 			JDialog dialog=new JDialog();
 			MyImageView imageView=new MyImageView();
@@ -188,7 +183,7 @@ public class EmployeeOperationDetailPnl extends JPanel {
 			dialog.setLocationRelativeTo(null);
 			dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
 
-			imageView.showFile(bill.getImageUrl());
+			imageView.showFile(pic.getImageUrl());
 			dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 			dialog.setVisible(true);
 			

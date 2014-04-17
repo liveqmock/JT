@@ -1,14 +1,15 @@
 package ui.customComponet;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JTable;
 
 public class BeansTable<T>  extends JTable{
-	private List<T> beans;
+	private Collection<T> beans;
 	private BeanTableModel<T> model;
 
-	public BeansTable(List<T> beans,Class<T> class1) {
+	public BeansTable(Collection<T> beans,Class<T> class1) {
 		super();
 		this.setBeans(beans);
 		model=new BeanTableModel<>(beans, class1);
@@ -18,13 +19,18 @@ public class BeansTable<T>  extends JTable{
 	public T getSelectBean() {
 		return model.getSelectBean(this.convertRowIndexToModel(getSelectedRow()));
 	}
-	public List<T> getBeans() {
+
+	public void addBean(T t) {
+		 model.insertRow(t);
+	}
+	public Collection<T> getBeans() {
 		return beans;
 	}
 
-	public void setBeans(List<T> beans) {
+	public void setBeans(Collection<T> beans) {
 		this.beans = beans;
 	}
+	@Override
 	public BeanTableModel<T> getModel() {
 		return model;
 	}

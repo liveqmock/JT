@@ -3,7 +3,6 @@ package ui.costPanes;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.Collection;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -15,31 +14,33 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import ui.customComponet.BeanTableModel;
+import org.apache.commons.lang3.StringUtils;
+
 import ui.customComponet.BeanTablePane;
-import ui.panels.BillShowPnl;
+import ui.panels.PicShowPnl;
 
-import com.mao.jf.beans.Bill;
-import com.mao.jf.beans.BillPlan;
+import com.mao.jf.beans.BillBean;
+import com.mao.jf.beans.PicBean;
+import com.mao.jf.beans.PicPlan;
 
-public class WorkCreatePanel extends BillShowPnl {
+public class WorkCreatePanel extends PicShowPnl {
 
-	private BeanTablePane<Bill> billTable;
+	private BeanTablePane<PicBean> picTable;
 	private OperarionWorksPnl operarionWorksPnl;
 	private JSplitPane splitPane;
-	private BeanTablePane<BillPlan> plansTablePane;
+	private BeanTablePane<PicPlan> plansTablePane;
 
 	public WorkCreatePanel() {
 		super();
 
 		splitPane=new JSplitPane();
-		billTable=new BeanTablePane(null, Bill.class);
+		picTable=new BeanTablePane(null, PicBean.class);
 
-		splitPane.setLeftComponent(billTable);
+		splitPane.setLeftComponent(picTable);
 		operarionWorksPnl=new OperarionWorksPnl(null);
 		operarionWorksPnl.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "工序管理明细", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 
-		plansTablePane=new BeanTablePane<BillPlan>(null, BillPlan.class);
+		plansTablePane=new BeanTablePane<PicPlan>(null, PicPlan.class);
 		plansTablePane.setPreferredSize(new Dimension(400, 150));
 		
 		JPanel plansPanel=new JPanel();
@@ -52,7 +53,7 @@ public class WorkCreatePanel extends BillShowPnl {
 		splitPane.setRightComponent(plansPanel);
 		splitPane.setDividerLocation(400);
 		add(splitPane,BorderLayout.CENTER);
-		billTable.getTable().getSelectionModel()
+		picTable.getTable().getSelectionModel()
 		.addListSelectionListener(new ListSelectionListener() {
 
 			@Override
@@ -82,7 +83,13 @@ public class WorkCreatePanel extends BillShowPnl {
 	@Override
 	public void searchAction(String search) {
 		try{
-			billTable.setBeans(Bill.loadBySearch(search));
+			if(StringUtils.isNotBlank(search)){
+				search+=" and plans.size>0 ";
+			}else {
+
+				search+=" plans.size>0";
+			}
+			picTable.setBeans(BillBean.SearchPics(search));
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -90,15 +97,16 @@ public class WorkCreatePanel extends BillShowPnl {
 	}
 
 	public void billItemSelectAction() {
-		Bill bill = billTable.getSelectBean();
-		Collection<BillPlan> plans = bill.getPlans();
+		PicBean picBean = picTable.getSelectBean();
+		if(picBean==null) return;
+		Collection<PicPlan> plans = picBean.getPlans();
 		plansTablePane.setBeans( plans);	
 		if(plans!=null&&plans.size()>0)
 			operarionWorksPnl.setPlan(plans.iterator().next());
 		
 	}
 	public void planItemSelectAction() {
-		BillPlan plan = plansTablePane.getSelectBean();
+		PicPlan plan = plansTablePane.getSelectBean();
 
 		operarionWorksPnl.setPlan(plan);
 

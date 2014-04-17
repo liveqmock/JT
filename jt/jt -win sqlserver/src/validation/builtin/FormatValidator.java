@@ -59,6 +59,7 @@ final class FormatValidator implements Validator<String> {
 		this.fmt = fmt;
 	}
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		try {
 			fmt.parseObject(model);

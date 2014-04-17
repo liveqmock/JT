@@ -55,6 +55,7 @@ import validation.Validator;
  */
 final class CharsetValidator implements Validator<String> {
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		Exception e = null;
 		try {

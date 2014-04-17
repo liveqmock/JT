@@ -17,30 +17,33 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.apache.commons.lang3.StringUtils;
+
 import ui.customComponet.BeanTableModel;
 import ui.customComponet.BeanTablePane;
-import ui.panels.BillShowPnl;
+import ui.panels.PicShowPnl;
 
-import com.mao.jf.beans.Bill;
-import com.mao.jf.beans.BillPlan;
+import com.mao.jf.beans.BillBean;
+import com.mao.jf.beans.PicBean;
+import com.mao.jf.beans.PicPlan;
 
-public class PlanCreatePanel extends BillShowPnl {
+public class PlanCreatePanel extends PicShowPnl {
 
-	private BeanTablePane<Bill> billTable;
+	private BeanTablePane<PicBean> picTable;
 	private PlanPnl planPnl;
 	private JSplitPane splitPane;
-	private BeanTablePane<BillPlan> plansTablePane;
+	private BeanTablePane<PicPlan> plansTablePane;
 
 	public PlanCreatePanel() {
 		super();
 
 		splitPane=new JSplitPane();
 
-		billTable=new BeanTablePane(null, Bill.class);
+		picTable=new BeanTablePane<PicBean>(null, PicBean.class);
 
-		splitPane.setLeftComponent(billTable);
-		planPnl=new PlanPnl(new BillPlan(new Bill()));
-		plansTablePane=new BeanTablePane<BillPlan>(null, BillPlan.class);
+		splitPane.setLeftComponent(picTable);
+		planPnl=new PlanPnl(new PicPlan(new PicBean()));
+		plansTablePane=new BeanTablePane<PicPlan>(null, PicPlan.class);
 		plansTablePane.setPreferredSize(new Dimension(400, 150));
 		
 		JButton newPlanBt = new JButton("新增排产计划");
@@ -55,7 +58,7 @@ public class PlanCreatePanel extends BillShowPnl {
 		splitPane.setRightComponent(plansPanel);
 		splitPane.setDividerLocation(400);
 		add(splitPane,BorderLayout.CENTER);
-		billTable.getTable().getSelectionModel()
+		picTable.getTable().getSelectionModel()
 		.addListSelectionListener(new ListSelectionListener() {
 
 			@Override
@@ -119,12 +122,12 @@ public class PlanCreatePanel extends BillShowPnl {
 
 	@Override
 	public void searchAction(String search) {
-		billTable.setBeans(Bill.loadBySearch(search));
+		picTable.setBeans(BillBean.SearchPics(search));
 	}
 
 	public void billItemSelectAction() {
-		Bill bill = billTable.getSelectBean();
-		Collection<BillPlan> plans = bill.getPlans();
+		PicBean bean = picTable.getSelectBean();
+		Collection<PicPlan> plans = bean.getPlans();
 		plansTablePane.setBeans( plans);	
 		if(plans!=null&&plans.size()>0){
 			plansTablePane.getTable().setRowSelectionInterval(0,0);
@@ -134,17 +137,17 @@ public class PlanCreatePanel extends BillShowPnl {
 		
 	}
 	public void planItemSelectAction() {
-		BillPlan plan = plansTablePane.getSelectBean();
+		PicPlan plan = plansTablePane.getSelectBean();
 		planPnl.setBean(plan);
 
 	}
 	private void addNewPlan() {
 		try{
-			Bill bill = billTable.getSelectBean();
-			if(bill==null)return;
-			BillPlan plan = new BillPlan(bill);
+			PicBean pic = picTable.getSelectBean();
+			if(pic==null)return;
+			PicPlan plan = new PicPlan(pic);
 			plan.save();
-			 ((BeanTableModel<BillPlan>) plansTablePane.getTable().getModel()).insertRow(plan);
+			 ((BeanTableModel<PicPlan>) plansTablePane.getTable().getModel()).insertRow(plan);
 			
 			planPnl.setBean(plan);
 		}catch(Exception e1){
@@ -153,10 +156,10 @@ public class PlanCreatePanel extends BillShowPnl {
 		
 	}
 	private void removeSelectRow() {
-		BillPlan rmBean = plansTablePane.getSelectBean();
-		rmBean.getBill().getPlans().remove(rmBean);
+		PicPlan rmBean = plansTablePane.getSelectBean();
+		rmBean.getPic().getPlans().remove(rmBean);
 		rmBean.remove();
-		plansTablePane.setBeans(rmBean.getBill().getPlans());
+		plansTablePane.setBeans(rmBean.getPic().getPlans());
 		
 	}
 }

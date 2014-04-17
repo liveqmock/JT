@@ -59,6 +59,7 @@ final class SplitStringValidator implements Validator<String> {
 		this.other = other;
 	}
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		String[] components = model.split(regexp);
 		boolean result = true;

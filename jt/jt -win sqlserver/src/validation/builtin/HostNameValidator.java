@@ -57,6 +57,7 @@ final class HostNameValidator implements Validator<String> {
 		this.allowPort = allowPort;
 	}
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		if (model.length() == 0) {
 			problems.add(NbBundle.getMessage(HostNameValidator.class,

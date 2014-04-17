@@ -404,10 +404,12 @@ final class ValidationGroupImpl {
 		assert EventQueue.isDispatchThread() : "Must be called on event thread";
 		class V extends ValidationListener implements ItemListener {
 
+			@Override
 			public void itemStateChanged(ItemEvent e) {
 				validate();
 			}
 
+			@Override
 			public boolean validate(Problems problems) {
 				if (!enabled(buttons)) {
 					return true;
@@ -437,17 +439,21 @@ final class ValidationGroupImpl {
 		class V extends ValidationListener implements ItemListener,
 				FocusListener {
 
+			@Override
 			public void focusLost(FocusEvent e) {
 				validate();
 			}
 
+			@Override
 			public void itemStateChanged(ItemEvent e) {
 				validate();
 			}
 
+			@Override
 			public void focusGained(FocusEvent e) {
 			}
 
+			@Override
 			public boolean validate(Problems problems) {
 				if (!box.isEnabled()) {
 					return true;
@@ -496,17 +502,21 @@ final class ValidationGroupImpl {
 				FocusListener, Runnable {
 			private JComponent component = field;
 
+			@Override
 			public void focusLost(FocusEvent e) {
 				validate();
 			}
 
+			@Override
 			public void focusGained(FocusEvent e) {
 			}
 
+			@Override
 			public void insertUpdate(DocumentEvent e) {
 				removeUpdate(e);
 			}
 
+			@Override
 			public void removeUpdate(DocumentEvent e) {
 				// Documents can be legally updated from another thread,
 				// but we will not run validation outside the EDT
@@ -517,14 +527,17 @@ final class ValidationGroupImpl {
 				}
 			}
 
+			@Override
 			public void changedUpdate(DocumentEvent e) {
 				removeUpdate(e);
 			}
 
+			@Override
 			public void run() {
 				validate();
 			}
 
+			@Override
 			public boolean validate(Problems problems) {
 				if (!field.isEnabled()) {
 					return true;
@@ -586,17 +599,21 @@ final class ValidationGroupImpl {
 		class V extends ValidationListener implements DocumentListener,
 				FocusListener, Runnable {
 
+			@Override
 			public void focusLost(FocusEvent e) {
 				validate();
 			}
 
+			@Override
 			public void focusGained(FocusEvent e) {
 			}
 
+			@Override
 			public void insertUpdate(DocumentEvent e) {
 				removeUpdate(e);
 			}
 
+			@Override
 			public void removeUpdate(DocumentEvent e) {
 				// Documents can be legally updated from another thread,
 				// but we will not run validation outside the EDT
@@ -607,14 +624,17 @@ final class ValidationGroupImpl {
 				}
 			}
 
+			@Override
 			public void changedUpdate(DocumentEvent e) {
 				removeUpdate(e);
 			}
 
+			@Override
 			public void run() {
 				validate();
 			}
 
+			@Override
 			public boolean validate(Problems problems) {
 				if (!jEditorPane.isEnabled()) {
 					return true;
@@ -670,17 +690,21 @@ final class ValidationGroupImpl {
 				FocusListener, Runnable {
 			private JComponent component = datePicker.getEditor();
 
+			@Override
 			public void focusLost(FocusEvent e) {
 				validate();
 			}
 
+			@Override
 			public void focusGained(FocusEvent e) {
 			}
 
+			@Override
 			public void insertUpdate(DocumentEvent e) {
 				removeUpdate(e);
 			}
 
+			@Override
 			public void removeUpdate(DocumentEvent e) {
 				// Documents can be legally updated from another thread,
 				// but we will not run validation outside the EDT
@@ -691,14 +715,17 @@ final class ValidationGroupImpl {
 				}
 			}
 
+			@Override
 			public void changedUpdate(DocumentEvent e) {
 				removeUpdate(e);
 			}
 
+			@Override
 			public void run() {
 				validate();
 			}
 
+			@Override
 			public boolean validate(Problems problems) {
 				if (!datePicker.getEditor().isEnabled()) {
 					return true;

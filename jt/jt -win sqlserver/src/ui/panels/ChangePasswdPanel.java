@@ -60,6 +60,7 @@ public class ChangePasswdPanel extends BeanPanel<Userman> {
 				Validators.REQUIRE_NON_EMPTY_STRING);
 	}
 
+	@Override
 	protected void dataBinding() {
 		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,
 				BeanProperty.create("name"), userNameField, BeanProperty.create("text")));

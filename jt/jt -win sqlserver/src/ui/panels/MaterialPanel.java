@@ -104,6 +104,7 @@ public class MaterialPanel extends BeanPanel<Material> {
 		add(num, "4, 10, fill, default");
 		
 	}
+	@Override
 	protected  void dataBinding() {
 		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
 		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("name"), name,  BeanProperty.create("selectedItem")));

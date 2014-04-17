@@ -132,6 +132,7 @@ public class AutoCompleteComboBox<T> extends JComboBox {
 		 * overrides BasicComboBox's getEditorComponent to return custom
 		 * TextField (AutoCompleteEditorComponent)
 		 */
+		@Override
 		public Component getEditorComponent() {
 			return editor;
 		}
@@ -150,6 +151,7 @@ public class AutoCompleteComboBox<T> extends JComboBox {
 		@Override
 		protected Document createDefaultModel() {
 			return new PlainDocument() {
+				@Override
 				public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
 
 					super.insertString(offs, str, a);

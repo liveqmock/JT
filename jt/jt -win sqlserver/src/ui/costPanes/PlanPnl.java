@@ -3,6 +3,7 @@ package ui.costPanes;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.TreeSet;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -20,15 +21,15 @@ import ui.customComponet.BeanOPanel;
 import validation.builtin.NumberMaxE;
 import validation.builtin.Validators;
 
-import com.mao.jf.beans.BillPlan;
 import com.mao.jf.beans.OperationPlan;
+import com.mao.jf.beans.PicPlan;
 
-public class PlanPnl extends BeanOPanel<BillPlan>{
+public class PlanPnl extends BeanOPanel<PicPlan>{
 
 	private JTextField numField;
 	private OperarionPlansPnl operationPlansPnl;
 	private NumberMaxE numberMaxE;
-	public PlanPnl(BillPlan bean) {
+	public PlanPnl(PicPlan bean) {
 		super(bean);
 		// TODO 自动生成的构造函数存根
 	}
@@ -78,9 +79,10 @@ public class PlanPnl extends BeanOPanel<BillPlan>{
 		}
 		
 	}
-	public void setBean(BillPlan plan) {
+	@Override
+	public void setBean(PicPlan plan) {
 		if(plan!=null){
-			numberMaxE.setMax(plan.getBill().getNum());
+			numberMaxE.setMax(plan.getPic().getNum());
 		}
 		super.setBean(plan);
 		operationPlansPnl.setPlan(plan);

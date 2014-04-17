@@ -1,17 +1,16 @@
 package com.mao.jf.beans;
 
+import static javax.persistence.GenerationType.AUTO;
+
 import java.util.Date;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
-import javax.persistence.PostPersist;
-
-import static javax.persistence.GenerationType.AUTO;
-
-import javax.persistence.ManyToOne;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.PostPersist;
 
 import com.mao.jf.beans.annotation.Caption;
 
@@ -22,7 +21,10 @@ public class ShipingBean {
 	private int id;
 	@ManyToOne
 	@JoinColumn(name = "pic", referencedColumnName = "id")
-	private Bill pic;
+	private PicBean pic;
+	
+	@Caption("送货单号")
+	private String shipingNo;
 	@Caption("发货日期")
 	private Date shipingDate;
 	@Caption("发货数量")
@@ -38,10 +40,10 @@ public class ShipingBean {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public Bill getPic() {
+	public PicBean getPic() {
 		return pic;
 	}
-	public void setPic(Bill pic) {
+	public void setPic(PicBean pic) {
 		this.pic = pic;
 	}
 	public Date getShipingDate() {
@@ -69,6 +71,12 @@ public class ShipingBean {
 		this.createUser = createUser;
 	}
 
+	public String getShipingNo() {
+		return shipingNo;
+	}
+	public void setShipingNo(String shipingNo) {
+		this.shipingNo = shipingNo;
+	}
 	@PostPersist
 	public void refreshPic(){
 		BeanMao.beanManager.refresh(pic);

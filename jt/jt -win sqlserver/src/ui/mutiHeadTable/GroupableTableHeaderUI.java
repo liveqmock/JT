@@ -16,6 +16,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicTableHeaderUI;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -27,6 +28,7 @@ import javax.swing.table.TableColumnModel;
 
 public class GroupableTableHeaderUI extends BasicTableHeaderUI {
 
+	@Override
 	public void paint(Graphics g, JComponent c) {
 		Rectangle clipBounds = g.getClipBounds();
 		if (header.getColumnModel() == null) return;
@@ -73,13 +75,14 @@ public class GroupableTableHeaderUI extends BasicTableHeaderUI {
 	private void paintCell(Graphics g, Rectangle cellRect, int columnIndex) {
 		TableColumn aColumn = header.getColumnModel().getColumn(columnIndex);
 		TableCellRenderer renderer = new DefaultTableCellRenderer(){
+			@Override
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 				JLabel header = new JLabel();
 				header.setForeground(table.getTableHeader().getForeground());
 				header.setBackground(table.getTableHeader().getBackground());
 				header.setFont(table.getTableHeader().getFont());
 
-				header.setHorizontalAlignment(JLabel.CENTER);
+				header.setHorizontalAlignment(SwingConstants.CENTER);
 				header.setText(value.toString());
 				header.setBorder(BorderFactory.createSoftBevelBorder(0));
 				return header;
@@ -149,6 +152,7 @@ public class GroupableTableHeaderUI extends BasicTableHeaderUI {
 		return new Dimension((int)width, getHeaderHeight());
 	}
 
+	@Override
 	public Dimension getPreferredSize(JComponent c) {
 		long width = 0;
 		Enumeration enumeration = header.getColumnModel().getColumns();

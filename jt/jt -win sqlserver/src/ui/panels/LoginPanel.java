@@ -50,6 +50,7 @@ public class LoginPanel extends BeanPanel<Userman> {
 		dataBinding();
 	}
 
+	@Override
 	protected void dataBinding() {
 		BeanProperty<Userman, String> userBeanProperty = BeanProperty
 				.create("name");

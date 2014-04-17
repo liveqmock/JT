@@ -57,6 +57,7 @@ public class ComponentDecorator {
 			this.severity = severity;
 		}
 
+		@Override
 		public void paintBorder(Component c, Graphics g, int x, int y,
 				int width, int height) {
 			real.paintBorder(c, g, x, y, width, height);
@@ -80,10 +81,12 @@ public class ComponentDecorator {
 					AffineTransform.getTranslateInstance(bx, by));
 		}
 
+		@Override
 		public Insets getBorderInsets(Component c) {
 			return real.getBorderInsets(c);
 		}
 
+		@Override
 		public boolean isBorderOpaque() {
 			return false;
 		}

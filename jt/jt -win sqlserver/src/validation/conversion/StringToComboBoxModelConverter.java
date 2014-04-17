@@ -63,6 +63,7 @@ class StringToComboBoxModelConverter extends Converter<String, ComboBoxModel> {
 			this.wrapped = wrapped;
 		}
 
+		@Override
 		public boolean validate(Problems problems, String compName,
 				ComboBoxModel model) {
 			Object o = model.getSelectedItem();

@@ -56,13 +56,13 @@ private JTextField backNote;
 		cstLabel = new JLabel();
 		add(cstLabel, "4, 2, left, default");
 
-		JLabel label_3 = new JLabel("\u8BA2\u5355\u53F7\uFF1A");
+		JLabel label_3 = new JLabel("图号：");
 		add(label_3, "2, 4");
 		
 		billNoLabel = new JLabel();
 		add(billNoLabel, "4, 4");
 
-		JLabel label_6 = new JLabel("返修原因");
+		JLabel label_6 = new JLabel("返修原因：");
 		add(label_6, "2, 6");
 		
 		backNote = new JTextField();
@@ -98,6 +98,7 @@ private JTextField backNote;
 		getValidationGroup().add(backNumFld,Validators.numberMin(0));
 		getValidationGroup().add(backDatePicker.getEditor(),Validators.REQUIRE_NON_EMPTY_STRING);
 	}
+	@Override
 	protected  void dataBinding() {
 		BeanProperty<BackRepair, Long> backRepairBeanProperty = BeanProperty.create("backNum");
 		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
@@ -112,12 +113,11 @@ private JTextField backNote;
 		
 		BeanProperty<BackRepair, Date> backRepairBeanProperty_11 = BeanProperty.create("getDate");
 		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, backRepairBeanProperty_11, getDatePicker, jXDatePickerBeanProperty));
-		
-		BeanProperty<BackRepair, String> backRepairBeanProperty_2 = BeanProperty.create("billItem.billNo");
+		BeanProperty<BackRepair, String> backRepairBeanProperty_2 = BeanProperty.create("pic.picid");
 		BeanProperty<JLabel, String> jLabelBeanProperty = BeanProperty.create("text");
 		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, bean, backRepairBeanProperty_2, billNoLabel, jLabelBeanProperty));
 		//
-		BeanProperty<BackRepair, String> backRepairBeanProperty_3 = BeanProperty.create("billItem.custom");
+		BeanProperty<BackRepair, String> backRepairBeanProperty_3 = BeanProperty.create("pic.bill.custom");
 		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, bean, backRepairBeanProperty_3, cstLabel, jLabelBeanProperty));
 	}
 }

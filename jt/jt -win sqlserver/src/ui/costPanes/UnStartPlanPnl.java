@@ -9,7 +9,6 @@ import javax.swing.event.ListSelectionListener;
 
 import ui.customComponet.BeanTablePane;
 
-import com.mao.jf.beans.BillPlan;
 import com.mao.jf.beans.OperationPlan;
 
 public class UnStartPlanPnl extends JPanel {

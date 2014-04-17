@@ -92,6 +92,7 @@ final class MulticastValidationUI implements ValidationUI {
 		return result;
 	}
 
+	@Override
 	public void clearProblem() {
 		assert real != null;
 		for (ValidationUI ui : real) {
@@ -99,6 +100,7 @@ final class MulticastValidationUI implements ValidationUI {
 		}
 	}
 
+	@Override
 	public void setProblem(Problem problem) {
 		assert real != null;
 		for (ValidationUI ui : real) {

@@ -1,0 +1,29 @@
+<root fromString="dwmm.U_MON_SEV" whereString=""  database="system">
+  <columnFields>
+    <columnField name="MON_SEV_ID" label="ID" whereColumn="false" selectColumn="true" valueType="string"/>
+    <columnField name="MON_SEV_NM" label="服务器名称" whereColumn="true" selectColumn="true" valueType="string"/>
+    <columnField name="MON_SEV_IP" label="服务器IP" whereColumn="true" selectColumn="true" valueType="string"/>
+    <columnField name="MON_SEV_PORT" label="服务器端口" whereColumn="true" selectColumn="true" valueType="string"/>
+    <columnField name="MON_SEV_DB_NM" label="数据库名称" whereColumn="true" selectColumn="true" valueType="string"/>
+    <columnField name="MON_SEV_UN" label="用户名" whereColumn="true" selectColumn="true" valueType="string"/>
+    <columnField name="MON_SEV_PW" label="密码"  selectColumn="true" valueType="password"/>
+    <columnField name="MON_TY" label="类型" whereColumn="true" selectColumn="true" valueType="string">
+    	<selectList>
+    		<option caption="服务器">
+      			<value class="java.lang.String">SERVER</value>
+      		</option>
+     	</selectList>
+    </columnField>
+	<columnField name="STATUS" label="状态" whereColumn="true" selectColumn="true" valueType="int">
+		<selectList>
+    		<option caption="启用">
+      			<value class="int">0</value>
+      		</option>
+    		<option caption="停用">
+      			<value class="int">1</value>
+      		</option>
+		</selectList>
+	</columnField>
+    <columnField name="REMARK" label="备注" whereColumn="true" selectColumn="true" valueType="string"/>
+  </columnFields>
+</root>

@@ -9,8 +9,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Vector;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -29,7 +27,6 @@ import javax.swing.border.LineBorder;
 import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXDatePicker;
 
-import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Custom;
 
 public abstract class BillShowPnl extends JPanel{
@@ -70,8 +67,7 @@ public abstract class BillShowPnl extends JPanel{
 
 		txtBox = new JComboBox<String>();
 		txtBox.setModel(new DefaultComboBoxModel<String>(new String[] { "",
-				"客户名称", "订单号",
-				"项目号", "图号","订单组","发票号码", "备注"}));
+				"客户名称", "订单号","订单组", "备注"}));
 		panel.add(txtBox);
 		panel.add(new JLabel(":"));
 
@@ -82,8 +78,8 @@ public abstract class BillShowPnl extends JPanel{
 		dateBox = new JComboBox<String>();
 		dateBox.setModel(new DefaultComboBoxModel<String>(new String[] { "",
 				"订单日期",
-				"要求交货日期", "外协交货日期",
-		"订单交货日期" }));
+				"要求交货日期",
+		        "订单交货日期" }));
 		panel.add(dateBox);
 
 		panel.add(new JLabel(":"));
@@ -157,15 +153,6 @@ public abstract class BillShowPnl extends JPanel{
 						case "订单号":
 							field = "billid";
 							break;
-						case "项目号":
-							field = "item";
-							break;
-						case "图号":
-							field = "picid";
-							break;
-						case "发票号码":
-							field = "billno";
-							break;
 						case "订单组":
 							field = "billgroup";
 							break;
@@ -192,18 +179,14 @@ public abstract class BillShowPnl extends JPanel{
 						String field = "";
 						switch ((String) dateBox.getSelectedItem()) {
 						case "订单日期":
-							field = "billdate";
+							field = "createDate";
 							break;
 						case "请求交货日期":
 							field = "requestdate";
 							break;
-						case "外协交货日期":
-							field = "outgetdate";
-							break;
 						case "订单交货日期":
-							field = "billeddate";
+							field = " billGetDate";
 							break;
-
 						default:
 							break;
 						}
@@ -227,7 +210,7 @@ public abstract class BillShowPnl extends JPanel{
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-				loadData("custom='"+e.getItem()	+ "'");
+				loadData(" custom='"+e.getItem()	+ "'");
 				
 			}
 		});
@@ -252,8 +235,11 @@ public abstract class BillShowPnl extends JPanel{
 					dialog.setLocationRelativeTo(BillShowPnl.this);
 					dialog.setVisible(true);
 					searchAction(search);
+					
 					dialog.setVisible(false);
 				} catch (Exception e) {
+					dialog.setVisible(false);
+				}finally{
 					dialog.setVisible(false);
 				}
 				return null;

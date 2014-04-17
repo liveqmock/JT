@@ -149,6 +149,7 @@ public abstract class ValidationListener extends InputVerifier implements
 	 *            The component
 	 * @return true if there are no problems with this component
 	 */
+	@Override
 	public final boolean verify(JComponent input) {
 		return validate();
 	}

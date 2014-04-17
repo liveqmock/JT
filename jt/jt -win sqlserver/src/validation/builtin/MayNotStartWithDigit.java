@@ -51,6 +51,7 @@ import validation.Validator;
  */
 final class MayNotStartWithDigit implements Validator<String> {
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		if (model.length() > 0) {
 			char c = model.charAt(0);

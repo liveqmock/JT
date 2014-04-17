@@ -59,6 +59,7 @@ final class FileValidator implements Validator<String> {
 		this.type = type;
 	}
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		File file = new File(model);
 		String key;

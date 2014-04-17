@@ -11,6 +11,7 @@ import javax.swing.event.MouseInputListener;
 import javax.swing.plaf.basic.BasicTableUI;
 
 import ui.customComponet.BeanTableModel;
+import ui.customComponet.BeansTable;
 
 import com.mao.jf.beans.OperationPlan;
 
@@ -19,10 +20,12 @@ public class DragDropRowTableUI<T> extends BasicTableUI {
 	private int startDragPoint;
 	private int dyOffset;
 
+	@Override
 	protected MouseInputListener createMouseInputListener() {
 		return new DragDropRowMouseInputHandler();
 	}
 
+	@Override
 	public void paint(Graphics g, JComponent c) {
 		super.paint(g, c);
 
@@ -43,12 +46,14 @@ public class DragDropRowTableUI<T> extends BasicTableUI {
 
 		private int sRow=-1;
 
+		@Override
 		public void mousePressed(MouseEvent e) {
 			super.mousePressed(e);
 			sRow=table.getSelectedRow();
 			startDragPoint = (int)e.getPoint().getY();
 		}
 
+		@Override
 		public void mouseDragged(MouseEvent e) {
 			int fromRow = table.getSelectedRow();
 
@@ -69,10 +74,14 @@ public class DragDropRowTableUI<T> extends BasicTableUI {
 					toRow = fromRow + 1;
 				}
 				if (toRow >= 0 && toRow < table.getRowCount()&&toRow!=fromRow) {
-					List<OperationPlan> beans =(List<OperationPlan>) ((BeanTableModel<OperationPlan>)table.getModel()).getBeans();
-					Collections.swap(beans, fromRow, toRow);
+					
+					OperationPlan fromBean = ((BeanTableModel<OperationPlan>)table.getModel()).getSelectBean(fromRow);
+					OperationPlan toBean = ((BeanTableModel<OperationPlan>)table.getModel()).getSelectBean(toRow);
+					fromBean.setSequence(toRow);
+					toBean.setSequence(fromRow);
+					((BeanTableModel<OperationPlan>)table.getModel()).swapBean(fromRow, toRow);
+
 					table.setRowSelectionInterval(toRow, toRow);
-					sRow=toRow;
 					startDragPoint = yMousePoint;
 				}
 
@@ -81,14 +90,13 @@ public class DragDropRowTableUI<T> extends BasicTableUI {
 			}
 		}
 
+		@Override
 		public void mouseReleased(MouseEvent e){
 			super.mouseReleased(e);
-			if (sRow >= 0 && sRow < table.getRowCount() && table.getSelectedRow()!=sRow) 
-				table.setRowSelectionInterval(sRow, sRow);        	
+//			if (sRow >= 0 && sRow < table.getRowCount() && table.getSelectedRow()!=sRow) 
+//				table.setRowSelectionInterval(sRow, sRow);        	
 			draggingRow = false;
 			table.repaint();
-			OperationPlan bean = ((BeanTableModel<OperationPlan>)table.getModel()).getSelectBean(table.convertRowIndexToModel(sRow));
-				
 		}
 	}
 }

@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class NumberCellRenderer extends DefaultTableCellRenderer {
@@ -24,7 +25,7 @@ public class NumberCellRenderer extends DefaultTableCellRenderer {
 	      if (c instanceof JLabel && value instanceof Number) {
 
 	          JLabel label = (JLabel) c;
-	          label.setHorizontalAlignment(JLabel.RIGHT);	          
+	          label.setHorizontalAlignment(SwingConstants.RIGHT);	          
 	          Number num = (Number) value;
 	          String text = numberFormat.format(num);
 	          label.setText(text);

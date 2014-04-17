@@ -51,6 +51,7 @@ import validation.Validator;
  */
 final class IsAnIntegerValidator implements Validator<String> {
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		try {
 			Integer.parseInt(model);

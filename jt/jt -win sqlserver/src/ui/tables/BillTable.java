@@ -1,5 +1,6 @@
 package ui.tables;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
 import java.util.Collection;
@@ -15,42 +16,49 @@ import org.jdesktop.swingx.table.TableColumnModelExt;
 
 import ui.MainMenu;
 import ui.MenuAction;
-import ui.costPanes.NumberCellRenderer;
 import ui.customComponet.BeanTablePane;
 
-import com.mao.jf.beans.Bill;
+import com.mao.jf.beans.BillBean;
+import com.mao.jf.beans.PicBean;
 import com.mao.jf.beans.SerialiObject;
 
-public class BillTable extends BeanTablePane<Bill> {
+public class BillTable extends BeanTablePane<BillBean> {
 	boolean columnInit=false;
-	public BillTable(Vector<Bill> beans) {
-		super(beans,Bill.class);
+	public BillTable(Vector<BillBean> beans) {
+		super(beans,BillBean.class);
 		
 		getTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+		ColorHighlighter highlighter= new ColorHighlighter( new HighlightPredicate() {
+
+			@Override
+			public boolean isHighlighted(Component renderer,
+					ComponentAdapter adapter) {
+				if (BillTable.this.getBeans() == null)
+					return false;
+				try{
+					return BillTable.this.getBean(adapter.row).getColor() != null;
+				}catch(Exception e){
+					return false;
+				}
+			}
+
+		}){
+
+			@Override
+			Color getColor(int row) {
+				// TODO 自动生成的方法存根
+				return BillTable.this.getBean(row).getTableColor();
+			}
+			
+		};
 		
-		getTable().addHighlighter(
-				new BillColorHighlighter(this, new HighlightPredicate() {
+		getTable().addHighlighter(highlighter);
 
-					@Override
-					public boolean isHighlighted(Component renderer,
-							ComponentAdapter adapter) {
-						if (BillTable.this.getBeans() == null)
-							return false;
-						try{
-							return ((Bill)BillTable.this.getBeans().toArray()[
-									adapter.row]).getTableColor() != null;
-						}catch(Exception e){
-							return false;
-						}
-					}
-
-				}));
-
-		MainMenu.setPopMenus(getPopupMenu(), new MenuAction(this));
+//		MainMenu.setPopMenus(getPopupMenu(), new MenuAction(this));
 	}
 	@Override
-	public void setBeans(Collection<Bill> beans) {
+	public void setBeans(Collection<BillBean> beans) {
 		// TODO 自动生成的方法存根
 		super.setBeans(beans);
 		if(!columnInit){

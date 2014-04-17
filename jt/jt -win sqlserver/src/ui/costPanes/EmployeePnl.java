@@ -18,6 +18,7 @@ import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
+import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Employee;
 import com.mao.jf.beans.Operation;
 
@@ -56,7 +57,7 @@ public class EmployeePnl extends BeanPanel<Employee> {
 		JLabel label = new JLabel("\u5C97\u4F4D\uFF1A");
 		add(label, "2, 4, right, default");
 		
-		comboBox = new JComboBox<Operation>(new Vector<Operation>(Operation.getBeans(Operation.class)));
+		comboBox = new JComboBox<Operation>(new Vector<Operation>(BeanMao.getBeans(Operation.class)));
 		
 		add(comboBox, "4, 4, fill, default");
 

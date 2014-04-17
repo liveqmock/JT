@@ -42,6 +42,7 @@ public abstract class BeansOPanel<T> extends BeanOPanel<Collection<T>> {
 		createContents();
 		setBean(beans);
 	}
+	@Override
 	protected void createContents() {
 
 		if(beanPanel==null)return;
@@ -90,12 +91,14 @@ public abstract class BeansOPanel<T> extends BeanOPanel<Collection<T>> {
 		submitPnl.add(submitBt);
 		panel_1.add(submitPnl,BorderLayout.NORTH);
 		submitBt.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				addNew();
 
 			}
 		});
 		resetBt.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				reset();
 
@@ -111,6 +114,7 @@ public abstract class BeansOPanel<T> extends BeanOPanel<Collection<T>> {
 		add(panel, vertical?BorderLayout.WEST:BorderLayout.NORTH);
 		add(tablePane, BorderLayout.CENTER);
 	}
+	@Override
 	protected void dataBinding() {
 		
 	}

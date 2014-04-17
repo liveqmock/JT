@@ -2,14 +2,14 @@ package ui.panels;
 
 import ui.customComponet.BeansPanel;
 
-import com.mao.jf.beans.Bill;
 import com.mao.jf.beans.Material;
+import com.mao.jf.beans.PicBean;
 import com.mao.jf.beans.Userman;
 
 public class MaterialsPanel extends BeansPanel<Material> {
 
-	public MaterialsPanel(Bill bill) {
-		super(bill.getMaterials(), new MaterialPanel(new Material(bill)),Material.class,true);
+	public MaterialsPanel(PicBean pic) {
+		super(pic.getMaterials(), new MaterialPanel(new Material(pic)),Material.class,true);
 		
 	}
 
@@ -22,7 +22,7 @@ public class MaterialsPanel extends BeansPanel<Material> {
 	}
 	@Override
 	public Material createNewBean() {
-		return new Material(getPanelBean().getBill());
+		return new Material(getPanelBean().getPic());
 		
 	}
 	

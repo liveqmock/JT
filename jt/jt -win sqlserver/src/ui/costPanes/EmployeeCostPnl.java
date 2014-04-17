@@ -3,7 +3,6 @@ package ui.costPanes;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dialog.ModalityType;
-import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,14 +25,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
 
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXTable;
 
 import ui.customComponet.RsTablePane;
 
-import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Employee;
 import com.mao.jf.beans.SessionData;
 
@@ -90,6 +87,7 @@ public class EmployeeCostPnl extends JPanel {
 		eDate.setFormats("yyyy年MM月dd日");
 		JButton btnNewButton_2 = new JButton("\u641C\u7D22(S)");
 		btnNewButton_2.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(sDate.getDate()==null||eDate.getDate()==null) JOptionPane.showMessageDialog(EmployeeCostPnl.this, "必须输入日期");
 				try(PreparedStatement pst=SessionData.getConnection().prepareStatement(sql)){

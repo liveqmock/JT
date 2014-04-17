@@ -1,15 +1,14 @@
 package ui.costPanes;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class DateCellRenderer extends DefaultTableCellRenderer {
@@ -30,7 +29,7 @@ public class DateCellRenderer extends DefaultTableCellRenderer {
 		if (c instanceof JLabel ) {
 
 			JLabel label = (JLabel) c;
-			label.setHorizontalAlignment(JLabel.RIGHT);	
+			label.setHorizontalAlignment(SwingConstants.RIGHT);	
 			if(value instanceof Date)
 				value = new java.util.Date(((Date)value).getTime());
 			else if(value instanceof Timestamp)

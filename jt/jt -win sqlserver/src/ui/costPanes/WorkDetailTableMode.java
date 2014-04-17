@@ -5,8 +5,6 @@ import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
 
-import com.mao.jf.beans.BillPlan;
-
 public class WorkDetailTableMode extends AbstractTableModel {
 
 	Vector<BillPlan> plans;

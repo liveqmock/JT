@@ -12,26 +12,27 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 import ui.panels.BillPanel;
 
 import com.mao.jf.beans.BeanMao;
-import com.mao.jf.beans.Bill;
+import com.mao.jf.beans.BillBean;
 
 public class BillFrame extends JDialog {
 
 	private JPanel contentPane;
 	private BillPanel billPanel;
 
-	public BillFrame(Bill billItem) {
+	public BillFrame(BillBean billItem) {
 		billPanel = new BillPanel(billItem);
 		createContents();
 	}
 
 	private void createContents() {
 		setTitle("¶©µ¥±à¼­");
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 600, 400);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -61,15 +62,16 @@ public class BillFrame extends JDialog {
 		setLocationRelativeTo(null);
 
 		btnNewButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				BillFrame.this.dispose();
 			}
 		});
 		btnNewButton_1.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(billPanel.isValide()){
 					billPanel.saveBill();
-					BeanMao.beanManager.flush();
 					BillFrame.this.dispose();
 				}
 			}

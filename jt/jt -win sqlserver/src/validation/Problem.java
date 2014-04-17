@@ -116,6 +116,7 @@ public final class Problem implements Comparable<Problem> {
 	 * @param o
 	 * @return the difference in severity as an integer
 	 */
+	@Override
 	public int compareTo(Problem o) {
 		int ix = severity.ordinal();
 		int oid = o.severity.ordinal();

@@ -51,6 +51,7 @@ import validation.Validator;
  */
 final class ValidHexadecimalNumberValidator implements Validator<String> {
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		if (model.length() % 2 != 0) {
 			problems.add(NbBundle.getMessage(

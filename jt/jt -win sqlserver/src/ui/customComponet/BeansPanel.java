@@ -91,12 +91,14 @@ public abstract class BeansPanel<T> extends JPanel {
 		submitPnl.add(submitBt);
 		panel_1.add(submitPnl,BorderLayout.NORTH);
 		submitBt.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				addNew();
 
 			}
 		});
 		resetBt.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				reset();
 

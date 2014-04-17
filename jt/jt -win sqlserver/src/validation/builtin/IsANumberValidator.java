@@ -64,6 +64,7 @@ final class IsANumberValidator implements Validator<String> {
 		this.locale = l;
 	}
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		ParsePosition p = new ParsePosition(0);
 		try {

@@ -66,6 +66,7 @@ final class EncodableInCharsetValidator implements Validator<String> {
 		this(Charset.defaultCharset().name());
 	}
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		char[] c = model.toCharArray();
 		boolean result = true;

@@ -51,6 +51,7 @@ import validation.Validator;
  */
 class NonNegativeNumberValidator implements Validator<String> {
 
+	@Override
 	public boolean validate(Problems problems, String compName, String text) {
 		try {
 			double d = Double.parseDouble(text);

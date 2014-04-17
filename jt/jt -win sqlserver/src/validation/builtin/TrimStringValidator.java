@@ -56,6 +56,7 @@ final class TrimStringValidator implements Validator<String> {
 		this.other = other;
 	}
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		return other.validate(problems, compName,
 				model == null ? null : model.trim());

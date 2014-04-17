@@ -84,12 +84,12 @@ public class BeanTablePane<T> extends JPanel {
 				if (BeanTablePane.this.popupMenu == null)
 					return;
 				if (e.isPopupTrigger()) {
-					int row = table.rowAtPoint(e.getPoint());
-					if (row >= 0) {
-						table.setRowSelectionInterval(row, row);
+//					int row = table.rowAtPoint(e.getPoint());
+//					if (row >= 0) {
+//						table.setRowSelectionInterval(row, row);
 						BeanTablePane.this.popupMenu.show(e.getComponent(),
 								e.getX(), e.getY());
-					}
+//					}
 				}
 			}
 
@@ -218,14 +218,17 @@ public class BeanTablePane<T> extends JPanel {
 
 	@SuppressWarnings("unchecked")
 	public T getSelectBean() {
+		return getSelectBean(table.getSelectedRow());
+	}
+	@SuppressWarnings("unchecked")
+	public T getSelectBean(int row) {
 		try {
 			return ((BeanTableModel<T>) table.getModel()).getSelectBean(table
-					.convertRowIndexToModel(table.getSelectedRow()));
+					.convertRowIndexToModel(row));
 		} catch (Exception e) {
 			return null;
 		}
 	}
-
 	public void dbClick() {
 
 	}
@@ -303,7 +306,9 @@ public class BeanTablePane<T> extends JPanel {
 	public void setPopupMenu(JPopupMenu popupMenu) {
 		this.popupMenu = popupMenu;
 	}
-
+	public T getBean(int row) {
+		return ((BeanTableModel<T>) getTable().getModel()).getSelectBean(row);
+	}
 	private Collection<T> beans;
 
 }

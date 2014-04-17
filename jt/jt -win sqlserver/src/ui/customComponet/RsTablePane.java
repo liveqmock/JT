@@ -16,6 +16,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
 import org.jdesktop.swingx.JXTable;
@@ -54,7 +55,7 @@ public class RsTablePane extends JPanel {
 
 		table.setGridColor(Color.gray);
 		table.setShowGrid(true);
-		table.setAutoResizeMode(JXTable.AUTO_RESIZE_ALL_COLUMNS);
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		table.packTable(10);
 		Dimension aaa = new Dimension(300, 300);
 		aaa.width = table.getPreferredScrollableViewportSize().width;

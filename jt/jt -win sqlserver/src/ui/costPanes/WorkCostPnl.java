@@ -79,6 +79,7 @@ public class WorkCostPnl extends JPanel {
 		eDate.setFormats("yyyy年MM月dd日");
 		JButton btnNewButton_2 = new JButton("\u641C\u7D22(S)");
 		btnNewButton_2.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(sDate.getDate()==null&&eDate.getDate()==null) JOptionPane.showMessageDialog(WorkCostPnl.this, "必须输入日期");
 				try(PreparedStatement pst=SessionData.getConnection().prepareStatement(sql)){

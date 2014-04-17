@@ -61,6 +61,7 @@ final class ValidHostNameOrIPValidator implements Validator<String> {
 		this(true);
 	}
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		String[] parts = model.split("\\.");
 		boolean hasIntParts = false;

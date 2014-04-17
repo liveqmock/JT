@@ -60,6 +60,7 @@ class EmailAddressValidator implements Validator<String> {
 			false);
 	static final Pattern ADDRESS_PATTERN = Pattern.compile("(.*?)<(.*)>$"); // NOI18N
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		Matcher m = ADDRESS_PATTERN.matcher(model);
 		String realName = null;

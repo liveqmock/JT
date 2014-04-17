@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 
 import org.jdesktop.swingx.JXDatePicker;
 
@@ -28,13 +29,11 @@ public class SearchDlg extends JDialog {
 	private JTextField billgroup;
 	private JTextField itemNo;
 	private JTextField picNo;
-	private JTextField fbNo;
 	private JTextField note;
 	private JXDatePicker requestDateS;
 	private JXDatePicker requestDateE;
 	private JXDatePicker outGetDateS;
 	private JXDatePicker outGetDateE;
-	private JCheckBox isFp;
 	private JCheckBox isLk;
 	private JXDatePicker billDateS;
 	private JXDatePicker billDateE;
@@ -70,18 +69,16 @@ public class SearchDlg extends JDialog {
 	private void doSearch() {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		if(customName.getText()!=null && customName.getText().length()>0)
-			sqlString+=" and custom like '%"+customName.getText()+"%' ";
+			sqlString+=" and bill.custom like '%"+customName.getText()+"%' ";
 		if(billNo.getText()!=null && billNo.getText().length()>0)
-			sqlString+=" and billid like '%"+billNo.getText()+"%' ";
+			sqlString+=" and bill.billid like '%"+billNo.getText()+"%' ";
 		if(billgroup.getText()!=null && billgroup.getText().length()>0)
-			sqlString+=" and billgroup like '%"+billgroup.getText()+"%' ";
+			sqlString+=" and bill.billgroup like '%"+billgroup.getText()+"%' ";
 		if(itemNo.getText()!=null && itemNo.getText().length()>0)
 			sqlString+=" and item like '%"+itemNo.getText()+"%' ";
 		if(picNo.getText()!=null && picNo.getText().length()>0)
 			sqlString+=" and picid like '%"+picNo.getText()+"%' ";
-		if(fbNo.getText()!=null && fbNo.getText().length()>0)
-			sqlString+=" and billno like '%"+fbNo.getText()+"%' ";
-		if(note.getText()!=null && note.getText().length()>0)
+			if(note.getText()!=null && note.getText().length()>0)
 			sqlString+=" and note like '%"+note.getText()+"%' ";
 		
 		if(requestDateS.getDate()!=null||requestDateE.getDate()!=null){
@@ -96,7 +93,7 @@ public class SearchDlg extends JDialog {
 				return;
 			}
 
-			sqlString+=" and requestDate between '"+df.format(requestDateS.getDate())+"' and '"+df.format(requestDateS.getDate())+"' ";
+			sqlString+=" and bill.requestDate between '"+df.format(requestDateS.getDate())+"' and '"+df.format(requestDateS.getDate())+"' ";
 		}
 		if(billDateS.getDate()!=null||billDateE.getDate()!=null){
 			if(billDateS.getDate()==null){
@@ -110,7 +107,7 @@ public class SearchDlg extends JDialog {
 				return;
 			}
 
-			sqlString+=" and billdate between '"+df.format(billDateS.getDate())+"' and '"+df.format(billDateE.getDate())+"' ";
+			sqlString+=" and bill.billdate between '"+df.format(billDateS.getDate())+"' and '"+df.format(billDateE.getDate())+"' ";
 		}
 		if(outGetDateS.getDate()!=null||outGetDateE.getDate()!=null){
 			if(outGetDateS.getDate()==null){
@@ -126,15 +123,13 @@ public class SearchDlg extends JDialog {
 
 			sqlString+=" and outGetDate between '"+df.format(outGetDateS.getDate())+"' and '"+df.format(outGetDateS.getDate())+"' ";
 		}
-		if(isFp.isSelected())
-			sqlString+=" and billedDate is not null ";
 		if(isLk.isSelected())
 			sqlString+=" and itemCompleteDate is not null ";
 		this.dispose();
 
 	}
 	private void createContents() {
-		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SearchDlg.class.getResource("/ui/logo.PNG")));
 		setTitle("高级查询");
 		JPanel mainPanel=new JPanel();
@@ -203,25 +198,18 @@ public class SearchDlg extends JDialog {
 		picNo.setColumns(10);
 		mainPanel.add(picNo, "4, 10, fill, default");
 
-		JLabel label_5 = new JLabel("发票号码：");
-		mainPanel.add(label_5, "2, 12, right, default");
-
-		fbNo = new JTextField();
-		fbNo.setColumns(10);
-		mainPanel.add(fbNo, "4, 12, fill, default");
-
 		JLabel label_6 = new JLabel("备注：");
-		mainPanel.add(label_6, "2, 14, right, default");
+		mainPanel.add(label_6, "2, 12, right, default");
 
 		note = new JTextField();
 		note.setColumns(10);
-		mainPanel.add(note, "4, 14, fill, default");
+		mainPanel.add(note, "4, 12, fill, default");
 
 		JLabel label_7 = new JLabel("订单日期：");
-		mainPanel.add(label_7, "2, 16");
+		mainPanel.add(label_7, "2, 14");
 
 		JPanel panel_2 = new JPanel();
-		mainPanel.add(panel_2, "4, 16, fill, fill");
+		mainPanel.add(panel_2, "4, 14, fill, fill");
 		panel_2.setLayout(new BoxLayout(panel_2, BoxLayout.X_AXIS));
 
 		JLabel label_15 = new JLabel("从");
@@ -239,10 +227,10 @@ public class SearchDlg extends JDialog {
 		panel_2.add(billDateE);
 
 		JLabel label_8 = new JLabel("要求交货日期：");
-		mainPanel.add(label_8, "2, 18");
+		mainPanel.add(label_8, "2, 16");
 
 		JPanel panel = new JPanel();
-		mainPanel.add(panel, "4, 18, fill, default");
+		mainPanel.add(panel, "4, 16, fill, default");
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
 		JLabel label_12 = new JLabel("从");
@@ -260,10 +248,10 @@ public class SearchDlg extends JDialog {
 		panel.add(requestDateE);
 
 		JLabel label_9 = new JLabel("外协交货日期：");
-		mainPanel.add(label_9, "2, 20");
+		mainPanel.add(label_9, "2, 18");
 
 		JPanel panel_1 = new JPanel();
-		mainPanel.add(panel_1, "4, 20, fill, fill");
+		mainPanel.add(panel_1, "4, 18, fill, fill");
 		panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.X_AXIS));
 
 		JLabel label_13 = new JLabel("从");
@@ -280,17 +268,12 @@ public class SearchDlg extends JDialog {
 		outGetDateE.setFormats(new String[] {"yyyy年MM月dd日"});
 		panel_1.add(outGetDateE);
 
-		JLabel label_10 = new JLabel("开票状态：");
-		mainPanel.add(label_10, "2, 22");
-
-		isFp = new JCheckBox("已开票");
-		mainPanel.add(isFp, "4, 22");
 
 		JLabel label_11 = new JLabel("入库状态：");
-		mainPanel.add(label_11, "2, 24");
+		mainPanel.add(label_11, "2, 20");
 
 		isLk = new JCheckBox("已入库");
-		mainPanel.add(isLk, "4, 24");
+		mainPanel.add(isLk, "4, 20");
 		getContentPane().add(mainPanel);
 
 	}

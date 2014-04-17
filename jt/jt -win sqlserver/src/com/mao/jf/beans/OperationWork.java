@@ -44,7 +44,7 @@ public class OperationWork extends BeanMao {
 	private float planCost;
 	@ManyToOne
 	@JoinColumn(name = "billplan", referencedColumnName = "id")
-	private BillPlan plan;
+	private PicPlan plan;
 	private String note;
 	public OperationWork() {
 		super();
@@ -55,7 +55,7 @@ public class OperationWork extends BeanMao {
 		setOperationPlan(operationPlan);
 		
 	}
-	public OperationWork(BillPlan plan) {
+	public OperationWork(PicPlan plan) {
 		this.plan=plan;
 		
 	}
@@ -98,7 +98,7 @@ public class OperationWork extends BeanMao {
 	public OperationPlan getOperationPlan() {
 		return operationPlan;
 	}
-	public BillPlan getPlan() {
+	public PicPlan getPlan() {
 		return plan;
 	}
 	@Caption(order = 7, value= "计划费用")
@@ -191,7 +191,7 @@ public class OperationWork extends BeanMao {
 	public void setOperationPlan(OperationPlan operationPlan) {
 		this.operationPlan = operationPlan;
 		if(operationPlan!=null)
-			this.plan=operationPlan.getBillPlan();
+			this.plan=operationPlan.getPicPlan();
 	}
 
 	public void setPrepareCost(float prepareCost) {
@@ -222,7 +222,7 @@ public class OperationWork extends BeanMao {
 		this.workTime = workTime;
 	}
 
-	public void setPlan(BillPlan plan) {
+	public void setPlan(PicPlan plan) {
 		this.plan = plan;
 	}
 	

@@ -57,6 +57,7 @@ final class ButtonMustBeSelectedModel implements Validator<ButtonModel[]> {
 		this.message = message;
 	}
 
+	@Override
 	public boolean validate(Problems problems, String compName,
 			ButtonModel[] model) {
 		boolean sel = false;

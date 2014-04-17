@@ -53,6 +53,7 @@ final class NotNull implements Validator<String> {
 	NotNull() {
 	}
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 
 		boolean result = (model != null);

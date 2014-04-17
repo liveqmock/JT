@@ -21,7 +21,7 @@ public class FpBean {
 	private int id;
 	@ManyToOne
 	@JoinColumn(name = "bill", referencedColumnName = "id")
-	private Bill bill;
+	private BillBean bill;
 	@Caption("·¢Æ±ºÅÂë")
 	private String fpNo;
 	@Caption("¿ªÆ±½ð¶î")
@@ -34,10 +34,10 @@ public class FpBean {
 	private Userman inputUser;
 	
 	
-	public Bill getBill() {
+	public BillBean getBill() {
 		return bill;
 	}
-	public void setBill(Bill bill) {
+	public void setBill(BillBean bill) {
 		this.bill = bill;
 	}
 	public float getMoney() {

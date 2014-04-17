@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="DataCenter">
+	<properties>
+
+			<property name="hibernate.connection.url" value="jdbc:db2://192.168.1.103:50000/phdb" />
+			<property name="hibernate.connection.driver_class" value="com.ibm.db2.jcc.DB2Driver" />
+			<property name="hibernate.connection.username" value="db2" />
+			<property name="hibernate.connection.password" value="." />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.DB2Dialect" />
+			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="false" />
+
+			<property name="hibernate.connection.provider_class"
+				value="org.hibernate.connection.C3P0ConnectionProvider" />
+			<!-- 最小连接数 -->
+			<property name="c3p0.min_size" value="5" />
+			<!-- 最大连接数 -->
+			<property name="c3p0.max_size" value="30" />
+			<!--最大空闲时间,60秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->
+			<property name="c3p0.maxIdleTime" value="60" />
+			<!-- 获得连接的超时时间,如果超过这个时间,会抛出异常，单位毫秒 -->
+			<property name="c3p0.timeout" value="1800" />
+			<!-- 最大的PreparedStatement的数量 -->
+			<property name="c3p0.max_statements" value="50" />
+			<!-- 每隔120秒检查连接池里的空闲连接 ，单位是秒 -->
+			<property name="c3p0.idle_test_period" value="120" />
+			<!-- 当连接池里面的连接用完的时候，C3P0一下获取的新的连接数 -->
+			<property name="c3p0.acquire_increment" value="1" />
+			<!-- 是否每次都验证连接是否可用 -->
+			<property name="c3p0.validate" value="false" />
+
+		</properties>
+		
+		<!--
+		<non-jta-data-source>java:comp/env/jdbc/monitor_system</non-jta-data-source>
+
+		 java:comp/env/jdbc/db2 
+		
+		 <properties> <property name="javax.persistence.jdbc.url" value="jdbc:h2:/c:/开发工程/dw"/> 
+			<property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/> <property 
+			name="javax.persistence.jdbc.user" value="mao"/> <property name="javax.persistence.jdbc.password" 
+			value="780205"/> </properties> <properties> <property name="javax.persistence.jdbc.driver" 
+			value="com.ibm.db2.jcc.DB2Driver"/> <property name="javax.persistence.jdbc.url" 
+			value="jdbc:db2://158.222.2.88:50000/dw"/> <property name="javax.persistence.jdbc.user" 
+			value="db2iedev"/> <property name="javax.persistence.jdbc.password" value="db2iedevABC123"/> 
+			</properties> -->
+	</persistence-unit>
+</persistence>

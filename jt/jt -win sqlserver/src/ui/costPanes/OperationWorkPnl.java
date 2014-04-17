@@ -1,6 +1,5 @@
 package ui.costPanes;
 
-import java.util.Collection;
 import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;

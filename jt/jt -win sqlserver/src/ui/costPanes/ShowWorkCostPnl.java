@@ -9,11 +9,11 @@ import javax.sql.rowset.RowSetFactory;
 import javax.sql.rowset.RowSetProvider;
 
 import ui.customComponet.RsTableModel;
-import ui.panels.BillShowPnl;
+import ui.panels.PicShowPnl;
 
 import com.mao.jf.beans.SessionData;
 
-public class ShowWorkCostPnl extends BillShowPnl {
+public class ShowWorkCostPnl extends PicShowPnl {
 
 	private static String sqlString="select billNo 订单编号,picid 图号,billdate 订单日期,planwork 计划用时,operation 计划加工费用,"
 +"prepare 计划调机费用,worktime 实际加工用时,workcost 实际加工费用,"

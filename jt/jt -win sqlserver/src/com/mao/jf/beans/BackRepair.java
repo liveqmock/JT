@@ -20,7 +20,7 @@ public class BackRepair extends BeanMao {
 	
 	@ManyToOne
 	@JoinColumn(name = "billid", referencedColumnName = "id")
-	private Bill billItem ;
+	private PicBean pic ;
 	@Caption("返修数据")
 	private long backNum ;
 	@Caption("返修日期")
@@ -31,12 +31,7 @@ public class BackRepair extends BeanMao {
 	private String note ;
 	
 	
-	public Bill getBillItem() {
-		return billItem;
-	}
-	public void setBillItem(Bill billItem) {
-		this.billItem = billItem;
-	}
+	
 	public Date getBackDate() {
 		return backDate;
 	}
@@ -45,14 +40,6 @@ public class BackRepair extends BeanMao {
 	}
 	public long getBackNum() {
 		return backNum;
-	}
-	@Caption(order=-2,value="订单号")
-	public String getBillNo() {
-		return billItem.getBillNo();
-	}
-	@Caption(order=-1,value="订单客户")
-	public String getCustom() {
-		return billItem.getCustom();
 	}
 	public void setBackNum(long backNum) {
 		this.backNum = backNum;
@@ -75,6 +62,12 @@ public class BackRepair extends BeanMao {
 	}
 	public void setNote(String note) {
 		this.note = note;
+	}
+	public PicBean getPic() {
+		return pic;
+	}
+	public void setPic(PicBean pic) {
+		this.pic = pic;
 	}
 
 	

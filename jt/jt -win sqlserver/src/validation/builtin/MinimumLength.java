@@ -56,6 +56,7 @@ final class MinimumLength implements Validator<String> {
 		this.len = len;
 	}
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		boolean result = model.length() >= len;
 		if (!result) {

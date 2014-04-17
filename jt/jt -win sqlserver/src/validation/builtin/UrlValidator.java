@@ -54,6 +54,7 @@ import validation.Validator;
  */
 class UrlValidator implements Validator<String> {
 
+	@Override
 	public boolean validate(Problems problems, String compName, String model) {
 		try {
 			URL url = new URL(model);

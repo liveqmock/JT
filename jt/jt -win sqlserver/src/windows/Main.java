@@ -3,32 +3,24 @@ package windows;
 import java.awt.Dialog;
 import java.awt.EventQueue;
 import java.awt.Frame;
-import java.awt.SplashScreen;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.UnknownHostException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
-import javax.persistence.EntityManager;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
-import ui.MainMenu;
 import ui.customComponet.BeanDialog;
 import ui.frames.About;
+import ui.menu.MainMenu;
 import ui.panels.BillManagerPnl;
 import ui.panels.LoginPanel;
 
@@ -53,7 +45,7 @@ public class Main extends JFrame {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(About.class.getResource("/ui/logo.PNG")));
 		final BillManagerPnl billManagerPnl=new BillManagerPnl();
 		setContentPane(billManagerPnl);
-		setJMenuBar(new MainMenu(billManagerPnl.getTable()));
+		setJMenuBar(new  MainMenu());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setExtendedState(Frame.MAXIMIZED_BOTH);
 		setVisible(true);
@@ -81,6 +73,7 @@ public class Main extends JFrame {
 			public void run() {
 				try {
 					new Runnable() {
+						@Override
 						public void run() {
 							jcifs.Config.setProperty("jcifs.smb.client.domain",
 									"192.168.1.103");

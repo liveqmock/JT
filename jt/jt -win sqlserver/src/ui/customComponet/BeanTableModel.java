@@ -8,7 +8,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -34,14 +36,13 @@ import com.mao.jf.beans.annotation.Hidden;
 public class BeanTableModel<T> extends AbstractTableModel  {
 	private Collection<T> beans;
 	private BeanTableModelHeader[] heads;
+	private ArrayList<T> beanArrays;
 	public BeanTableModel(Collection<T> beans,Class<T> class1) {
 		this(beans,class1,null);
 
 	}
 	public BeanTableModel(Collection<T> beans,Class<T> class1, String [] header) {
 		super();
-		if (beans != null)
-			setBeans(beans);
 		TreeSet<BeanTableModelHeader> headers = new TreeSet<BeanTableModelHeader>();
 		for(Field fld:class1.getDeclaredFields()){
 			if(fld.getAnnotation(Hidden.class)==null){
@@ -82,6 +83,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 		}
 		heads=new BeanTableModelHeader[headers.size()];
 		headers.toArray(heads);
+		setBeans(beans);
 		
 
 	}
@@ -96,8 +98,12 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 		return heads[column].getCaption().value();
 	}
 
-	public T getSelectBean(int r) {		
-		return (T) beans.toArray()[r];
+	public T getSelectBean(int r) {	
+		try{
+		return (T) beanArrays.get(r);
+		}catch(Exception e){
+			return null;
+		}
 	}
 
 	@Override
@@ -117,7 +123,8 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 
 		try {			
 			return PropertyUtils.getSimpleProperty(getSelectBean(r), heads[c].getField());
-		} catch (Exception e) {			
+		} catch (Exception e) {		
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -139,6 +146,9 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	public void setBeans(Collection<T> beans) {
 		
 		this.beans=beans;
+		if(beans==null)
+			beans=new ArrayList<>();
+		beanArrays=new ArrayList<>(beans);
 		fireTableDataChanged();
 	}
 
@@ -255,6 +265,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	public void removeRow(int row) {
 		T bean = getSelectBean(row);
 		beans.remove(bean);
+		beanArrays.remove(bean);
 		BeanMao.removeBean( bean);
 		fireTableRowsDeleted(row, row);
 	}
@@ -266,21 +277,18 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	}
 	public void insertRow( T t) {
 		int row =0;
-		if(beans.contains(t)){
-			Iterator<T> it = beans.iterator();
-			int p=0;
-			while(it.hasNext()){
-				if(it.next().equals(t)){
-					row=p;
-					break;
-				}
-				p++;
-			}
+		if(beanArrays.contains(t)&&beanArrays.get(beanArrays.indexOf(t))==t){
+			row=beanArrays.indexOf(t);
 		}else{
 			row=beans.size();
 			beans.add(t);
-		}			
+			beanArrays.add(t);
+		
+		}		
 		fireTableRowsInserted(row, row);
+	}
+	public void swapBean(int from,int to) {
+		Collections.swap(beanArrays, from, to);
 	}
 
 }

@@ -252,11 +252,13 @@ public final class ValidationGroup {
 		final JLabel result = new FixedHeightLabel();
 		addUI(new ValidationUI() {
 
+			@Override
 			public void clearProblem() {
 				result.setText("   ");
 				result.setIcon(null);
 			}
 
+			@Override
 			public void setProblem(Problem problem) {
 				result.setText(problem.getMessage());
 				result.setIcon(problem.severity().icon());

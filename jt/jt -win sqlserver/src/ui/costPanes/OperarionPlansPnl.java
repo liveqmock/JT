@@ -1,17 +1,18 @@
 package ui.costPanes;
 
 import java.util.List;
+import java.util.TreeSet;
 
 import javax.swing.JOptionPane;
 
 import ui.customComponet.BeansPanel;
 
-import com.mao.jf.beans.BillPlan;
 import com.mao.jf.beans.OperationPlan;
+import com.mao.jf.beans.PicPlan;
 
 public class OperarionPlansPnl extends BeansPanel<OperationPlan> {
-	private BillPlan plan;
-	public OperarionPlansPnl(BillPlan plan) {
+	private PicPlan plan;
+	public OperarionPlansPnl(PicPlan plan) {
 		super(null, new OperationPlanPnl(null), OperationPlan.class);
 		this.plan=plan;
 		setPlan(plan);
@@ -21,17 +22,19 @@ public class OperarionPlansPnl extends BeansPanel<OperationPlan> {
 		if (!getBeanPanel().isValide()) {
 			return null;
 		}
-			List<OperationPlan> beans = (List<OperationPlan>) (getTablePane().getBeans());
-			OperationPlan bean = getPanelBean();
-			int index = beans.indexOf(bean);
-			if(index>-1&&beans.get(index)!=bean){
+		OperationPlan bean = getPanelBean();
+		for(OperationPlan bean2:getTablePane().getBeans()){
+			if(bean2.equals(bean)&&bean2!=bean){
 				JOptionPane.showMessageDialog(this, "此工序已经存在，不能再添加！","错误",JOptionPane.ERROR_MESSAGE);
 				return null;
 			}
-			bean.save();
-			return bean;
-		
-			
+
+		}
+		bean.setSequence(getTablePane().getTable().getRowCount());
+		bean.save();
+		return bean;
+
+
 	}
 	@Override
 	public void removeSelectRow() {
@@ -45,10 +48,10 @@ public class OperarionPlansPnl extends BeansPanel<OperationPlan> {
 	public OperationPlan createNewBean() {
 		return new OperationPlan(plan);
 	}
-	public void setPlan(BillPlan plan) {
+	public void setPlan(PicPlan plan) {
 		this.plan=plan;
 		setBean(plan==null?null:plan.getOperationPlans());
-		
-		
+
+
 	}
 }

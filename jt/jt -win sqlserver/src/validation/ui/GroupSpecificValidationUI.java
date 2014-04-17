@@ -60,10 +60,12 @@ final class GroupSpecificValidationUI implements ValidationUI {
 		this.ui = ui;
 	}
 
+	@Override
 	public void clearProblem() {
 		ui.clearProblem();
 	}
 
+	@Override
 	public void setProblem(Problem problem) {
 		ui.setProblem(problem);
 	}

@@ -16,7 +16,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PreRemove;
-import static javax.persistence.CascadeType.ALL;
 
 @Entity
 public class EquipmentPlan {

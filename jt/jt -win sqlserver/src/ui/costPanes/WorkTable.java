@@ -7,10 +7,6 @@ import javax.swing.ListSelectionModel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
-import ui.tableModes.WorkTableMode;
-
-import com.mao.jf.beans.BillPlan;
-
 public class WorkTable extends JXTable {
 
 	private Vector<BillPlan> plans;

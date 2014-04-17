@@ -5,19 +5,17 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
 import com.mao.jf.beans.annotation.Caption;
-
-import javax.persistence.OrderBy;
 
 @Entity
 public class Operation extends BeanMao {

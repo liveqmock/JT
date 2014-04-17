@@ -2,7 +2,6 @@ package com.mao.jf.beans;
 
 import static javax.persistence.CascadeType.ALL;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,18 +19,19 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
-import javax.persistence.Query;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.mao.jf.beans.annotation.Caption;
 
 @Entity
-public class OperationPlan extends BeanMao {
+public class OperationPlan extends BeanMao implements Comparable<OperationPlan> {
 	private static SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
 	@Id
 	@GeneratedValue(strategy =GenerationType.AUTO)
 	private int id;
 
+	@Caption("排产序号")
 	private int sequence;
 
 	private int unitUseTime;
@@ -40,7 +40,7 @@ public class OperationPlan extends BeanMao {
 
 	private int equipmentNum;
 
-	@OneToMany(mappedBy = "operationPlan")	@OrderBy("planStartTime")
+	@OneToMany(mappedBy = "operationPlan", cascade = ALL, orphanRemoval = true)	@OrderBy("planStartTime")
 
 	private Collection<EquipmentPlan> equipmentPlans;
 
@@ -48,7 +48,7 @@ public class OperationPlan extends BeanMao {
 	private Collection<OperationWork> operationWorks;
 
 	@ManyToOne	@JoinColumn(name = "billplan", referencedColumnName = "id")
-	private BillPlan billPlan;
+	private PicPlan picPlan;
 
 	@OneToOne	@JoinColumn(name = "operation", referencedColumnName = "id")
 	private Operation operation;
@@ -68,13 +68,8 @@ public class OperationPlan extends BeanMao {
 		this.cost=operation.getCost();
 	}
 
-	public OperationPlan(BillPlan plan) {
-		this.billPlan=plan;
-	}
-	@Caption(order =1, value= "流程序号")
-	public int getSequenceChange() {
-		sequence= getIndex()+1;
-		return sequence;
+	public OperationPlan(PicPlan plan) {
+		this.picPlan=plan;
 	}
 
 
@@ -91,12 +86,12 @@ public class OperationPlan extends BeanMao {
 		if(equipmentPlans==null) return;
 		equipmentPlans.clear();
 		BeanMao.beanManager.executeUpdate("delete EquipmentPlan where operationPlan=?1",this);
-		
+
 	}
 	public void createPlan() throws Exception {
 		deleteEquipmentPlans();
-		int eachEquipmentNum = billPlan.getNum()/equipmentNum;
-		int ye= billPlan.getNum()%equipmentNum;
+		int eachEquipmentNum = picPlan.getNum()/equipmentNum;
+		int ye= picPlan.getNum()%equipmentNum;
 		if(equipmentPlans==null)equipmentPlans=new ArrayList<>();	
 		while(equipmentPlans.size()<equipmentNum){
 			Equipment equipment = BeanMao.getBean(Equipment.class,
@@ -129,7 +124,7 @@ public class OperationPlan extends BeanMao {
 					theEarliestEquipmentPlan=getEarliestEquipmentPlan();//最早空间的设备
 
 				theEarliestEquipmentPlan.toNextPlan(equipmentPlan);
-				OperationPlan preOperationPlan = billPlan.getpreOperationPlan(this);
+				OperationPlan preOperationPlan = picPlan.getpreOperationPlan(this);
 				if(preOperationPlan!=null){
 					Date preEndDate =preOperationPlan.getEndDate();
 					if(equipmentPlan.getPlanStartTime().getTime()<preEndDate.getTime())
@@ -150,7 +145,7 @@ public class OperationPlan extends BeanMao {
 		//如果用时小于等于8小时并且结束时间已经是下班时间，则安排到第二天排产
 
 		//双休日延迟
-		
+
 		if(equipmentPlan.getPlanUseTimes()<=9*60&&
 				(calendarEnd.get(Calendar.HOUR_OF_DAY)>=17||
 				calendarEnd.get(Calendar.HOUR_OF_DAY)<8)){
@@ -164,7 +159,7 @@ public class OperationPlan extends BeanMao {
 		}else if(equipmentPlan.getPlanUseTimes()>540){
 			int workDays = equipmentPlan.getPlanUseTimes()/540;
 			calendarEnd.setTimeInMillis(calendarEnd.getTimeInMillis()+workDays*15*3_600_000);
-			
+
 		}	
 
 		int weeks = equipmentPlan.getPlanUseTimes()/(9*60*5);
@@ -172,9 +167,9 @@ public class OperationPlan extends BeanMao {
 		long time = calendarEnd.getTimeInMillis()-calendarStart.getTimeInMillis();
 		if(calendarEnd.get(Calendar.DAY_OF_WEEK)<calendarStart.get(Calendar.DAY_OF_WEEK)||
 				(calendarEnd.get(Calendar.DAY_OF_WEEK)==calendarStart.get(Calendar.DAY_OF_WEEK)&&
-						time>(1000*60*60*24*6+1000*60*60*24*7*weeks)
-						&&time<1000*60*60*24*7*(weeks+1)
-				))
+				time>(1000*60*60*24*6+1000*60*60*24*7*weeks)
+				&&time<1000*60*60*24*7*(weeks+1)
+						))
 			calendarEnd.add(Calendar.DAY_OF_MONTH, 2);
 		if(calendarEnd.get(Calendar.DAY_OF_WEEK)>=Calendar.SATURDAY)
 			calendarEnd.add(Calendar.DAY_OF_MONTH, 2);	
@@ -190,8 +185,12 @@ public class OperationPlan extends BeanMao {
 	}
 
 	@Caption(order = 6, value= "耗时")
-	public long getPlanProcessTime() {		
-		return (getEndDate().getTime()-getStartDate().getTime())/60000;
+	public long getPlanProcessTime() {	
+		try{
+			return (getEndDate().getTime()-getStartDate().getTime())/60000;
+		}catch (Exception e){
+			return 0;
+		}
 	}
 
 
@@ -202,7 +201,7 @@ public class OperationPlan extends BeanMao {
 
 	@Caption(order = 8, value= "计划费用")
 	public float getPlanCost() {
-		return (unitUseTime*billPlan.getNum()+prepareTime)*getCost();
+		return (unitUseTime*picPlan.getNum()+prepareTime)*getCost();
 	}
 
 	@Caption(order =99, value= "备注")
@@ -239,6 +238,12 @@ public class OperationPlan extends BeanMao {
 	public Operation getOperation() {
 		return operation;
 	}
+	public PicPlan getPicPlan() {
+		return picPlan;
+	}
+	public void setPicPlan(PicPlan picPlan) {
+		this.picPlan = picPlan;
+	}
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -261,12 +266,6 @@ public class OperationPlan extends BeanMao {
 	}
 
 
-	public BillPlan getBillPlan() {
-		return billPlan;
-	}
-	public void setBillPlan(BillPlan billPlan) {
-		this.billPlan = billPlan;
-	}
 	public Collection<EquipmentPlan> getEquipmentPlans() {
 		return equipmentPlans;
 	}
@@ -281,10 +280,17 @@ public class OperationPlan extends BeanMao {
 
 
 	public Date getEndDate() {
-		return Collections.max(equipmentPlans,new DateEquipmentPlanCompare() ).getPlanEndTime();
+		try{
+			return Collections.max(equipmentPlans,new DateEquipmentPlanCompare() ).getPlanEndTime();
+		}catch(Exception e){
+			return null;
+		}
 	}
-	public Date getStartDate() {
-		return Collections.min(equipmentPlans,new DateEquipmentPlanCompare() ).getPlanStartTime();
+	public Date getStartDate() {try{
+		return Collections.max(equipmentPlans,new DateEquipmentPlanCompare() ).getPlanStartTime();
+	}catch(Exception e){
+		return null;
+	}
 	}
 
 
@@ -302,20 +308,11 @@ public class OperationPlan extends BeanMao {
 
 		}
 	}
-	public int getIndex() {
-		return getBillPlan().getOperationPlans().indexOf(this);
-	}
-	public OperationPlan getPreBean() {
-		if(getIndex()>0) 
-			return getBillPlan().getOperationPlans().get(getIndex()-1);
-		else
-			return null;
-	}
 	public int getEquipmentNum() {
 		return equipmentNum;
 	}
 	public void setEquipmentNum(int num) {
-		num=num>billPlan.getNum()?billPlan.getNum():num;
+		num=num>picPlan.getNum()?picPlan.getNum():num;
 		int equipmentCount=((Long) BeanMao.beanManager.querySingle("select count(1) from Equipment where operation=?1", Long.class, operation)).intValue();
 		this.equipmentNum=num>equipmentCount?equipmentCount:num;
 	}
@@ -336,10 +333,10 @@ public class OperationPlan extends BeanMao {
 		if (getClass() != obj.getClass())
 			return false;
 		OperationPlan other = (OperationPlan) obj;
-		if (billPlan == null) {
-			if (other.billPlan != null)
+		if (picPlan == null) {
+			if (other.picPlan != null)
 				return false;
-		} else if (!billPlan.equals(other.billPlan))
+		} else if (!picPlan.equals(other.picPlan))
 			return false;
 		if (operation == null) {
 			if (other.operation != null)
@@ -348,6 +345,11 @@ public class OperationPlan extends BeanMao {
 			return false;
 		return true;
 	}
-	
-	
+	@Override
+	public int compareTo(OperationPlan o) {
+		// TODO 自动生成的方法存根
+		return ((Integer)getSequence()).compareTo(o.getSequence());
+	}
+
+
 }

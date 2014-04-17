@@ -12,9 +12,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
-
-import com.mao.jf.beans.BeanMao;
 
 public abstract class BeanDialog<T> extends JDialog {
 
@@ -50,6 +49,7 @@ public abstract class BeanDialog<T> extends JDialog {
 			{
 				JButton okButton = new JButton("\u786E\u5B9A");
 				okButton.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent e) {
 						if (getBeans() == null || getBeans().size() == 0) {
 							JOptionPane.showMessageDialog(BeanDialog.this,
@@ -72,6 +72,7 @@ public abstract class BeanDialog<T> extends JDialog {
 			{
 				JButton cancelButton = new JButton("取消");
 				cancelButton.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent e) {
 						cancel();
 					}
@@ -93,7 +94,7 @@ public abstract class BeanDialog<T> extends JDialog {
 
 	public BeanDialog(BeanPanel<T> panel, String title) {
 		this.contentPanel = panel;
-		this.bean = (T) contentPanel.getBean();
+		this.bean = contentPanel.getBean();
 		setTitle(title);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(BeanDialog.class.getResource("/ui/logo.PNG")));
 		getContentPane().setLayout(new BorderLayout());
@@ -106,6 +107,7 @@ public abstract class BeanDialog<T> extends JDialog {
 			{
 				JButton okButton = new JButton("\u786E\u5B9A");
 				okButton.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent e) {
 						if (!BeanDialog.this.contentPanel.isValide()) {
 							return;
@@ -124,6 +126,7 @@ public abstract class BeanDialog<T> extends JDialog {
 			{
 				JButton cancelButton = new JButton("取消");
 				cancelButton.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent e) {
 						cancel();
 					}
@@ -144,7 +147,6 @@ public abstract class BeanDialog<T> extends JDialog {
 	public BeanDialog(BeansPanel<T> panel, String title) {
 		this.contentPanel2 = panel;
 		this.beans = panel.getBeans();
-		setDefaultCloseOperation(JDialog. DO_NOTHING_ON_CLOSE);
 		setTitle(title);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(BeanDialog.class.getResource("/ui/logo.PNG")));
 		getContentPane().setLayout(new BorderLayout());
@@ -157,6 +159,7 @@ public abstract class BeanDialog<T> extends JDialog {
 			{
 				JButton okButton = new JButton("\u786E\u5B9A");
 				okButton.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent e) {
 						if (getBeans() == null || getBeans().size() == 0) {
 							JOptionPane.showMessageDialog(BeanDialog.this,
@@ -181,6 +184,7 @@ public abstract class BeanDialog<T> extends JDialog {
 			{
 				JButton cancelButton = new JButton("取消");
 				cancelButton.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent e) {
 						cancel();
 						

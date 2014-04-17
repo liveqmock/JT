@@ -57,6 +57,7 @@ final class FixedHeightLabel extends JLabel {
 		setText("   "); // avoid 0 initial width
 	}
 
+	@Override
 	public void setIcon(Icon icon) {
 		fixedHeight = -1;
 		super.setIcon(icon);

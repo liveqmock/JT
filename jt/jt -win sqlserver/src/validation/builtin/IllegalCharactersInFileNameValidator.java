@@ -54,6 +54,7 @@ import validation.Validator;
  */
 final class IllegalCharactersInFileNameValidator implements Validator<String> {
 
+	@Override
 	public boolean validate(Problems problems, String compName, String text) {
 		boolean invalid = text.contains(File.separator)
 				|| text.contains(File.pathSeparator);

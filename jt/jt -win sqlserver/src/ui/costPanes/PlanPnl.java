@@ -3,6 +3,7 @@ package ui.costPanes;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -15,12 +16,15 @@ import javax.swing.border.TitledBorder;
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Bindings;
+import org.jdesktop.swingx.HorizontalLayout;
 
 import ui.customComponet.BeanPanel;
 import validation.builtin.NumberMaxE;
 import validation.builtin.Validators;
 
+import com.itextpdf.text.DocumentException;
 import com.mao.jf.beans.PicPlan;
+import com.mao.jf.beans.PlanPdf;
 
 public class PlanPnl extends JPanel{
 
@@ -41,10 +45,14 @@ public class PlanPnl extends JPanel{
 
 		operationPlansPnl.getTablePane().getTable().setUI(new DragDropRowTableUI<>());
 		JButton saveBt = new JButton("保存排产计划");
-		
+		JButton viewPdfButton=new JButton("预览打印工艺跟踪卡");
+		JPanel panel=new JPanel(new HorizontalLayout(30));
+		panel.add(saveBt);
+		panel.add(viewPdfButton);
 		setLayout(new BorderLayout());
 		add(operationPlansPnl,BorderLayout.CENTER);
-		add(saveBt,BorderLayout.SOUTH);
+		
+		add(panel,BorderLayout.SOUTH);
 		saveBt.addActionListener(new ActionListener() {
 			
 			@Override
@@ -53,7 +61,18 @@ public class PlanPnl extends JPanel{
 				savePlan();
 			}
 		});
-		
+		viewPdfButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					new PlanPdf(bean).buildPdfViewer();
+				} catch (DocumentException | IOException e1) {
+					// TODO 自动生成的 catch 块
+					e1.printStackTrace();
+				}
+			}
+		});
 		
 	}
 	public void setBean(PicPlan plan) {

@@ -40,7 +40,7 @@ public abstract class BillShowPnl extends JPanel{
 	private JButton searchButton;
 
 
-	private SearchDlg searchDlg;
+	private SearchBillDlg searchBillDlg;
 	private JDialog dialog;
 
 	public abstract void searchAction(String search);
@@ -102,9 +102,10 @@ public abstract class BillShowPnl extends JPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(searchDlg==null)searchDlg=new SearchDlg();
-				searchDlg.setVisible(true);
-				loadData( searchDlg.getSqlString());
+				if(searchBillDlg==null)searchBillDlg=new SearchBillDlg();
+				searchBillDlg.setVisible(true);
+				System.err.println(searchBillDlg.getSqlString());
+				loadData( searchBillDlg.getSqlString());
 
 			}
 
@@ -181,7 +182,7 @@ public abstract class BillShowPnl extends JPanel{
 						case "订单日期":
 							field = "createDate";
 							break;
-						case "请求交货日期":
+						case "要求交货日期":
 							field = "requestdate";
 							break;
 						case "订单交货日期":

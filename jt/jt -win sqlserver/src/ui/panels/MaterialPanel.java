@@ -80,7 +80,7 @@ public class MaterialPanel extends BeanPanel<Material> {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,}));
 		
-		List names = BeanMao.beanManager.queryList( "select distinct name from Material order by createDate desc",String.class);
+		List names = BeanMao.beanManager.queryList( "select distinct name from Material",String.class);
 		
 		bill=new JTextField(); 
 		name=new JComboBox<String> (new Vector<String>(names)) ;

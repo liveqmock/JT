@@ -23,7 +23,7 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
-public class SearchDlg extends JDialog {
+public class SearchPicDlg extends JDialog {
 	private JTextField customName;
 	private JTextField billNo;
 	private JTextField billgroup;
@@ -41,7 +41,7 @@ public class SearchDlg extends JDialog {
 	/**
 	 * Create the panel.
 	 */
-	public SearchDlg() {
+	public SearchPicDlg() {
 		createContents();
 
 		JButton searBt = new JButton("查询(S)");
@@ -83,12 +83,12 @@ public class SearchDlg extends JDialog {
 		
 		if(requestDateS.getDate()!=null||requestDateE.getDate()!=null){
 			if(requestDateS.getDate()==null){
-				JOptionPane.showMessageDialog(SearchDlg.this, "请同时指定开始和结束日期","错误",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SearchPicDlg.this, "请同时指定开始和结束日期","错误",JOptionPane.ERROR_MESSAGE);
 				requestDateS.requestFocus();
 				return;
 			}  
 			if(requestDateE.getDate()==null){
-				JOptionPane.showMessageDialog(SearchDlg.this, "请同时指定开始和结束日期","错误",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SearchPicDlg.this, "请同时指定开始和结束日期","错误",JOptionPane.ERROR_MESSAGE);
 				requestDateE.requestFocus();
 				return;
 			}
@@ -97,12 +97,12 @@ public class SearchDlg extends JDialog {
 		}
 		if(billDateS.getDate()!=null||billDateE.getDate()!=null){
 			if(billDateS.getDate()==null){
-				JOptionPane.showMessageDialog(SearchDlg.this, "请同时指定开始和结束日期","错误",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SearchPicDlg.this, "请同时指定开始和结束日期","错误",JOptionPane.ERROR_MESSAGE);
 				billDateS.requestFocus();
 				return;
 			} 
 			if(billDateE.getDate()==null){
-				JOptionPane.showMessageDialog(SearchDlg.this, "请同时指定开始和结束日期","错误",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SearchPicDlg.this, "请同时指定开始和结束日期","错误",JOptionPane.ERROR_MESSAGE);
 				billDateE.requestFocus();
 				return;
 			}
@@ -111,12 +111,12 @@ public class SearchDlg extends JDialog {
 		}
 		if(outGetDateS.getDate()!=null||outGetDateE.getDate()!=null){
 			if(outGetDateS.getDate()==null){
-				JOptionPane.showMessageDialog(SearchDlg.this, "请同时指定开始和结束日期","错误",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SearchPicDlg.this, "请同时指定开始和结束日期","错误",JOptionPane.ERROR_MESSAGE);
 				outGetDateS.requestFocus();
 				return;
 			} 
 			if(outGetDateE.getDate()==null){
-				JOptionPane.showMessageDialog(SearchDlg.this, "请同时指定开始和结束日期","错误",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SearchPicDlg.this, "请同时指定开始和结束日期","错误",JOptionPane.ERROR_MESSAGE);
 				outGetDateE.requestFocus();
 				return;
 			}
@@ -130,7 +130,7 @@ public class SearchDlg extends JDialog {
 	}
 	private void createContents() {
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		setIconImage(Toolkit.getDefaultToolkit().getImage(SearchDlg.class.getResource("/ui/logo.PNG")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(SearchPicDlg.class.getResource("/ui/logo.PNG")));
 		setTitle("高级查询");
 		JPanel mainPanel=new JPanel();
 		mainPanel.setLayout(new FormLayout(new ColumnSpec[] {

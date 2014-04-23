@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
@@ -42,9 +41,8 @@ import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingx.JXDatePicker;
 
-import sun.net.www.content.image.jpeg;
-import ui.MenuAction;
 import ui.customComponet.BeanPanel;
+import ui.menu.MenuAction;
 import validation.Problem;
 import validation.Severity;
 import validation.builtin.Validators;
@@ -56,7 +54,6 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Custom;
-import com.mao.jf.beans.Material;
 import com.mao.jf.beans.PicBean;
 import com.mao.jf.beans.SerialiObject;
 import com.mao.jf.beans.SessionData;
@@ -87,7 +84,7 @@ public class PicPanel extends BeanPanel<PicBean> {
 	private JXDatePicker itemCompleteDate;
 	
 	private JTextField imgFld;
-	private MyImageView imageView;
+	private PicView imageView;
 	private ValidationPanel vPanel;
 	private JFileChooser fileChooser;
 	private File imgFile;
@@ -227,7 +224,7 @@ public class PicPanel extends BeanPanel<PicBean> {
 		});
 		panel_4.add(btnNewButton);
 		splitPane.setDividerLocation(500);
-		imageView = new MyImageView();
+		imageView = new PicView();
 
 		if(bean.getImageUrl()!=null){
 			imageView.showFile(bean.getImageUrl());

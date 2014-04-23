@@ -2,11 +2,6 @@ package ui.menu;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JPopupMenu;
-
-import ui.panels.BillManagerPnl;
-import ui.tables.BillTable;
-import ui.tables.PicTable;
 
 import com.mao.jf.beans.Userman;
 

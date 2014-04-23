@@ -3,24 +3,16 @@ package ui.panels;
 
 
 import java.awt.BorderLayout;
-import java.awt.GraphicsEnvironment;
-import java.awt.Label;
 import java.awt.Dialog.ModalityType;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Date;
 
 import javax.swing.BoxLayout;
@@ -29,30 +21,21 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.filechooser.FileFilter;
 
-import jcifs.smb.SmbFileOutputStream;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingx.JXDatePicker;
 
-import ui.MenuAction;
 import ui.customComponet.BeanDialog;
 import ui.customComponet.BeanTablePane;
 import ui.customComponet.BeansPanel;
-import ui.customComponet.BeansTable;
+import ui.menu.MenuAction;
 import validation.Problem;
 import validation.Severity;
 import validation.builtin.Validators;
@@ -68,7 +51,6 @@ import com.mao.jf.beans.Custom;
 import com.mao.jf.beans.FpBean;
 import com.mao.jf.beans.PicBean;
 import com.mao.jf.beans.SerialiObject;
-import com.mao.jf.beans.SessionData;
 import com.mao.jf.beans.Userman;
 
 public class BillPanel extends JPanel {

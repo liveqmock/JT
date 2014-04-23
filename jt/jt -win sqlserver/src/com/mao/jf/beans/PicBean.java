@@ -9,14 +9,13 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
 import com.mao.jf.beans.annotation.Caption;
-
-import javax.persistence.ManyToOne;
-import javax.persistence.JoinColumn;
 @Entity
 public class PicBean  {
 	@Id
@@ -43,7 +42,6 @@ public class PicBean  {
 	@Caption("最终报价(未含税)")
 	private float reportPrice;
 	@Caption("最终报价(含税)")
-	@Transient
 	private float reportTaxPrice;
 	@Caption("总价")
 	@Transient

@@ -22,8 +22,8 @@ import org.jdesktop.swingx.JXImageView;
 public class ImagePanel extends JPanel {
 	private JXImageView imageView;
 	private JSlider slider;
-	private MyImageView myImageView;
-	public ImagePanel(MyImageView myImageView) {
+	private PicView myImageView;
+	public ImagePanel(PicView myImageView) {
 		super();
 		this.myImageView=myImageView;
 		try {

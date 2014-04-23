@@ -9,8 +9,6 @@ import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 
-import com.mao.jf.beans.PicBean;
-
 public abstract class ColorHighlighter extends AbstractHighlighter {
 
 	private Color background;

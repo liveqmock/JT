@@ -37,26 +37,18 @@ import ui.customComponet.BeansPanel;
 import ui.customComponet.RsTablePane;
 import ui.frames.About;
 import ui.frames.BillFrame;
-import ui.panels.BackRepairPanel;
-import ui.panels.BillManagerPnl;
 import ui.panels.ChangePasswdPanel;
 import ui.panels.CustomPanel;
 import ui.panels.FpPanel;
-import ui.panels.MaterialsPanel;
-import ui.panels.ShipingPanel;
 import ui.panels.UsermanPnl;
-import ui.tables.PicTable;
 
-import com.mao.jf.beans.BackRepair;
 import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.BillBean;
 import com.mao.jf.beans.Custom;
 import com.mao.jf.beans.Employee;
 import com.mao.jf.beans.FpBean;
 import com.mao.jf.beans.Operation;
-import com.mao.jf.beans.PicBean;
 import com.mao.jf.beans.SessionData;
-import com.mao.jf.beans.ShipingBean;
 import com.mao.jf.beans.Userman;
 
 public class BillAction extends AbstractAction {

@@ -31,6 +31,8 @@ public class OperationPlanPnl extends BeanPanel<OperationPlan> {
 	private JTextField note    ;
 	private NumberMaxE numberMaxE ;
 	private JComboBox<Operation> operations;
+	private JComboBox<String> technicsFld;
+	private JTextField technicsDesFld;
 
 	/**
 	 * Create the panel.
@@ -56,6 +58,8 @@ public class OperationPlanPnl extends BeanPanel<OperationPlan> {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,}));
 		List<Operation> operationsList = BeanMao.getBeans(Operation.class);
 		Operation[] operationArray=new Operation[operationsList.size()];
@@ -71,24 +75,39 @@ public class OperationPlanPnl extends BeanPanel<OperationPlan> {
 		equipmentNum=new JTextField();
 		equipmentNum.setName("加工设备数");
 		add(equipmentNum, "8, 2, fill, default");
+		List list = BeanMao.beanManager.queryList("select distinct technics from OperationPlan");
+		String[] technicses=null;
+		if(list!=null){
+			
+			technicses = new String[list.size()];
+			list.toArray(technicses);
+			
+		}
+		technicsFld=new JComboBox<String>(technicses);
+		technicsFld.setEditable(true);
+		technicsDesFld=new JTextField();
+		add(new JLabel("工艺:"), "2, 4, right, default");
+		add(technicsFld, "4, 4, fill, default");
+		add(new JLabel("工艺描述:"), "6, 4, right, default");
+		add(technicsDesFld, "8, 4, fill, default");
 
 		JLabel label_1 = new JLabel("\u5355\u4EF6\u52A0\u5DE5\u65F6\u95F4:");
-		add(label_1, "2, 4, right, default");
+		add(label_1, "2, 6, right, default");
 		unitUseTime=new JTextField();
-		add(unitUseTime, "4, 4, fill, default");
+		add(unitUseTime, "4, 6, fill, default");
 		unitUseTime.setName("单件用时");
 
 		
 		JLabel label_2 = new JLabel("调机时间:");
-		add(label_2, "6, 4, right, default");
+		add(label_2, "6, 6, right, default");
 		prepareTime=new JTextField();
-		add(prepareTime, "8, 4, fill, default");
+		add(prepareTime, "8, 6, fill, default");
 		prepareTime.setName("调机时间");
 		
 		JLabel label_3 = new JLabel("\u5907\u6CE8:");
-		add(label_3, "2, 6, right, default");		
+		add(label_3, "2, 8, right, default");		
 		note=new JTextField();
-		add(note, "4, 6, 5, 1, fill, default");
+		add(note, "4, 8, 5, 1, fill, default");
 		note.setName("备注");
 		operations.addItemListener(new ItemListener() {			
 			@Override
@@ -125,6 +144,8 @@ public class OperationPlanPnl extends BeanPanel<OperationPlan> {
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("equipmentNum"), equipmentNum, jTextFieldBeanProperty));
 		BeanProperty<Object, Object> comboBoxBeanProperty = BeanProperty.create("selectedItem");
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("operation"), operations, comboBoxBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("technics"), technicsFld, comboBoxBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("technicsDes"), technicsDesFld, jTextFieldBeanProperty));
 
 	}
 	

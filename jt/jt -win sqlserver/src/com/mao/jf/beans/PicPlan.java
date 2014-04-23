@@ -1,5 +1,6 @@
 package com.mao.jf.beans;
 
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 
 import java.util.ArrayList;
@@ -16,7 +17,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
 import com.mao.jf.beans.annotation.Caption;
@@ -27,25 +27,26 @@ public class PicPlan extends BeanMao {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	private int num;
 
+
+	@Caption(order=0,value="序号")
 	private int sequenceNum;
 
+	@Caption(order=1,value="数量")
+	private int num;
 	@ManyToOne @JoinColumn(name = "pic", referencedColumnName = "id")
 	private PicBean pic;
-	
+	private Date planDate;
 	@Transient
 	private Date startDate;
 	@Transient
 	private Date endDate;
-
-	private float plancost;
-	@OneToMany(mappedBy = "picPlan") 
+	@OneToMany(mappedBy = "picPlan", cascade = ALL) 
 	private Collection<OperationPlan> operationPlans;
 
 	private int completed;
 	
-	@OneToMany(mappedBy = "plan")
+	@OneToMany(mappedBy = "plan",cascade = ALL)
 	private Collection<OperationWork> operationWorks;
 	
 	@OneToOne(fetch = LAZY)	@JoinColumn(name = "prePlan", referencedColumnName = "id")	
@@ -53,18 +54,12 @@ public class PicPlan extends BeanMao {
 	
 	@OneToOne(fetch = LAZY)	@JoinColumn(name = "nextPlan", referencedColumnName = "id")	
 	private PicPlan nextPlan;
-
-
-
-	public void deleteOperationPlans() {
-		if(operationPlans!=null){
-			for(OperationPlan operationPlan:operationPlans)
-				operationPlan.remove();
-		}
-	}
+	@Transient
+	@Caption(order=4,value="用时")
+	private int useTime;
 	public void initOperationPlans() {
 		if(operationPlans!=null){
-			for(OperationPlan operationPlan:getOperationPlans())
+			for(OperationPlan operationPlan:getOperationPlanSet())
 				try {
 					operationPlan.createPlan();
 				} catch (Exception e) {
@@ -91,18 +86,19 @@ public class PicPlan extends BeanMao {
 		this.id = id;
 	}
 
-	public TreeSet<OperationPlan> getOperationPlans() {
-		if(operationPlans==null)operationPlans=new TreeSet<>();
-		if(!(operationPlans instanceof TreeSet<?>))
-			operationPlans=new TreeSet<>(operationPlans);
-		return   (TreeSet<OperationPlan>) operationPlans;
+	public TreeSet<OperationPlan> getOperationPlanSet() {
+		if(operationPlans==null)return new TreeSet<>();
+		return new TreeSet<>(operationPlans);
+	}
+	public Collection<OperationPlan> getOperationPlans() {
+		return   operationPlans;
 	}
     public  OperationPlan getNextOperationPlan(OperationPlan operationPlan) {
-    	return getOperationPlans().higher(operationPlan);
+    	return getOperationPlanSet().higher(operationPlan);
 	}
 
     public  OperationPlan getpreOperationPlan(OperationPlan operationPlan) {
-    	return getOperationPlans().lower(operationPlan);
+    	return getOperationPlanSet().lower(operationPlan);
 	}
 	public int getCompleted() {
 		return completed;
@@ -112,7 +108,7 @@ public class PicPlan extends BeanMao {
 	}
 	public float  getPlanCost() {
 		float cost = 0;
-		for(OperationPlan operationPlan:operationPlans){
+		for(OperationPlan operationPlan:getOperationPlans()){
 			cost+=operationPlan.getPlanCost();
 		}
 		return cost;
@@ -122,19 +118,18 @@ public class PicPlan extends BeanMao {
 		return num;
 	}
 
-	public int  getPlanTime() {
+	public int  getUseTime() {
 		int time = 0;
-		for(OperationPlan operationPlan:operationPlans){
+		for(OperationPlan operationPlan:getOperationPlans()){
 			time+=operationPlan.getPlanProcessTime();
 		}
 		return time;
 	}
-	@Caption(order = 3, value= "开始时间")
+	@Caption(order = 2, value= "开始时间")
 	public Date getStartDate() {
-		if(getOperationPlans().size()>0) startDate=getOperationPlans().first().getStartDate();
+		if(getOperationPlans().size()>0) startDate=getOperationPlanSet().first().getStartDate();
 		return startDate;
 	}
-	@Caption(order=0,value="序号")
 	public int getSequenceNum() {
 		if(sequenceNum==0) {
 			try{
@@ -145,16 +140,6 @@ public class PicPlan extends BeanMao {
 		}
 		return sequenceNum;
 	}
-
-	@Caption(order = 5, value= "耗时")
-	public int  getPlanProcessTime() {
-		int time = 0;
-		for(OperationPlan operationPlan:operationPlans){
-			time+=operationPlan.getPlanProcessTime();
-		}
-		return time;
-	}
-
 
 
 	public PicBean getPic() {
@@ -177,8 +162,13 @@ public class PicPlan extends BeanMao {
 	public void setNum(int num) {
 		this.num = num;
 	}
-	public void setOperationPlans(TreeSet<OperationPlan> operationPlans) {
+
+	
+	public void setOperationPlans(Collection<OperationPlan> operationPlans) {
 		this.operationPlans = operationPlans;
+	}
+	public void setCompleted(int completed) {
+		this.completed = completed;
 	}
 
 	public void setOperationWorks(Collection<OperationWork> operationWorks) {
@@ -205,9 +195,9 @@ public class PicPlan extends BeanMao {
 		
 	}
 
-	@Caption(order = 4, value= "计划结束时间")
+	@Caption(order = 3, value= "计划结束时间")
 	public Date getEndDate() {
-		if(getOperationPlans().size()>0)endDate=getOperationPlans().last().getEndDate();
+		if(getOperationPlans().size()>0)endDate=getOperationPlanSet().last().getEndDate();
 		
 		return endDate;
 	}
@@ -232,11 +222,11 @@ public class PicPlan extends BeanMao {
 		this.nextPlan = nextPlan;
 	}
 
-	public float getPlancost() {
-		return plancost;
+	public Date getPlanDate() {
+		return planDate;
 	}
-	public void setPlancost(float plancost) {
-		this.plancost = plancost;
+	public void setPlanDate(Date planDate) {
+		this.planDate = planDate;
 	}
 	@Override
 	public boolean equals(Object obj) {

@@ -3,15 +3,12 @@ package ui.costPanes;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
-import java.util.Collections;
-import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.event.MouseInputListener;
 import javax.swing.plaf.basic.BasicTableUI;
 
 import ui.customComponet.BeanTableModel;
-import ui.customComponet.BeansTable;
 
 import com.mao.jf.beans.OperationPlan;
 
@@ -75,10 +72,6 @@ public class DragDropRowTableUI<T> extends BasicTableUI {
 				}
 				if (toRow >= 0 && toRow < table.getRowCount()&&toRow!=fromRow) {
 					
-					OperationPlan fromBean = ((BeanTableModel<OperationPlan>)table.getModel()).getSelectBean(fromRow);
-					OperationPlan toBean = ((BeanTableModel<OperationPlan>)table.getModel()).getSelectBean(toRow);
-					fromBean.setSequence(toRow);
-					toBean.setSequence(fromRow);
 					((BeanTableModel<OperationPlan>)table.getModel()).swapBean(fromRow, toRow);
 
 					table.setRowSelectionInterval(toRow, toRow);
@@ -96,6 +89,11 @@ public class DragDropRowTableUI<T> extends BasicTableUI {
 //			if (sRow >= 0 && sRow < table.getRowCount() && table.getSelectedRow()!=sRow) 
 //				table.setRowSelectionInterval(sRow, sRow);        	
 			draggingRow = false;
+
+			for(int p=0;p< table.getRowCount();p++)
+				((OperationPlan)((BeanTableModel<T>) table.getModel()).getSelectBean(table
+							.convertRowIndexToModel(p))).setSequence(p);;
+				
 			table.repaint();
 		}
 	}

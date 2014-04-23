@@ -34,7 +34,7 @@ import org.icepdf.ri.common.SwingController;
 import org.icepdf.ri.common.SwingViewBuilder;
 import org.jdesktop.swingx.JXImageView;
 
-public class MyImageView extends JScrollPane {
+public class PicView extends JScrollPane {
 
 	private int type=1;
 	private String piff;
@@ -46,7 +46,7 @@ public class MyImageView extends JScrollPane {
 	private File imgFile;
 	private JDialog dialog;
 	private SwingWorker swingWorker;
-	public MyImageView() {
+	public PicView() {
 		super();
 
 	}
@@ -71,7 +71,7 @@ public class MyImageView extends JScrollPane {
 				frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 				frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 				frame.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
-				frame.setContentPane(new ImagePanel(MyImageView.this));
+				frame.setContentPane(new ImagePanel(PicView.this));
 				frame.setVisible(true);
 
 			}
@@ -123,12 +123,12 @@ public class MyImageView extends JScrollPane {
 					dialog.getContentPane().add(label1);
 					dialog.setUndecorated(true);
 					dialog.setAlwaysOnTop(true);
-					dialog.setLocationRelativeTo(MyImageView.this);
+					dialog.setLocationRelativeTo(PicView.this);
 
 					dialog.setBounds(1,1, 130, 30);
 
 				}
-				dialog.setLocationRelativeTo(MyImageView.this);
+				dialog.setLocationRelativeTo(PicView.this);
 				dialog.setVisible(true);
 				try {
 					if(ass!=null&&ass.equals("pdf"))

@@ -31,7 +31,7 @@ import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXTable;
 
 import ui.customComponet.RsTablePane;
-import ui.panels.MyImageView;
+import ui.panels.PicView;
 
 import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Employee;
@@ -178,7 +178,7 @@ public class EmployeeOperationDetailPnl extends JPanel {
 		if(StringUtils.isNoneBlank(pic.getImageUrl())){
 			
 			JDialog dialog=new JDialog();
-			MyImageView imageView=new MyImageView();
+			PicView imageView=new PicView();
 			dialog.setContentPane(imageView);
 			dialog.setLocationRelativeTo(null);
 			dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());

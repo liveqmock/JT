@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.TreeSet;
 
 import javax.swing.JFileChooser;
@@ -264,8 +263,8 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 
 	public void removeRow(int row) {
 		T bean = getSelectBean(row);
-		beans.remove(bean);
 		beanArrays.remove(bean);
+		beans.remove(bean);
 		BeanMao.removeBean( bean);
 		fireTableRowsDeleted(row, row);
 	}

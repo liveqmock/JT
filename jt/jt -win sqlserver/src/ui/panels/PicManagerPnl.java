@@ -18,7 +18,7 @@ import com.mao.jf.beans.PicBean;
 public class PicManagerPnl extends PicShowPnl implements ListSelectionListener{
 
 	private PicTable table;
-	private MyImageView imageView;
+	private PicView imageView;
 	
 	private JSplitPane splitPane;
 
@@ -30,7 +30,7 @@ public class PicManagerPnl extends PicShowPnl implements ListSelectionListener{
 		table.getTable().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		table.setPopupMenu(new PicPopmenu(table));
 		table.getTable().getSelectionModel().addListSelectionListener(this);
-		imageView = new MyImageView();
+		imageView = new PicView();
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				table, imageView);
 		splitPane.setOneTouchExpandable(true);

@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
+import java.util.TreeSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -17,13 +18,13 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.apache.commons.lang3.StringUtils;
-
+import ui.customComponet.BeanDialog;
 import ui.customComponet.BeanTableModel;
 import ui.customComponet.BeanTablePane;
 import ui.panels.PicShowPnl;
 
 import com.mao.jf.beans.BillBean;
+import com.mao.jf.beans.OperationPlan;
 import com.mao.jf.beans.PicBean;
 import com.mao.jf.beans.PicPlan;
 
@@ -33,6 +34,7 @@ public class PlanCreatePanel extends PicShowPnl {
 	private PlanPnl planPnl;
 	private JSplitPane splitPane;
 	private BeanTablePane<PicPlan> plansTablePane;
+	private JButton newPlanBt;
 
 	public PlanCreatePanel() {
 		super();
@@ -46,7 +48,7 @@ public class PlanCreatePanel extends PicShowPnl {
 		plansTablePane=new BeanTablePane<PicPlan>(null, PicPlan.class);
 		plansTablePane.setPreferredSize(new Dimension(400, 150));
 		
-		JButton newPlanBt = new JButton("新增排产计划");
+		newPlanBt = new JButton("新增排产计划");
 		JPanel plansPanel=new JPanel();
 		plansPanel.setLayout(new BoxLayout(plansPanel, BoxLayout.Y_AXIS));
 		plansTablePane.setBorder(new TitledBorder(BorderFactory.createSoftBevelBorder(BevelBorder.RAISED), "排产计划表", TitledBorder.LEFT, TitledBorder.TOP, null, null));
@@ -99,7 +101,7 @@ public class PlanCreatePanel extends PicShowPnl {
 				switch (item.getText()) {
 				case "删除排产计划":
 
-					removeSelectRow();
+					plansTablePane.removeSelectRow();
 
 					break;
 				case "新增排产计划":
@@ -143,23 +145,26 @@ public class PlanCreatePanel extends PicShowPnl {
 	}
 	private void addNewPlan() {
 		try{
-			PicBean pic = picTable.getSelectBean();
+			final PicBean pic = picTable.getSelectBean();
 			if(pic==null)return;
 			PicPlan plan = new PicPlan(pic);
-			plan.save();
-			 ((BeanTableModel<PicPlan>) plansTablePane.getTable().getModel()).insertRow(plan);
-			
-			planPnl.setBean(plan);
+			plan.setOperationPlans(new TreeSet<OperationPlan>());
+			BeanDialog<PicPlan> dialog=new BeanDialog<PicPlan>(new PicPlanPnl(plan),"新增排产计划") {
+
+				@Override
+				public boolean okButtonAction() {
+					getBean().save();
+					PicPlan picPlan=getBean();
+					((BeanTableModel<PicPlan>) plansTablePane.getTable().getModel()).insertRow(picPlan);
+					planPnl.setBean(picPlan);
+					return true;
+				}
+			};
+			dialog.setVisible(true);
+			dialog.setLocationRelativeTo(newPlanBt);
 		}catch(Exception e1){
 			e1.printStackTrace();
 		}
-		
-	}
-	private void removeSelectRow() {
-		PicPlan rmBean = plansTablePane.getSelectBean();
-		rmBean.getPic().getPlans().remove(rmBean);
-		rmBean.remove();
-		plansTablePane.setBeans(rmBean.getPic().getPlans());
 		
 	}
 }

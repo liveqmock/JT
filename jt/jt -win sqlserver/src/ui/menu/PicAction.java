@@ -38,14 +38,12 @@ import ui.customComponet.RsTablePane;
 import ui.frames.About;
 import ui.frames.BillFrame;
 import ui.panels.BackRepairPanel;
-import ui.panels.BillManagerPnl;
 import ui.panels.ChangePasswdPanel;
 import ui.panels.CustomPanel;
 import ui.panels.FpPanel;
 import ui.panels.MaterialsPanel;
 import ui.panels.ShipingPanel;
 import ui.panels.UsermanPnl;
-import ui.tables.PicTable;
 
 import com.mao.jf.beans.BackRepair;
 import com.mao.jf.beans.BeanMao;

@@ -14,12 +14,9 @@ import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.jdesktop.swingx.table.TableColumnModelExt;
 
-import ui.MainMenu;
-import ui.MenuAction;
 import ui.customComponet.BeanTablePane;
 
 import com.mao.jf.beans.BillBean;
-import com.mao.jf.beans.PicBean;
 import com.mao.jf.beans.SerialiObject;
 
 public class BillTable extends BeanTablePane<BillBean> {
@@ -64,7 +61,7 @@ public class BillTable extends BeanTablePane<BillBean> {
 		if(!columnInit){
 			columnInit=true;
 			Object object=SerialiObject.loadFile(new File(
-					"tableColumn.dat"));
+					"BilltableColumn.dat"));
 			if(object!=null){
 				HashMap<Object, Boolean> tableStatus=(HashMap<Object, Boolean>)object;
 				for(int i=0;i<getTable().getModel().getColumnCount();i++){
@@ -97,7 +94,7 @@ public class BillTable extends BeanTablePane<BillBean> {
 
 		}
 		try {
-			SerialiObject.save(tableStatus,new File("tableColumn.dat"));
+			SerialiObject.save(tableStatus,new File("BilltableColumn.dat"));
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();

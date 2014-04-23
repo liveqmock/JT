@@ -16,13 +16,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.mao.jf.beans.annotation.Caption;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 @Entity
 public class BillBean extends BeanMao {	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
+	@Caption("系统ID")
 	private int id;
 	@Caption("客户")
 	private String custom;
@@ -30,6 +29,8 @@ public class BillBean extends BeanMao {
 	private String customMan;
 	@Caption("订单号")
 	private String billid;
+	@Caption("订单组")
+	private String billgroup;
 	@Caption("最终报价(未含税)")
 	@Transient
 	private float reportMoney;
@@ -43,7 +44,6 @@ public class BillBean extends BeanMao {
 	@Column(name = "billDate")
 	@Caption("建单日期")
 	private Date createDate;//billDate	
-	
 	private boolean complete;
 	private boolean cancel;
 	
@@ -286,6 +286,12 @@ public class BillBean extends BeanMao {
 	}
 	public void setBillGetDate(Date billGetDate) {
 		this.billGetDate = billGetDate;
+	}
+	public String getBillgroup() {
+		return billgroup;
+	}
+	public void setBillgroup(String billgroup) {
+		this.billgroup = billgroup;
 	}
 
 }

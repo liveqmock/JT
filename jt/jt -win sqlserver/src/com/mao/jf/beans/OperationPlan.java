@@ -19,8 +19,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
+import javax.persistence.Transient;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.mao.jf.beans.annotation.Caption;
 
 @Entity
@@ -34,24 +34,41 @@ public class OperationPlan extends BeanMao implements Comparable<OperationPlan> 
 	@Caption("排产序号")
 	private int sequence;
 
+	@Caption("设备")
+	@OneToOne	@JoinColumn(name = "operation", referencedColumnName = "id")
+	private Operation operation;
+	@Caption("工艺")
+	private String technics;
+	@Caption("工艺描述")
+	private String technicsDes;
+	@Caption("使用设备数")
+	private int equipmentNum;
+	@Caption("单位用时")
 	private int unitUseTime;
 
+	@Caption("调机用时")
 	private int prepareTime;
 
-	private int equipmentNum;
+	@Caption("开始时间")
+	@Transient
+	private Date startDate;
+	@Caption("结束时间")
+	@Transient
+	private Date endDate;
+	@Caption( "耗时")
+	@Transient
+	private long planProcessTime;
 
 	@OneToMany(mappedBy = "operationPlan", cascade = ALL, orphanRemoval = true)	@OrderBy("planStartTime")
 
 	private Collection<EquipmentPlan> equipmentPlans;
 
-	@OneToMany(mappedBy = "operationPlan")
+	@OneToMany(mappedBy = "operationPlan",cascade = ALL)
 	private Collection<OperationWork> operationWorks;
 
 	@ManyToOne	@JoinColumn(name = "billplan", referencedColumnName = "id")
 	private PicPlan picPlan;
 
-	@OneToOne	@JoinColumn(name = "operation", referencedColumnName = "id")
-	private Operation operation;
 
 	private String name;  
 
@@ -84,8 +101,11 @@ public class OperationPlan extends BeanMao implements Comparable<OperationPlan> 
 
 	public void deleteEquipmentPlans() {
 		if(equipmentPlans==null) return;
-		equipmentPlans.clear();
-		BeanMao.beanManager.executeUpdate("delete EquipmentPlan where operationPlan=?1",this);
+
+		for(EquipmentPlan equipmentPlan:equipmentPlans){
+			BeanMao.removeBean(equipmentPlan);
+		}
+		System.err.println(equipmentPlans.size());
 
 	}
 	public void createPlan() throws Exception {
@@ -107,9 +127,13 @@ public class OperationPlan extends BeanMao implements Comparable<OperationPlan> 
 			equipmentPlan.setNum(num);
 			equipmentPlan.setPlanUseTimes(prepareTime+unitUseTime*num);
 			equipmentPlan.setOperationPlan(this);
+			
 			if(equipment!=null){//有没有排产的设备，时间从现在开始
 				equipmentPlan.setEquipment(equipment);
 				Calendar calendar=Calendar.getInstance();
+				if(picPlan.getPlanDate()!=null&&calendar.getTimeInMillis()<picPlan.getPlanDate().getTime()){
+					calendar.setTime(picPlan.getPlanDate());
+				}
 				if(calendar.get(Calendar.HOUR_OF_DAY)>=17){
 					calendar.add(Calendar.DAY_OF_MONTH, 1);			
 					calendar.set(Calendar.HOUR_OF_DAY, 8);
@@ -137,7 +161,7 @@ public class OperationPlan extends BeanMao implements Comparable<OperationPlan> 
 			equipmentPlans.add(equipmentPlan);
 		}
 	}
-	public void adjustTime(EquipmentPlan equipmentPlan) {
+	private void adjustTime(EquipmentPlan equipmentPlan) {
 		Calendar calendarEnd=Calendar.getInstance();
 		calendarEnd.setTime(equipmentPlan.getPlanEndTime());
 		Calendar calendarStart=Calendar.getInstance();
@@ -161,30 +185,28 @@ public class OperationPlan extends BeanMao implements Comparable<OperationPlan> 
 			calendarEnd.setTimeInMillis(calendarEnd.getTimeInMillis()+workDays*15*3_600_000);
 
 		}	
-
-		int weeks = equipmentPlan.getPlanUseTimes()/(9*60*5);
-		calendarEnd.add(Calendar.DAY_OF_MONTH, weeks*2);	
+		int weekWorkDays=6;
+		int weeks = equipmentPlan.getPlanUseTimes()/(9*60*weekWorkDays);
+		calendarEnd.add(Calendar.DAY_OF_MONTH, weeks*(7-weekWorkDays));	
 		long time = calendarEnd.getTimeInMillis()-calendarStart.getTimeInMillis();
 		if(calendarEnd.get(Calendar.DAY_OF_WEEK)<calendarStart.get(Calendar.DAY_OF_WEEK)||
 				(calendarEnd.get(Calendar.DAY_OF_WEEK)==calendarStart.get(Calendar.DAY_OF_WEEK)&&
-				time>(1000*60*60*24*6+1000*60*60*24*7*weeks)
+				time>(1000*60*60*24*(weekWorkDays+7*weeks))
 				&&time<1000*60*60*24*7*(weeks+1)
 						))
-			calendarEnd.add(Calendar.DAY_OF_MONTH, 2);
-		if(calendarEnd.get(Calendar.DAY_OF_WEEK)>=Calendar.SATURDAY)
-			calendarEnd.add(Calendar.DAY_OF_MONTH, 2);	
+			calendarEnd.add(Calendar.DAY_OF_MONTH, 1);
+		if(calendarEnd.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY)
+			calendarEnd.add(Calendar.DAY_OF_MONTH, 1);	
 
 		equipmentPlan.setPlanEndTime(calendarEnd.getTime());
 	}
 	public int getSequence() {
 		return sequence;
 	}
-	@Caption(order = 2, value= "工序名称")
 	public String getName() {
 		return name;
 	}
 
-	@Caption(order = 6, value= "耗时")
 	public long getPlanProcessTime() {	
 		try{
 			return (getEndDate().getTime()-getStartDate().getTime())/60000;
@@ -194,17 +216,14 @@ public class OperationPlan extends BeanMao implements Comparable<OperationPlan> 
 	}
 
 
-	@Caption(order = 7, value= "单位费用")
 	public float getCost() {
 		return cost;
 	}
 
-	@Caption(order = 8, value= "计划费用")
 	public float getPlanCost() {
 		return (unitUseTime*picPlan.getNum()+prepareTime)*getCost();
 	}
 
-	@Caption(order =99, value= "备注")
 	public String getNote() {
 		return note;
 	}
@@ -240,6 +259,18 @@ public class OperationPlan extends BeanMao implements Comparable<OperationPlan> 
 	}
 	public PicPlan getPicPlan() {
 		return picPlan;
+	}
+	public String getTechnics() {
+		return technics;
+	}
+	public void setTechnics(String technics) {
+		this.technics = technics;
+	}
+	public String getTechnicsDes() {
+		return technicsDes;
+	}
+	public void setTechnicsDes(String technicsDes) {
+		this.technicsDes = technicsDes;
 	}
 	public void setPicPlan(PicPlan picPlan) {
 		this.picPlan = picPlan;
@@ -278,19 +309,19 @@ public class OperationPlan extends BeanMao implements Comparable<OperationPlan> 
 		return name;
 	}
 
-
+	public Date getStartDate() {
+		try{
+			return Collections.max(equipmentPlans,new DateEquipmentPlanCompare() ).getPlanStartTime();
+		}catch(Exception e){
+			return null;
+		}
+	}
 	public Date getEndDate() {
 		try{
 			return Collections.max(equipmentPlans,new DateEquipmentPlanCompare() ).getPlanEndTime();
 		}catch(Exception e){
 			return null;
 		}
-	}
-	public Date getStartDate() {try{
-		return Collections.max(equipmentPlans,new DateEquipmentPlanCompare() ).getPlanStartTime();
-	}catch(Exception e){
-		return null;
-	}
 	}
 
 

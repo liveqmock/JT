@@ -6,7 +6,6 @@ import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.beans.IntrospectionException;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +19,6 @@ import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 
 import ui.costPanes.EmployeeCostPnl;
 import ui.costPanes.EmployeePnl;
@@ -31,32 +29,20 @@ import ui.costPanes.UnStartPlanPnl;
 import ui.costPanes.WorkCostPnl;
 import ui.costPanes.WorkCreatePanel;
 import ui.customComponet.BeanDialog;
-import ui.customComponet.BeanTableModel;
-import ui.customComponet.BeanTablePane;
 import ui.customComponet.BeansPanel;
 import ui.customComponet.RsTablePane;
 import ui.frames.About;
 import ui.frames.BillFrame;
-import ui.panels.BackRepairPanel;
-import ui.panels.BillManagerPnl;
 import ui.panels.ChangePasswdPanel;
 import ui.panels.CustomPanel;
-import ui.panels.FpPanel;
-import ui.panels.MaterialsPanel;
-import ui.panels.ShipingPanel;
 import ui.panels.UsermanPnl;
-import ui.tables.PicTable;
 
-import com.mao.jf.beans.BackRepair;
 import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.BillBean;
 import com.mao.jf.beans.Custom;
 import com.mao.jf.beans.Employee;
-import com.mao.jf.beans.FpBean;
 import com.mao.jf.beans.Operation;
-import com.mao.jf.beans.PicBean;
 import com.mao.jf.beans.SessionData;
-import com.mao.jf.beans.ShipingBean;
 import com.mao.jf.beans.Userman;
 
 public class MenuAction extends AbstractAction {

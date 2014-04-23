@@ -12,7 +12,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 public abstract class BeanDialog<T> extends JDialog {
@@ -36,7 +35,7 @@ public abstract class BeanDialog<T> extends JDialog {
 
 	public BeanDialog(BeanTablePane<T> panel, String title) {
 		this.contentPanel3 = panel;
-		this.bean = null;
+		this.beans = panel.getBeans();
 		setTitle(title);
 		getContentPane().setLayout(new BorderLayout());
 		setIconImage(Toolkit.getDefaultToolkit().getImage(BeanDialog.class.getResource("/ui/logo.PNG")));

@@ -307,7 +307,8 @@ public class BeanTablePane<T> extends JPanel {
 		this.popupMenu = popupMenu;
 	}
 	public T getBean(int row) {
-		return ((BeanTableModel<T>) getTable().getModel()).getSelectBean(row);
+		return ((BeanTableModel<T>) getTable().getModel()).getSelectBean(getTable()
+				.convertRowIndexToModel(row));
 	}
 	private Collection<T> beans;
 

@@ -18,40 +18,67 @@ import ui.tables.PicTable;
 import com.mao.jf.beans.BillBean;
 import com.mao.jf.beans.PicBean;
 
-public class BillManagerPnl extends BillShowPnl implements ListSelectionListener{
+public class BillManagerPnl extends BillShowPnl {
 
 	private BillTable table;
-	private BeanTablePane<PicBean> picBeanTablePane;
-	
-	private JSplitPane splitPane;
+	private PicTable picBeanTablePane;
+	private PicView imageView;
 
-	
 	public BillManagerPnl() {
 
-		
+
 		table = new BillTable(null);
 		table.setPopupMenu(new BillPopMenu(table));
-		table.getTable().getSelectionModel().addListSelectionListener(this);
-		picBeanTablePane = new BeanTablePane<PicBean>(null,PicBean.class);
+		picBeanTablePane = new PicTable(null);
+
 		picBeanTablePane.setPopupMenu(new PicPopmenu(picBeanTablePane));
 
 		table.getTable().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		picBeanTablePane.getTable().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+		JSplitPane splitPaneV = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
 				table, picBeanTablePane);
-		splitPane.setOneTouchExpandable(true);
-		add(splitPane,BorderLayout.CENTER);
-		splitPane.setDividerLocation(((Double) Toolkit.getDefaultToolkit()
-				.getScreenSize().getWidth()).intValue() - 500);		
+		splitPaneV.setOneTouchExpandable(true);
+		imageView=new PicView();
+		JSplitPane splitPaneH=new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,splitPaneV,imageView);
+		splitPaneV.setDividerLocation(500);
+		splitPaneH.setDividerLocation(((Double) Toolkit.getDefaultToolkit()
+				.getScreenSize().getWidth()).intValue() - 500);	
+
+		add(splitPaneH,BorderLayout.CENTER);	
+
+
+
+
+
+		table.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if (table.getSelectBean()!=null) {
+					picBeanTablePane.setBeans(table.getSelectBean().getPicBeans());
+					if(picBeanTablePane.getTable().getRowCount()>0)
+						picBeanTablePane.getTable().setRowSelectionInterval(0,0);
+				}
+
+			}
+		});
+		picBeanTablePane.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if(picBeanTablePane.getSelectBean()!=null)
+					imageView.showFile(picBeanTablePane.getSelectBean().getImageUrl());
+			}
+		});
 	}
 
-	
+
 	public void saveTableStatus() {
 		table.saveStatus();
 	}
-	
-	
+
+
 
 
 	public BillTable getTable() {
@@ -62,30 +89,18 @@ public class BillManagerPnl extends BillShowPnl implements ListSelectionListener
 	@Override
 	public void searchAction(String search) {	
 		try{
-		List<BillBean> beans = BillBean.SearchBeans(search);
-		table.setBeans(beans);
+			List<BillBean> beans = BillBean.SearchBeans(search);
+			table.setBeans(beans);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
-	@Override
-	public void valueChanged(final ListSelectionEvent arg0) {
-		if (arg0.getValueIsAdjusting()) {
-					
-						if (table.getSelectBean()!=null) {
-							picBeanTablePane.setBeans(table.getSelectBean().getPicBeans());
-						}
-		}
-
-	}
 
 
-	public BeanTablePane<PicBean> getPicBeanTablePane() {
+
+	public PicTable getPicBeanTablePane() {
 		return picBeanTablePane;
 	}
 
 
-	public void setPicBeanTablePane(BeanTablePane<PicBean> picBeanTablePane) {
-		this.picBeanTablePane = picBeanTablePane;
-	}
 }

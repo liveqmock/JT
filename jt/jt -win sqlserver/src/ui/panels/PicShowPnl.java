@@ -40,7 +40,7 @@ public abstract class PicShowPnl extends JPanel{
 	private JButton searchButton;
 
 
-	private SearchDlg searchDlg;
+	private SearchPicDlg searchDlg;
 	private JDialog dialog;
 
 	public abstract void searchAction(String search);
@@ -103,7 +103,7 @@ public abstract class PicShowPnl extends JPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(searchDlg==null)searchDlg=new SearchDlg();
+				if(searchDlg==null)searchDlg=new SearchPicDlg();
 				searchDlg.setVisible(true);
 				loadData( searchDlg.getSqlString());
 

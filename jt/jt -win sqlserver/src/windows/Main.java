@@ -23,6 +23,7 @@ import ui.frames.About;
 import ui.menu.MainMenu;
 import ui.panels.BillManagerPnl;
 import ui.panels.LoginPanel;
+import ui.panels.MainPanel;
 
 import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.SerialiObject;
@@ -43,8 +44,8 @@ public class Main extends JFrame {
 		setBounds(100, 100, 700, 400);
 		setTitle("津田精密机构订单管理系统"); 
 		setIconImage(Toolkit.getDefaultToolkit().getImage(About.class.getResource("/ui/logo.PNG")));
-		final BillManagerPnl billManagerPnl=new BillManagerPnl();
-		setContentPane(billManagerPnl);
+		final MainPanel mainPanel=new MainPanel();
+		setContentPane(mainPanel);
 		setJMenuBar(new  MainMenu());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setExtendedState(Frame.MAXIMIZED_BOTH);
@@ -56,7 +57,7 @@ public class Main extends JFrame {
 			public void windowClosing(WindowEvent arg0) {
 				// TODO 自动生成的方法存根
 				super.windowClosing(arg0);
-				billManagerPnl.saveTableStatus();
+				mainPanel.saveTableStatus();
 				BeanMao.beanManager.flush();
 				BeanMao.close();
 			}
@@ -65,7 +66,6 @@ public class Main extends JFrame {
 	}
 
 	public static void main(String[] args) {
-
 		final Spash splash=new Spash();
 		splash.setVisible(true);
 		EventQueue.invokeLater(new Runnable() {

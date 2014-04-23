@@ -29,15 +29,18 @@ public class BeanManager {
 		emf.close();
 
 	}
-	public List<?> queryList(String queryString,Class<?> class1,Object... objects ) {
-		Query query = em.createQuery( queryString ,class1);
+	public List<?> queryList(String queryString,Object... objects ) {
+		return queryList(queryString, null,objects);
+	}
+	public <T> List<T> queryList(String queryString,Class<T> class1,Object... objects ) {
+		Query query =class1==null? em.createQuery( queryString ): em.createQuery( queryString ,class1);
 		if(objects!=null){
 			for(int i=0;i<objects.length;i++)
 				query.setParameter(i+1, objects[i]);
 		}
 		return query.getResultList();
 	}
-	public List<?> queryNativeList(String queryString,Class<?> class1,Object... objects ) {
+	public <T> List<T> queryNativeList(String queryString,Class<T> class1,Object... objects ) {
 		Query query =class1==null?em.createNativeQuery( queryString ): em.createNativeQuery( queryString ,class1);
 		if(objects!=null){
 			for(int i=0;i<objects.length;i++)
@@ -174,7 +177,8 @@ public class BeanManager {
 			em.getTransaction().commit();
 		}catch(Exception e){
 			try{
-			em.getTransaction().rollback();
+			em.getTransaction().commit();
+			e.printStackTrace();
 			}catch(Exception e1){
 				e.printStackTrace();
 				
@@ -189,8 +193,8 @@ public class BeanManager {
 			em.persist(bean);;
 			em.getTransaction().commit();
 		}catch(Exception e){
-			try{
-			em.getTransaction().rollback();
+			try{			
+				em.getTransaction().commit();
 			}catch(Exception e1){
 				e.printStackTrace();
 			}

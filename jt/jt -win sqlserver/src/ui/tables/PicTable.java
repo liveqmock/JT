@@ -14,8 +14,6 @@ import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.jdesktop.swingx.table.TableColumnModelExt;
 
-import ui.MainMenu;
-import ui.MenuAction;
 import ui.customComponet.BeanTablePane;
 
 import com.mao.jf.beans.PicBean;
@@ -61,7 +59,7 @@ public class PicTable extends BeanTablePane<PicBean> {
 		if(!columnInit){
 			columnInit=true;
 			Object object=SerialiObject.loadFile(new File(
-					"tableColumn.dat"));
+					"PictableColumn.dat"));
 			if(object!=null){
 				HashMap<Object, Boolean> tableStatus=(HashMap<Object, Boolean>)object;
 				for(int i=0;i<getTable().getModel().getColumnCount();i++){
@@ -94,7 +92,7 @@ public class PicTable extends BeanTablePane<PicBean> {
 
 		}
 		try {
-			SerialiObject.save(tableStatus,new File("tableColumn.dat"));
+			SerialiObject.save(tableStatus,new File("PictableColumn.dat"));
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();

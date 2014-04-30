@@ -36,6 +36,7 @@ import ui.customComponet.BeanDialog;
 import ui.customComponet.BeanTablePane;
 import ui.customComponet.BeansPanel;
 import ui.menu.MenuAction;
+import ui.tables.PicTable;
 import validation.Problem;
 import validation.Severity;
 import validation.builtin.Validators;
@@ -57,8 +58,8 @@ public class BillPanel extends JPanel {
 	private JTextField noteFld;
 	private JTextField billidFld;
 	private JTextField billgroup;
-	private JComboBox<Object> customCombox;
-	private JComboBox<Object> contactManCombox;
+	private JComboBox<String> customCombox;
+	private JComboBox<String> contactManCombox;
 	private ValidationPanel vPanel;
 	private JXDatePicker billcreateDate;
 	private JXDatePicker requestDate;
@@ -67,7 +68,7 @@ public class BillPanel extends JPanel {
 	private JButton addCustomButton;
 	private JCheckBox warehousCheckBox;
 	private JCheckBox complete;
-	private BeanTablePane<PicBean> picBeansTable;
+	private PicTable picTable;
 	public BillPanel(BillBean bean) {
 		this.bean = bean;
 		createContents();
@@ -84,8 +85,8 @@ public class BillPanel extends JPanel {
 		vPanel = new ValidationPanel();
 		JPanel panel=new JPanel();
 		vPanel.setInnerComponent(panel);
-		picBeansTable = new BeanTablePane<PicBean>(bean.getPicBeans(),PicBean.class);
-		JSplitPane splitPane=new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,vPanel,picBeansTable);
+		picTable = new PicTable(bean.getPicBeans());
+		JSplitPane splitPane=new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,vPanel,picTable);
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setDividerLocation(500);
 
@@ -122,7 +123,7 @@ public class BillPanel extends JPanel {
 		JPanel panel_1 = new JPanel();
 		panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.X_AXIS));
 
-		customCombox = new JComboBox<>(Custom.getCustomerNames(0).toArray());
+		customCombox = new JComboBox<String>(Custom.getCustomerNames(0));
 		//		customCombox = new JComboBox<>();
 		customCombox.setName("\u8BA2\u5355\u5BA2\u6237");
 		panel_1.add(customCombox);
@@ -130,8 +131,8 @@ public class BillPanel extends JPanel {
 
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				contactManCombox.setModel(new DefaultComboBoxModel<>(Custom
-						.getStrings((String) e.getItem(),0).toArray()));
+				contactManCombox.setModel(
+						new DefaultComboBoxModel<String>(Custom.getStrings((String) e.getItem(),0)));
 
 			}
 		});
@@ -144,7 +145,7 @@ public class BillPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 
 				MenuAction.adminCustom(0);
-
+				customCombox.setModel(new DefaultComboBoxModel<String>(Custom.getCustomerNames(0)));
 			}
 		});
 		JLabel lblNewLabel_1 = new JLabel(
@@ -353,7 +354,7 @@ public class BillPanel extends JPanel {
 
 		BeanProperty<JCheckBox, Boolean> checkBoxBeanProperty = BeanProperty.create("selected");
 		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
-		BeanProperty<JComboBox<Object>, String> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
+		BeanProperty<JComboBox<String>, String> jComboBoxBeanProperty = BeanProperty.create("selectedItem");
 		BeanProperty<JXDatePicker, Date> dateBeanProperty = BeanProperty.create("date");
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("custom"), customCombox,jComboBoxBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("customMan"), contactManCombox,jComboBoxBeanProperty).bind();
@@ -383,7 +384,7 @@ public class BillPanel extends JPanel {
 			public boolean okButtonAction() {
 				// TODO 自动生成的方法存根
 				((PicPanel)getContentPanel()).saveBill();
-				picBeansTable.addNew(getBean());
+				picTable.addNew(getBean());
 				return true;
 			}
 		};

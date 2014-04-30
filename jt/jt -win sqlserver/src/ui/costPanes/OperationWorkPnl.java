@@ -1,5 +1,6 @@
 package ui.costPanes;
 
+import java.awt.Component;
 import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
@@ -33,9 +34,12 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 	private JTextField note       ;
 	private JComboBox<OperationPlan> operationPlan;
 	private JComboBox<Employee> employee          ;
+	private JComboBox<Employee> superintendent          ;
+	private JComboBox<Employee> firstChecker          ;
 	private JComboBox<Employee> checker           ;
 	private JXDatePicker finishDate               ;
 	private JComboBox<Employee> prepareEmployee   ;
+	private JTextField checkData;
 
 	/**
 	 * Create the panel.
@@ -66,6 +70,10 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,}));
 		getNum=new JTextField();      
 		productNum=new JTextField();  
@@ -79,7 +87,9 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		checker= new JComboBox<Employee>();
 		finishDate=new JXDatePicker();
 		prepareEmployee=new JComboBox<Employee>(new Vector<Employee>(Employee.loadOperaters()));
-
+		superintendent=new JComboBox<Employee>(new Vector<Employee>(Employee.loadSuperintendents()));
+		firstChecker=new JComboBox<Employee>(new Vector<Employee>(Employee.loadAll()));
+		checkData=new JTextField();
 
 		add( new JLabel("工序:"), "2, 2, right, default");		
 		add(operationPlan, "4, 2, fill, default");
@@ -124,12 +134,21 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		add(new JLabel("调机员:"), "6, 10, right, default");		
 		add(prepareEmployee, "8, 10, fill, default");
 
-		add(new JLabel("检验员:"), "2, 12, right, default");		
-		add(checker, "4, 12, fill, default");
+		add(new JLabel("首件检验人:"), "2, 12, right, default");		
+		add(firstChecker, "4, 12, fill, default");
+		add(new JLabel("首件检验数据:"), "6, 12, right, default");		
+		add(checkData, "8, 12, fill, default");
 
+		add(new JLabel("检验员:"), "2, 14, right, default");		
+		add(checker, "4, 14, fill, default");
+		
+		add(new JLabel("主管:"), "6, 14, right, default");		
+		add(superintendent, "8, 14, fill, default");
 
-		add(new JLabel("备注:"), "6, 12, right, default");		
-		add(note, "8, 12, fill, default");
+		
+		
+		add(new JLabel("备注:"), "2, 16, right, default");		
+		add(note, "4, 16, fill, default");
 
 		addValidators();
 	}
@@ -162,11 +181,14 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("workTime"), useTime, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("prepareTime"), prepareTime, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("note"), note, jTextFieldBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("checkData"), checkData, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("finishDate"), finishDate,  BeanProperty.create("date")));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("employee"), employee, comboBoxBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("checker"), checker, comboBoxBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("prepareEmployee"), prepareEmployee, comboBoxBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("operationPlan"), operationPlan, comboBoxBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("firstChecker"), firstChecker, comboBoxBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("superintendent"), superintendent, comboBoxBeanProperty));
 
 
 

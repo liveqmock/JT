@@ -25,7 +25,7 @@ import com.mao.jf.beans.Material;
 
 public class MaterialPanel extends BeanPanel<Material> {
 
-	private JTextField bill; 
+	private JTextField pic; 
 	private JComboBox<String>  name ;
 	private JTextField unitName;
 	private JTextField unitCost;
@@ -82,14 +82,14 @@ public class MaterialPanel extends BeanPanel<Material> {
 		
 		List names = BeanMao.beanManager.queryList( "select distinct name from Material",String.class);
 		
-		bill=new JTextField(); 
+		pic=new JTextField(); 
 		name=new JComboBox<String> (new Vector<String>(names)) ;
 		unitName=new JTextField() ;
 		unitCost =new JTextField();
 		num=new JTextField() ;
 		
 		add( new JLabel("Í¼ºÅ"), "2, 2, right, default");		
-		add(bill, "4, 2, fill, default");
+		add(pic, "4, 2, fill, default");
 
 		add(new JLabel("²ÄÁÏÃû³Æ"), "2, 4, right, default");		
 		add(name, "4, 4, fill, default");
@@ -111,13 +111,13 @@ public class MaterialPanel extends BeanPanel<Material> {
 		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("unitCost"), unitCost, jTextFieldBeanProperty));
 		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("unitName"), unitName, jTextFieldBeanProperty));
 		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("num"), num, jTextFieldBeanProperty));
-		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, bean, BeanProperty.create("bill.picid"), bill, jTextFieldBeanProperty));
+		bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, bean, BeanProperty.create("pic.picid"), pic, jTextFieldBeanProperty));
 		
 		
 	}
 	private void getMaterial(String nameStr) {
 		try {
-			 Object[] object = (Object[]) BeanMao.beanManager.querySingle("select top 1 unitName,unitCost from Material where name=?1 order by  createDate desc",Object[].class,nameStr);
+			 Object[] object = (Object[]) BeanMao.beanManager.querySingle("select unitName,unitCost from Material where name=?1 order by  createDate desc",nameStr);
 			
 			 unitName.setText((String) object[0]);
 			unitCost.setText(String.valueOf( String.valueOf(object[1])));

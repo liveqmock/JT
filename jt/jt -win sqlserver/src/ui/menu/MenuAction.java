@@ -20,6 +20,8 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 
+import org.apache.poi.hssf.record.PageBreakRecord.Break;
+
 import ui.costPanes.EmployeeCostPnl;
 import ui.costPanes.EmployeePnl;
 import ui.costPanes.OperationPnl;
@@ -62,18 +64,18 @@ public class MenuAction extends AbstractAction {
 				break;
 
 			case "修改订单":
-//				if (table.getSelectBean() == null) {
-//					JOptionPane.showMessageDialog(table, "未选择要修改的订单条目!");
-//					break;
-//				}
-//				if (table.getSelectBean().isItemComplete()
-//						&& Userman.loginUser.getLevel() > 0) {
-//					JOptionPane.showMessageDialog(table, "该订单已经完成，不能再修改!");
-//					break;
-//				}
-//				new BillFrame(table.getSelectBean());
+				//				if (table.getSelectBean() == null) {
+				//					JOptionPane.showMessageDialog(table, "未选择要修改的订单条目!");
+				//					break;
+				//				}
+				//				if (table.getSelectBean().isItemComplete()
+				//						&& Userman.loginUser.getLevel() > 0) {
+				//					JOptionPane.showMessageDialog(table, "该订单已经完成，不能再修改!");
+				//					break;
+				//				}
+				//				new BillFrame(table.getSelectBean());
 				break;
-			
+
 			case "订单客户管理":
 				adminCustom(0);
 				break;
@@ -83,7 +85,7 @@ public class MenuAction extends AbstractAction {
 			case "生产计划与实际成本对照":
 				showWorkCostPanel();
 				break;
-			
+
 			case "修改密码":
 				changePasswd();
 				break;
@@ -135,9 +137,10 @@ public class MenuAction extends AbstractAction {
 			case "排产计划录入":
 				planProduct();
 				break;
-			case "生产工序录入":
+			case "生产数据录入":
 				workManager();
 				break;
+			
 			case "用户管理":
 				try {
 					manageUser();
@@ -154,7 +157,7 @@ public class MenuAction extends AbstractAction {
 
 	}
 
-	
+
 	private void showEquipmentUsing() {
 		String sql = "select NAME 设备编号,a.code 设备编号, endtime 计划完工时间 from "
 				+ "dbo.equipment a join operation b on a.operation=b.id left "
@@ -182,7 +185,7 @@ public class MenuAction extends AbstractAction {
 
 	}
 
-	
+
 	private void showBillTime() {
 
 	}
@@ -209,7 +212,7 @@ public class MenuAction extends AbstractAction {
 
 	}
 
-	
+
 
 	private void manageUser() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
 		BeansPanel<Userman> beansPanel=new BeansPanel<Userman>(BeanMao.getBeans(Userman.class),new UsermanPnl(new Userman()),Userman.class) {
@@ -228,10 +231,10 @@ public class MenuAction extends AbstractAction {
 			@Override
 			public boolean okButtonAction() {
 				// TODO 自动生成的方法存根
-				return false;
+				return true;
 			}
 		};
-		dialog.setSize(400, 500);
+		dialog.setSize(400, 600);
 		dialog.setLocationRelativeTo(null);
 		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 		dialog.setVisible(true);
@@ -256,7 +259,7 @@ public class MenuAction extends AbstractAction {
 		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 		dialog.setVisible(true);
 	}
-	
+
 
 	private void planProduct() {
 		JFrame dialog=new JFrame();
@@ -270,7 +273,7 @@ public class MenuAction extends AbstractAction {
 	private void workManager() {
 
 		JFrame dialog=new JFrame();
-		dialog.setTitle("生产工序录入");
+		dialog.setTitle("生产数据录入");
 		dialog.setContentPane(new WorkCreatePanel());
 		dialog.setExtendedState(Frame.MAXIMIZED_BOTH );
 		dialog.setLocationRelativeTo(null);
@@ -279,7 +282,7 @@ public class MenuAction extends AbstractAction {
 	}
 	private void showBillGroup() {
 
-//		table.setBeans((Collection<BillBean>) BillBean.loadByGrp(table.getSelectBean().getBillgroup()));
+		//		table.setBeans((Collection<BillBean>) BillBean.loadByGrp(table.getSelectBean().getBillgroup()));
 	}
 
 
@@ -372,7 +375,7 @@ public class MenuAction extends AbstractAction {
 		}
 
 	}
-	
+
 	public static void adminCustom(final int out) {
 		List<Custom> customs = BeanMao.getBeans(Custom.class, " a.out="+out);
 		if(customs==null)customs=new ArrayList<>();

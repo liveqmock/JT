@@ -75,7 +75,8 @@ public class EmployeePnl extends BeanPanel<Employee> {
 		add(label_2, "2, 8, right, default");
 		
 		 type = new JComboBox();
-		type.setModel(new DefaultComboBoxModel(new String[] {"\u64CD\u4F5C\u5458", "\u68C0\u9A8C\u5458"}));
+		type.setModel(new DefaultComboBoxModel(new String[] {"\u64CD\u4F5C\u5458", "\u68C0\u9A8C\u5458","Ö÷¹Ü"}));
+		
 		type.setSelectedIndex(0);
 		add(type, "4, 8, fill, default");
 		

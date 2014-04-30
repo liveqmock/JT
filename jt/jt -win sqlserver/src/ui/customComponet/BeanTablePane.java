@@ -25,6 +25,7 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -35,6 +36,8 @@ import javax.swing.RowFilter;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+
+import com.mao.jf.beans.BillBean;
 
 import ui.costPanes.DateCellRenderer;
 import ui.costPanes.NumberCellRenderer;
@@ -48,7 +51,7 @@ public class BeanTablePane<T> extends JPanel {
 	protected JXTable table;
 	private JPopupMenu popupMenu;
 	private String filterColoums[];
-
+	private JMenuItem exportItem;
 
 	public BeanTablePane(Collection<T> beans,Class<T> class1) {
 		this(beans,class1, null);
@@ -84,12 +87,14 @@ public class BeanTablePane<T> extends JPanel {
 				if (BeanTablePane.this.popupMenu == null)
 					return;
 				if (e.isPopupTrigger()) {
-//					int row = table.rowAtPoint(e.getPoint());
-//					if (row >= 0) {
-//						table.setRowSelectionInterval(row, row);
-						BeanTablePane.this.popupMenu.show(e.getComponent(),
-								e.getX(), e.getY());
-//					}
+					if(table.getSelectedRow()==-1){
+						int row = table.rowAtPoint(e.getPoint());
+						if (row >= 0) 
+							table.setRowSelectionInterval(row, row);
+
+					}
+					BeanTablePane.this.popupMenu.show(e.getComponent(),
+							e.getX(), e.getY());
 				}
 			}
 
@@ -128,9 +133,25 @@ public class BeanTablePane<T> extends JPanel {
 		JScrollPane jScrollPane = new JScrollPane(table);
 		add(jScrollPane, BorderLayout.CENTER);
 		setFilter();
-		
+		popupMenu=new JPopupMenu();
+		 exportItem= new JMenuItem(new AbstractAction("导出表格数据") {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					((BeanTableModel<BillBean>)table.getModel()).exportToExl("表格数据");
+				} catch (IOException e1) {
+					// TODO 自动生成的 catch 块
+					e1.printStackTrace();
+				}
+				
+				
+			}
+		});
+		popupMenu.add(exportItem);
 		table.packTable(10);
-		table.packAll();
+//		System.err.println("super init");
+//		table.packAll();
 	}
 
 	public void setFilter(String filterColoums[]) {
@@ -198,7 +219,7 @@ public class BeanTablePane<T> extends JPanel {
 						public void actionPerformed(ActionEvent e) {
 							try {
 								((BeanTableModel<T>) table.getModel())
-										.exportToExl(null);
+								.exportToExl(null);
 							} catch ( IllegalArgumentException
 									| IOException e1) {
 								// TODO Auto-generated catch block
@@ -271,7 +292,7 @@ public class BeanTablePane<T> extends JPanel {
 	public void removeSelectRow() {
 		((BeanTableModel<T>) getTable().getModel()).removeRow(getTable()
 				.convertRowIndexToModel(getTable().getSelectedRow()));
-		
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -287,8 +308,8 @@ public class BeanTablePane<T> extends JPanel {
 	public void setBeans(Collection<T> beans) {
 		this.beans = beans;
 		((BeanTableModel<T>) table.getModel()).setBeans(beans);
-		table.packTable(10);
-		
+//		table.packTable(10);
+
 	}
 	/**
 	 * @return the popupMenu
@@ -305,6 +326,8 @@ public class BeanTablePane<T> extends JPanel {
 	 */
 	public void setPopupMenu(JPopupMenu popupMenu) {
 		this.popupMenu = popupMenu;
+		popupMenu.addSeparator();
+		popupMenu.add(exportItem);
 	}
 	public T getBean(int row) {
 		return ((BeanTableModel<T>) getTable().getModel()).getSelectBean(getTable()

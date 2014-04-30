@@ -29,6 +29,7 @@ import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 
+import org.apache.commons.lang3.StringUtils;
 import org.icepdf.ri.common.MyAnnotationCallback;
 import org.icepdf.ri.common.SwingController;
 import org.icepdf.ri.common.SwingViewBuilder;
@@ -93,14 +94,14 @@ public class PicView extends JScrollPane {
 		if(pdfViewPanel==null)buildPdfViewer();			
 		URL url = new URL("http://192.168.1.103/pics/"
 				+ fileName);
-		controller.openDocument(url.openStream(),"图纸",null);
-		pdfViewPanel.setPreferredSize(new Dimension(getVisibleRect().width-50, getVisibleRect().height-50));
+		controller.openDocument(url);
 		setViewportView(pdfViewPanel);
 
 
 	}
 	public void showFile(String path) {
 		//		this.isSmbConnect=isSmbConnect;
+		if(StringUtils.isBlank(path))return;
 		type=1;
 		String a[] =path.split("\\\\");
 		fileName=a[a.length - 1];
@@ -153,7 +154,7 @@ public class PicView extends JScrollPane {
 		controller = new SwingController();
 		SwingViewBuilder factory = new SwingViewBuilder(controller);
 		controller.getDocumentViewController().setAnnotationCallback(
-				new org.icepdf.ri.common.MyAnnotationCallback(
+				new MyAnnotationCallback(
 						controller.getDocumentViewController()));
 		MyAnnotationCallback myAnnotationCallback = new MyAnnotationCallback(
 				controller.getDocumentViewController());
@@ -227,7 +228,10 @@ public class PicView extends JScrollPane {
 	}
 	public void printImage() {
 		try {
-			PrintPic.print(getIs(), getPiff());
+			if(piff.equals("pdf"))
+				controller.print(true);
+			else
+				PrintPic.print(getIs(), getPiff());
 		} catch (FileNotFoundException | PrintException e) {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();
@@ -241,14 +245,13 @@ public class PicView extends JScrollPane {
 		String sss[]=fileName.split("\\.");
 		String s=null;
 		if(sss.length>1) s=sss[sss.length-1];
-		setPiff(s);
-		final String ss=s;
+		piff=s.toLowerCase();
 		if(swingWorker!=null)swingWorker.cancel(true);
 		swingWorker=new SwingWorker<Void, Void>() {
 			@Override
 			public Void doInBackground() throws IOException {
 
-				if(ss!=null&&ss.equals("pdf")){
+				if(piff!=null&&piff.equals("pdf")){
 					if(pdfViewPanel==null)buildPdfViewer();
 					controller.openDocument(imgFile.getAbsolutePath());
 					pdfViewPanel.setPreferredSize(new Dimension(getVisibleRect().width-50, getVisibleRect().height-50));

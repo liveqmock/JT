@@ -24,6 +24,7 @@ import com.mao.jf.beans.annotation.Caption;
 @Entity
 public class PicPlan extends BeanMao {
 
+	@Caption("ϵͳID")
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
@@ -226,6 +227,7 @@ public class PicPlan extends BeanMao {
 		return planDate;
 	}
 	public void setPlanDate(Date planDate) {
+		planDate.setTime((planDate.getTime()/86400000)*86400000);
 		this.planDate = planDate;
 	}
 	@Override
@@ -242,7 +244,4 @@ public class PicPlan extends BeanMao {
 		return true;
 	}
 	
-	public void createPlanBillPdf() {
-		
-	}
 }

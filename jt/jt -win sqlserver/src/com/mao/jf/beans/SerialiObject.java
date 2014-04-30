@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
 public class SerialiObject { 
 	public static void save(Object object, File file) throws Exception {
 		if (file.createNewFile() || file.isFile()) {
@@ -29,8 +31,9 @@ public class SerialiObject {
 				in.close();
 				fs.close();
 			} catch (Exception|ExceptionInInitializerError e) {
+				e.printStackTrace();
 				file.delete();
-				System.exit(0);
+				return null;
 			}
 		return object;
 	}

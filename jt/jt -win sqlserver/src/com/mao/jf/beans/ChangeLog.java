@@ -9,12 +9,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 @Entity
 public class ChangeLog {
 	@Id
 	@GeneratedValue(strategy = AUTO)
 	private int id;
+	@OneToOne
+	@JoinColumn(name = "changeUser", referencedColumnName = "id")
 	private Userman changeUser;
 	private Date changeDate;
 	private String changeContent;

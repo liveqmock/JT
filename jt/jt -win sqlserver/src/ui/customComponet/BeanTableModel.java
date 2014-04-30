@@ -9,6 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -37,22 +38,23 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	private BeanTableModelHeader[] heads;
 	private ArrayList<T> beanArrays;
 	public BeanTableModel(Collection<T> beans,Class<T> class1) {
-		this(beans,class1,null);
+		this(beans,class1,(Collection<String>)null);
 
 	}
-	public BeanTableModel(Collection<T> beans,Class<T> class1, String [] header) {
-		super();
+	public BeanTableModel(Collection<T> beans,Class<T> class1, String[] showHeaders) {
+		this(beans,class1,showHeaders==null?null:Arrays.asList(showHeaders));
+	}
+	public BeanTableModel(Collection<T> beans,Class<T> class1, Collection<String> showHeaders) {
+			super();
 		TreeSet<BeanTableModelHeader> headers = new TreeSet<BeanTableModelHeader>();
 		for(Field fld:class1.getDeclaredFields()){
 			if(fld.getAnnotation(Hidden.class)==null){
 				Caption captionAn =fld.getAnnotation(Caption.class);
 				if(captionAn!=null){
-					if(header!=null){
-						for(String headerName:header){
-							if(headerName.equals(captionAn.value())){
+					if(showHeaders!=null){
+						if(showHeaders.contains(captionAn.value())){
 								headers.add(new BeanTableModelHeader(captionAn,fld.getName(),fld.getType()));
 								break;
-							}
 						}
 					}
 					else headers.add(new BeanTableModelHeader(captionAn,fld.getName(),fld.getType()));
@@ -68,13 +70,11 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 			String name=method.getName();
 			if(captionAn!=null&&name.startsWith("get")){
 				name=name.substring(3,4).toLowerCase()+name.substring(4,name.length());
-				if(header!=null){
-					for(String headerName:header){
-						if(headerName.equals(captionAn.value())){
+				if(showHeaders!=null){
+					if(showHeaders.contains(captionAn.value())){
 							headers.add(new BeanTableModelHeader(captionAn,name,method.getReturnType()));
 							break;
 						}
-					}
 				}
 				else headers.add(new BeanTableModelHeader(captionAn,name,method.getReturnType()));
 

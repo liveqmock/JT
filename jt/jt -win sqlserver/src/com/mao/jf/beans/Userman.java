@@ -4,12 +4,22 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.beans.Transient;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import com.mao.jf.beans.annotation.Caption;
+
+import javax.persistence.ElementCollection;
+
+import static javax.persistence.FetchType.EAGER;
+
+import javax.persistence.CollectionTable;
+import javax.persistence.JoinColumn;
+import javax.persistence.Column;
 
 @Entity
 public class Userman  implements Serializable{
@@ -20,6 +30,10 @@ public class Userman  implements Serializable{
 	private String name;
 	private String password;
 	private int level;
+	@ElementCollection(fetch = EAGER)
+	@CollectionTable(joinColumns = @JoinColumn(name = "Userman", referencedColumnName = "id"))
+	@Column(name = "menu")
+	private Collection<String> menus;
 	public static Userman loginUser;
 
 	public Userman() {
@@ -126,6 +140,15 @@ public class Userman  implements Serializable{
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public Collection<String> getMenus() {
+		if(menus==null)menus=new ArrayList<>();
+		return menus;
+	}
+
+	public void setMenus(Collection<String> menus) {
+		this.menus = menus;
 	}
 
 	@Override

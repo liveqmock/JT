@@ -108,20 +108,18 @@ public  class Custom extends BeanMao {
 		this.out = out;
 	}
 
-	public static Vector<String> getStrings(String name, int out) {
+	public static String[] getStrings(String name, int out) {
 		
 		List<String> namelist = (List<String>) BeanMao.beanManager.queryList("select distinct contact from Custom where out=?1 and name=?2", String.class,out,name );
-		Vector<String>names=new Vector<>();
-		names.add("");
-		names.addAll(namelist);
+		String names[]=new String[namelist.size()];
+		namelist.toArray(names);
 		return names;
 	}
 
-	public static Vector<String> getCustomerNames(int out) {
+	public static String[] getCustomerNames(int out) {
 		List<String> namelist = (List<String>) BeanMao.beanManager.queryList("select distinct name from Custom where out=?1", String.class,out );
-		Vector<String>names=new Vector<>();
-		names.add("");
-		names.addAll(namelist);
+		String names[]=new String[namelist.size()];
+		namelist.toArray(names);
 		return names;
 	}
 }

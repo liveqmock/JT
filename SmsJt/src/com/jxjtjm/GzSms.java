@@ -20,8 +20,9 @@ import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.StartedListener;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
+import com.vaadin.ui.VerticalLayout;
 
-public class GzSms extends FormLayout {
+public class GzSms extends VerticalLayout {
 	private GzReader	gzReader=new GzReader();
 	private Table table;
 	public GzSms() {
@@ -31,17 +32,18 @@ public class GzSms extends FormLayout {
 		FileReciver fileReciver=new FileReciver(os);
 		Upload upload=new Upload("工资文件",fileReciver);
 		upload.setButtonCaption("上传工资文件");
-		addComponent(upload);
 		table=new Table("工资短信内容");
 		table.setSizeFull();
 		table.setColumnHeader("content", "短信内容");
 		table.setColumnHeader("receiveName", "授收人");
 		table.setColumnHeader("telNo", "手机号");
 		table.setSelectable(true);
-		addComponent(table);
 
 		final Button button=new Button("确定发送");
+		addComponent(upload);
+		addComponent(table);
 		addComponent(button);
+		setExpandRatio(table, 1.0f);
 		button.addClickListener(new ClickListener() {
 
 			@Override

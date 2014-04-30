@@ -76,7 +76,7 @@ public class PlanPdf {
 		paragraph.setAlignment(Paragraph.ALIGN_CENTER);
 		paragraph.setFont(fontChinese);
 		Phrase phrase=new Phrase("产品工艺及生产进度跟踪卡");
-		Image img = Image.getInstance(PlanPdf.class.getResource("../../../../ui/logo.PNG"));
+		Image img = Image.getInstance(PlanPdf.class.getResource("logo.PNG"));
 		img.scalePercent(30f);
 		paragraph.add(new Chunk(img,-10,0,true));
 		phrase.setFont(fontChinese);
@@ -112,32 +112,42 @@ public class PlanPdf {
 		PdfPCell cell= new PdfPCell(new Phrase("图 号",normal));
 		cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
 		cell.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);    
-
 		cell.setMinimumHeight(25);
 		table.addCell(cell);
-		table.addCell(new Phrase(plan.getPic().getPicid(),normal));
+
+		cell= new PdfPCell(new Phrase(plan.getPic().getPicid(),normal));
+		table.addCell(cell);
+		
 		cell= new PdfPCell(new Phrase("材 质",normal));
 		cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
 		cell.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);    
 		table.addCell(cell);
-		table.addCell(new Phrase(plan.getPic().getMeterialz(),normal));
+		cell= new PdfPCell(new Phrase(plan.getPic().getMeterialz(),normal));
+		table.addCell(cell);
+		
 		cell= new PdfPCell(new Phrase("牌 号",normal));
 		cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
 		cell.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);    
 		table.addCell(cell);
-		table.addCell(new Phrase(plan.getPic().getMeterialCode(),normal));
+		cell= new PdfPCell(new Phrase(plan.getPic().getMeterialCode(),normal));
+		table.addCell(cell);
+
 		cell= new PdfPCell(new Phrase("规 格",normal));
 		cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
-		cell.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);    
-
+		cell.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);  
 		cell.setMinimumHeight(25);
 		table.addCell(cell);
-		table.addCell(new Phrase(plan.getPic().getMeterialType(),normal));
+		cell= new PdfPCell(new Phrase(plan.getPic().getMeterialType(),normal));
+		table.addCell(cell);
+
 		cell= new PdfPCell(new Phrase("数 量",normal));
 		cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
 		cell.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);   
 		table.addCell(cell);
-		table.addCell(new Phrase(String.valueOf( plan.getNum()),normal));
+		cell= new PdfPCell(new Phrase(String.valueOf( plan.getNum()),normal));
+		table.addCell(cell);
+
+
 		cell= new PdfPCell(new Phrase("更改材料牌号",normal));
 		cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
 		cell.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);    

@@ -34,6 +34,12 @@ public class OperationWork extends BeanMao {
 	private float workTime;
 	private float workCost;	
 	@OneToOne
+	@JoinColumn(name = "superintendent", referencedColumnName = "id")
+	private Employee superintendent;
+	@OneToOne
+	@JoinColumn(name = "firstChecker", referencedColumnName = "id")
+	private Employee firstChecker;
+	@OneToOne
 	@JoinColumn(name = "checker", referencedColumnName = "id")
 	private Employee checker;
 	@OneToOne
@@ -45,6 +51,7 @@ public class OperationWork extends BeanMao {
 	@ManyToOne
 	@JoinColumn(name = "billplan", referencedColumnName = "id")
 	private PicPlan plan;
+	private String	checkData;
 	private String note;
 	public OperationWork() {
 		super();
@@ -147,6 +154,22 @@ public class OperationWork extends BeanMao {
 		return scrapReason;
 	}
 	
+	public Employee getSuperintendent() {
+		return superintendent;
+	}
+
+	public void setSuperintendent(Employee superintendent) {
+		this.superintendent = superintendent;
+	}
+
+	public Employee getFirstChecker() {
+		return firstChecker;
+	}
+
+	public void setFirstChecker(Employee firstChecker) {
+		this.firstChecker = firstChecker;
+	}
+
 	@Transient
 	@Caption(value="未完工数量",order=9)
 	public int getUncompletedNum() {
@@ -224,6 +247,14 @@ public class OperationWork extends BeanMao {
 
 	public void setPlan(PicPlan plan) {
 		this.plan = plan;
+	}
+
+	public String getCheckData() {
+		return checkData;
+	}
+
+	public void setCheckData(String checkData) {
+		this.checkData = checkData;
 	}
 	
 

@@ -40,6 +40,7 @@ import ui.frames.BillFrame;
 import ui.panels.ChangePasswdPanel;
 import ui.panels.CustomPanel;
 import ui.panels.FpPanel;
+import ui.panels.PicPanel;
 import ui.panels.UsermanPnl;
 
 import com.mao.jf.beans.BeanMao;
@@ -48,6 +49,7 @@ import com.mao.jf.beans.Custom;
 import com.mao.jf.beans.Employee;
 import com.mao.jf.beans.FpBean;
 import com.mao.jf.beans.Operation;
+import com.mao.jf.beans.PicBean;
 import com.mao.jf.beans.SessionData;
 import com.mao.jf.beans.Userman;
 
@@ -82,10 +84,34 @@ public class BillAction extends AbstractAction {
 			case "添加发票信息":
 				editFp();
 				break;
+			case "删除订单":
+				if (table.getSelectBean() == null) {
+					JOptionPane.showMessageDialog(table, "未选择要修改的订单条目!");
+					break;
+				}
+				table.removeSelectRow();
+				break;
 			case "查看设备使用情况":
 				showEquipmentUsing();
 				break;
+			case "添加图纸":
+				if (table.getSelectBean() == null) {
+					JOptionPane.showMessageDialog(table, "未选择要修改的订单条目!");
+					break;
+				}
+				PicBean pic=new PicBean();
+				pic.setBill(table.getSelectBean());
+				final PicPanel panel = new PicPanel(pic);
+				new BeanDialog<PicBean>(panel,"") {
 
+					@Override
+					public boolean okButtonAction() {
+						// TODO 自动生成的方法存根
+						panel.saveBill();
+						return true;
+					}
+				}.setVisible(true);;
+				break;
 			case "修改订单":
 				if (table.getSelectBean() == null) {
 					JOptionPane.showMessageDialog(table, "未选择要修改的订单条目!");
@@ -98,7 +124,7 @@ public class BillAction extends AbstractAction {
 				}
 				new BillFrame(table.getSelectBean());
 				break;
-		
+
 			case "订单客户管理":
 				adminCustom(0);
 				break;
@@ -108,14 +134,7 @@ public class BillAction extends AbstractAction {
 			case "生产计划与实际成本对照":
 				showWorkCostPanel();
 				break;
-			case "导出订单":
-				try {
-					((BeanTableModel<BillBean>)table.getTable().getModel()).exportToExl("订单信息");
-				} catch (IOException e1) {
-					// TODO 自动生产的 catch 块
-					e1.printStackTrace();
-				}
-				break;
+			
 			case "修改密码":
 				changePasswd();
 				break;
@@ -212,11 +231,11 @@ public class BillAction extends AbstractAction {
 				fpBean.setBill(bean);
 				return fpBean;
 			}
-			
+
 		};
-		
+
 		BeanDialog<FpBean> dialog =new BeanDialog<FpBean>(panel,"发票管理") {
-			
+
 			@Override
 			public boolean okButtonAction() {
 				// TODO 自动生成的方法存根
@@ -226,11 +245,11 @@ public class BillAction extends AbstractAction {
 		dialog.setBounds(100, 100, 500,500);
 		dialog.setLocationRelativeTo(null);
 		dialog.setVisible(true);
-		
-		
-		
+
+
+
 	}
-	
+
 	private void cancelBill() {
 		if (table.getSelectBean() == null) {
 			JOptionPane.showMessageDialog(table, "未选择要修改的订单条目!");
@@ -314,7 +333,7 @@ public class BillAction extends AbstractAction {
 
 	}
 
-	
+
 
 	private void manageUser() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
 		BeansPanel<Userman> beansPanel=new BeansPanel<Userman>(BeanMao.getBeans(Userman.class),new UsermanPnl(new Userman()),Userman.class) {
@@ -361,7 +380,7 @@ public class BillAction extends AbstractAction {
 		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 		dialog.setVisible(true);
 	}
-	
+
 
 	private void planProduct() {
 		JFrame dialog=new JFrame();
@@ -384,7 +403,7 @@ public class BillAction extends AbstractAction {
 	}
 	private void showBillGroup() {
 
-//		table.setBeans((Collection<BillBean>) BillBean.loadByGrp(table.getSelectBean().getBillgroup()));
+		//		table.setBeans((Collection<BillBean>) BillBean.loadByGrp(table.getSelectBean().getBillgroup()));
 	}
 
 

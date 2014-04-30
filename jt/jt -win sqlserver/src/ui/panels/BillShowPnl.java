@@ -24,8 +24,12 @@ import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import org.jdesktop.swingx.HorizontalLayout;
 import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.VerticalLayout;
+
+import sun.net.www.content.image.jpeg;
 
 import com.mao.jf.beans.Custom;
 
@@ -55,9 +59,8 @@ public abstract class BillShowPnl extends JPanel{
 
 		
 
-		JPanel panel = new JPanel();
+		JPanel panel = new JPanel(new HorizontalLayout(1));
 
-		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
 		JLabel label = new JLabel(
 				"<html><B><font color=red>快捷搜索:</font></B></html>");
@@ -71,10 +74,9 @@ public abstract class BillShowPnl extends JPanel{
 		panel.add(txtBox);
 		panel.add(new JLabel(":"));
 
-		textField = new JTextField();
+		textField = new JTextField(20);
 		textField.setToolTipText("输入查询的内容");
 		panel.add(textField);
-		textField.setColumns(10);
 		dateBox = new JComboBox<String>();
 		dateBox.setModel(new DefaultComboBoxModel<String>(new String[] { "",
 				"订单日期",
@@ -111,27 +113,25 @@ public abstract class BillShowPnl extends JPanel{
 
 			
 		});
+
+		horizontalStrut = Box.createHorizontalStrut(50);
+		horizontalStrut.setPreferredSize(new Dimension(100, 0));
+		panel.add(horizontalStrut);
+		panel.add(searchAdButton);
 		
-		JPanel panel2= new JPanel() ;
-		panel2.setLayout(new BoxLayout(panel2, BoxLayout.X_AXIS));
+		JPanel panel2 = new JPanel(new HorizontalLayout());
 		panel2.add(new JLabel("按客户查找:"));
 		panel2.add(cstlist);
-		horizontalStrut = Box.createHorizontalStrut(50);
-		horizontalStrut.setPreferredSize(new Dimension(50, 0));
-		panel2.add(horizontalStrut);
-		panel2.add(searchAdButton);
 
-		JPanel panel3= new JPanel() ;
-		panel3.setLayout(new BoxLayout(panel3, BoxLayout.Y_AXIS));
+		JPanel panel3= new JPanel(new VerticalLayout()) ;
 		panel3.add(panel);
 		panel3.add(panel2);
 		add(panel3, BorderLayout.NORTH);
 		actions();
-		setVisible(true);
-		requestFocus();
 
 
 	}
+	
 	private void actions() {
 		searchButton.addActionListener(new ActionListener() {
 

@@ -3,6 +3,7 @@ package com.mao.jf.beans;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.beans.Transient;
+import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.mao.jf.beans.annotation.Caption;
 
 @Entity
@@ -87,11 +89,23 @@ public class Employee extends BeanMao {
 		
 	}
 	
-	public static Vector<String> getNames() {
-		List<String> nameList = (List<String>) BeanMao.beanManager.queryList("select name from Employee", String.class);
-		Vector<String> names=new Vector<>();
-		names.add("");
-		names.addAll(nameList);
-		return names;
+	public static String[] getNames() {
+		List<String> list = BeanMao.beanManager.queryList("select name from Employee", String.class);
+		String[] names=null;
+		if(list!=null){
+			list.add(0, "");
+			names=new String[list.size()];
+			list.toArray(names);
+		}
+			return names;
+		
+	}
+	public static Collection<? extends Employee> loadSuperintendents() {
+
+		return getBeans(Employee.class, "a.employeeType='Ö÷¹Ü'");
+	}
+	public static Collection<? extends Employee> loadAll() {
+
+		return getBeans(Employee.class);
 	}
 }

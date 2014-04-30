@@ -52,8 +52,22 @@ public class BeanManager {
 	public List<?> queryNativeList(String queryString,Object... objects ) {
 		return queryNativeList(queryString,null,objects);
 	}
-	public Object querySingle(String queryString,Class<?> class1,Object... objects ) {
-		Query query = em.createQuery( queryString ,class1);
+	public Object querySingle(String queryString,Object... objects ) {
+		Query query = em.createQuery( queryString );
+		if(objects!=null){
+			for(int i=0;i<objects.length;i++)
+				query.setParameter(i+1, objects[i]);
+		}
+		try{
+			return query.getSingleResult();
+		}catch(NoResultException e){
+			return null;
+		}catch (NonUniqueResultException e) {
+			return query.getResultList().get(0);
+		}
+	}
+	public <T> T querySingle(String queryString,Class<T> class1,Object... objects ) {
+		TypedQuery<T> query = em.createQuery( queryString ,class1);
 		if(objects!=null){
 			for(int i=0;i<objects.length;i++)
 				query.setParameter(i+1, objects[i]);
@@ -209,6 +223,9 @@ public class BeanManager {
 		em.refresh(entity);
 		
 	}
+
+
+
 
 
 	

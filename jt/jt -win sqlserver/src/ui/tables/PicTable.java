@@ -14,16 +14,19 @@ import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.jdesktop.swingx.table.TableColumnModelExt;
 
+import ui.customComponet.BeanTableModel;
 import ui.customComponet.BeanTablePane;
+import ui.menu.PicPopmenu;
 
 import com.mao.jf.beans.PicBean;
 import com.mao.jf.beans.SerialiObject;
 
 public class PicTable extends BeanTablePane<PicBean> {
 	boolean columnInit=false;
-	public PicTable(Vector<PicBean> beans) {
+	public PicTable(Collection<PicBean> beans) {
 		super(beans,PicBean.class);
-		
+
+		setPopupMenu(new PicPopmenu(this));
 		getTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		ColorHighlighter highlighter= new ColorHighlighter( new HighlightPredicate() {
@@ -50,49 +53,55 @@ public class PicTable extends BeanTablePane<PicBean> {
 			
 		};
 		getTable().addHighlighter(highlighter);
+		
+		initTable();
+		
+	}
+	private void initTable(){
+		Object object=SerialiObject.loadFile(new File(
+				"PictableColumn.dat"));
+		if(object!=null){
+			HashMap<String, Object> tableStatus=(HashMap<String, Object>)object;
+			for(int i=0;i<getTable().getModel().getColumnCount();i++){
+				Object identifier = getTable().getModel().getColumnName(i);
+				TableColumnExt columnExt = ((TableColumnModelExt)getTable().getColumnModel()).getColumnExt(identifier);
+				 Object iSvisible = tableStatus.get(identifier);
+				if (columnExt != null && iSvisible!=null) {
+					columnExt.setVisible((boolean) iSvisible);
+				}
+				Object width= tableStatus.get(identifier+"_width");
+				if (width != null ) {
+					columnExt.setPreferredWidth((int) width);
+				}
 
+			}
+		}
 	}
 	@Override
 	public void setBeans(Collection<PicBean> beans) {
-		// TODO 自动生成的方法存根
-		super.setBeans(beans);
-		if(!columnInit){
-			columnInit=true;
-			Object object=SerialiObject.loadFile(new File(
-					"PictableColumn.dat"));
-			if(object!=null){
-				HashMap<Object, Boolean> tableStatus=(HashMap<Object, Boolean>)object;
-				for(int i=0;i<getTable().getModel().getColumnCount();i++){
-					Object identifier = getTable().getModel().getColumnName(i);
-					TableColumnExt columnExt = ((TableColumnModelExt)getTable().getColumnModel()).getColumnExt(identifier);
-					Boolean iSvisible=tableStatus.get(identifier);
-					if (columnExt != null && iSvisible!=null) {
-						columnExt.setVisible(iSvisible);
-					}
-
-				}
-			}
-		}
+//		this.beans = beans;
+		((BeanTableModel<PicBean>) table.getModel()).setBeans(beans);
+		
 
 
 	}
 	public void saveStatus() {
-
-		HashMap<Object, Boolean> tableStatus=new HashMap<>();
+		HashMap<Object, Object> tableStatus=new HashMap<>();
 
 
 
 		for(int i=0;i<getTable().getModel().getColumnCount();i++){
-			Object identifier = getTable().getModel().getColumnName(i);
+			String identifier = getTable().getModel().getColumnName(i);
 			TableColumnExt columnExt = ((TableColumnModelExt)getTable().getColumnModel()).getColumnExt(identifier);
 			if (columnExt != null) {
 				tableStatus.put(identifier,columnExt.isVisible());
-
+				tableStatus.put(identifier+"_width",columnExt.getWidth());
 			}
 
 		}
 		try {
 			SerialiObject.save(tableStatus,new File("PictableColumn.dat"));
+//			System.err.println("pictable saved");
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();

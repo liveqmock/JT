@@ -35,12 +35,7 @@ import com.mao.jf.beans.Employee;
 import com.mao.jf.beans.SessionData;
 
 public class EmployeeCostPnl extends JPanel {
-	private static String sql="select a.name 姓名,操作时间,preparetime 调机时间 ,cast(wage as decimal(18,2)) \"工资/分\",cast(isnull(wages,0)+isnull(工资,0) as decimal(18,2)) 工资,cast(产值 as decimal(18,2)) 产值,报废数量, 报废成本 from "+
-								"(select b.wage,b.name,a.employee,sum(a.worktime) 操作时间,sum(a.worktime)*wage 工资,sum(a.worktime*c.cost) 产值,sum(a.scrapnum) 报废数量,SUM(e.reportprice*a.scrapnum) 报废成本 "+
-										"from employee b left join operationwork  a on a.employee=b.id  join operationplan c on a.operationplan = c.id "+
-								"join \"billplan\" d on c.\"billplan\"=d.id join bill e on d.bill =e.id  where b.name like ? and finishdate between ? and ? group by a.employee,wage,b.name "+
-								") a  full  join (select a.id employee, sum(preparetime) preparetime,sum(preparetime)*wage wages from employee a  left join operationwork b on b.prepareemployee =a.id  where a.name like ? and finishdate between ? and ?  group by a.id,wage"
-								+") as b on b.employee=a.employee  ";
+	private static String sql="select * from 员工日统计 where 操作员 like ? and 生产时间 between ? and ? order by 操作员,生产时间";
 	private JXDatePicker sDate;
 	private RsTablePane tablePane;
 	private JComboBox<String> name;
@@ -94,9 +89,7 @@ public class EmployeeCostPnl extends JPanel {
 					pst.setString(1, "%"+name.getSelectedItem()+"%");
 					pst.setDate(2, new java.sql.Date(sDate.getDate().getTime()));
 					pst.setDate(3, new java.sql.Date(eDate.getDate().getTime()));
-					pst.setString(4, "%"+name.getSelectedItem()+"%");
-					pst.setDate(5, new java.sql.Date(sDate.getDate().getTime()));
-					pst.setDate(6, new java.sql.Date(eDate.getDate().getTime()));
+					System.err.println(sql);
 					RowSetFactory rowSetFactory = RowSetProvider.newFactory();
 					CachedRowSet crs = rowSetFactory.createCachedRowSet();
 					crs.populate(pst.executeQuery());

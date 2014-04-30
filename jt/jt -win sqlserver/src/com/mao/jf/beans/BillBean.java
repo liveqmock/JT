@@ -17,6 +17,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
 import com.mao.jf.beans.annotation.Caption;
+import static javax.persistence.CascadeType.ALL;
 @Entity
 public class BillBean extends BeanMao {	
 	@Id
@@ -42,24 +43,25 @@ public class BillBean extends BeanMao {
 	@Caption("要求交货时间")
 	private Date requestDate;	
 	@Column(name = "billDate")
-	@Caption("建单日期")
-	private Date createDate;//billDate	
+	@Caption("订单日期")
+	private Date billDate;//billDate	
+	@Caption("是否完结")
 	private boolean complete;
 	private boolean cancel;
 	
 	
 
-	@OneToMany(mappedBy = "bill")
+	@OneToMany(mappedBy = "bill", cascade = ALL)
 	private Collection<PicBean> picBeans;
-	@OneToMany(mappedBy = "bill")
+	@OneToMany(mappedBy = "bill", cascade = ALL)
 	@OrderBy("changeDate")
 	private Collection<ChangeLog> changeLogs;
 	
-	@OneToMany(mappedBy = "bill")
+	@OneToMany(mappedBy = "bill", cascade = ALL)
 	@OrderBy("createDate")
 	private Collection<FpBean> fpBeans;
 
-	@OneToMany(mappedBy = "bill")
+	@OneToMany(mappedBy = "bill", cascade = ALL)
 	@OrderBy("createDate")
 	private Collection<FpBean> outFpBeans;
 
@@ -107,10 +109,10 @@ public class BillBean extends BeanMao {
 
 		List<PicBean> picBeans=null;
 		if(Userman.loginUser.isManager()|| isShowCompelete){
-			searchString=(searchString==null?"":searchString+" ")+" order by  itemCompleteDate ,bill.requestDate";
+			searchString=(searchString==null?"":searchString+" and ")+" (cancel=false and bill.cancel=false) order by  itemCompleteDate ,bill.requestDate";
 
 		}else{
-			searchString=(searchString==null?"":searchString+" and ")+"  itemCompleteDate is null  order by  itemCompleteDate ,bill.requestDate";
+			searchString=(searchString==null?"":searchString+" and ")+"  itemCompleteDate is null and (cancel=false and bill.cancel=false) order by  itemCompleteDate ,bill.requestDate";
 
 		}
 		picBeans=getBeans(PicBean.class,searchString);
@@ -124,10 +126,10 @@ public class BillBean extends BeanMao {
 	public static List<BillBean> SearchBeans(String searchString,boolean isShowCompelete) {
 		List<BillBean> billBeans=null;
 		if(Userman.loginUser.isManager()|| isShowCompelete){
-			searchString=(searchString==null?"":searchString+" ")+" order by  createDate ,requestDate";
+			searchString=(searchString==null?"":searchString+" and ")+" cancel=false order by  billDate ,requestDate";
 
 		}else{
-			searchString=(searchString==null?"":searchString+" and ")+"  billGetDate is null  order by  createDate ,requestDate";
+			searchString=(searchString==null?"":searchString+" and ")+"  billGetDate is null and cancel=false order by  billDate ,requestDate";
 
 		}
 		billBeans=getBeans(BillBean.class,searchString);
@@ -191,6 +193,12 @@ public class BillBean extends BeanMao {
 	public void setRequestDate(Date requestDate) {
 		this.requestDate = requestDate;
 	}
+	public Date getBillDate() {
+		return billDate;
+	}
+	public void setBillDate(Date billDate) {
+		this.billDate = billDate;
+	}
 	public boolean isComplete() {
 		return complete;
 	}
@@ -202,12 +210,6 @@ public class BillBean extends BeanMao {
 	}
 	public void setCancel(boolean cancel) {
 		this.cancel = cancel;
-	}
-	public Date getCreateDate() {
-		return createDate;
-	}
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
 	}
 	
 	public String getNote() {

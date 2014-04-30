@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
 
 import javax.swing.Box;
@@ -24,6 +25,7 @@ import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import org.jdesktop.swingx.HorizontalLayout;
 import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXDatePicker;
 
@@ -55,9 +57,7 @@ public abstract class PicShowPnl extends JPanel{
 
 		
 
-		JPanel panel = new JPanel();
-
-		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		JPanel panel = new JPanel(new HorizontalLayout(1));
 
 		JLabel label = new JLabel(
 				"<html><B><font color=red>快捷搜索:</font></B></html>");
@@ -72,10 +72,9 @@ public abstract class PicShowPnl extends JPanel{
 		panel.add(txtBox);
 		panel.add(new JLabel(":"));
 
-		textField = new JTextField();
+		textField = new JTextField(20);
 		textField.setToolTipText("输入查询的内容");
 		panel.add(textField);
-		textField.setColumns(10);
 		dateBox = new JComboBox<String>();
 		dateBox.setModel(new DefaultComboBoxModel<String>(new String[] { "",
 				"订单日期",
@@ -96,8 +95,15 @@ public abstract class PicShowPnl extends JPanel{
 		horizontalStrut.setPreferredSize(new Dimension(10, 0));
 		panel.add(horizontalStrut);
 		searchButton = new JButton("搜索");
+
 		panel.add(searchButton);
+		
 		JButton searchAdButton = new JButton("高级搜索");
+
+		horizontalStrut = Box.createHorizontalStrut(50);
+		horizontalStrut.setPreferredSize(new Dimension(50, 0));
+		panel.add(horizontalStrut);
+		panel.add(searchAdButton);
 		searchAdButton.addActionListener(new ActionListener() {
 
 
@@ -111,15 +117,10 @@ public abstract class PicShowPnl extends JPanel{
 
 			
 		});
-		
-		JPanel panel2= new JPanel() ;
-		panel2.setLayout(new BoxLayout(panel2, BoxLayout.X_AXIS));
+
+		JPanel panel2 = new JPanel(new HorizontalLayout(1));
 		panel2.add(new JLabel("按客户查找:"));
 		panel2.add(cstlist);
-		horizontalStrut = Box.createHorizontalStrut(50);
-		horizontalStrut.setPreferredSize(new Dimension(50, 0));
-		panel2.add(horizontalStrut);
-		panel2.add(searchAdButton);
 
 		JPanel panel3= new JPanel() ;
 		panel3.setLayout(new BoxLayout(panel3, BoxLayout.Y_AXIS));
@@ -127,9 +128,7 @@ public abstract class PicShowPnl extends JPanel{
 		panel3.add(panel2);
 		add(panel3, BorderLayout.NORTH);
 		actions();
-		setVisible(true);
 		requestFocus();
-
 
 	}
 	private void actions() {

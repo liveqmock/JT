@@ -15,6 +15,7 @@ import org.jdesktop.swingx.table.TableColumnExt;
 import org.jdesktop.swingx.table.TableColumnModelExt;
 
 import ui.customComponet.BeanTablePane;
+import ui.menu.BillPopMenu;
 
 import com.mao.jf.beans.BillBean;
 import com.mao.jf.beans.SerialiObject;
@@ -23,7 +24,7 @@ public class BillTable extends BeanTablePane<BillBean> {
 	boolean columnInit=false;
 	public BillTable(Vector<BillBean> beans) {
 		super(beans,BillBean.class);
-		
+		setPopupMenu(new BillPopMenu(this));
 		getTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		ColorHighlighter highlighter= new ColorHighlighter( new HighlightPredicate() {
@@ -67,9 +68,13 @@ public class BillTable extends BeanTablePane<BillBean> {
 				for(int i=0;i<getTable().getModel().getColumnCount();i++){
 					Object identifier = getTable().getModel().getColumnName(i);
 					TableColumnExt columnExt = ((TableColumnModelExt)getTable().getColumnModel()).getColumnExt(identifier);
-					Boolean iSvisible=tableStatus.get(identifier);
+					 Object iSvisible = tableStatus.get(identifier);
 					if (columnExt != null && iSvisible!=null) {
-						columnExt.setVisible(iSvisible);
+						columnExt.setVisible((boolean) iSvisible);
+					}
+					Object width= tableStatus.get(identifier+"_width");
+					if (width != null ) {
+						columnExt.setPreferredWidth((int) width);
 					}
 
 				}

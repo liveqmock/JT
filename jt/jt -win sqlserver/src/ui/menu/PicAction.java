@@ -22,6 +22,8 @@ import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import org.apache.commons.lang3.StringUtils;
+
 import ui.costPanes.EmployeeCostPnl;
 import ui.costPanes.EmployeePnl;
 import ui.costPanes.OperationPnl;
@@ -42,6 +44,8 @@ import ui.panels.ChangePasswdPanel;
 import ui.panels.CustomPanel;
 import ui.panels.FpPanel;
 import ui.panels.MaterialsPanel;
+import ui.panels.PicPanel;
+import ui.panels.PicView;
 import ui.panels.ShipingPanel;
 import ui.panels.UsermanPnl;
 
@@ -85,7 +89,7 @@ public class PicAction extends AbstractAction {
 			case "新建订单":
 				new BillFrame(new BillBean());
 				break;
-			case "订单返修":
+			case "返修":
 				editBackRepair();
 				break;
 			case "添加发票信息":
@@ -96,6 +100,10 @@ public class PicAction extends AbstractAction {
 				break;
 			case "查看设备使用情况":
 				showEquipmentUsing();
+				break;
+
+			case "查看图纸":
+				showPic();
 				break;
 
 			case "修改订单":
@@ -110,6 +118,32 @@ public class PicAction extends AbstractAction {
 				}
 				new BillFrame(table.getSelectBean().getBill());
 				break;
+
+			case "修改图纸":
+				if (table.getSelectBean() == null) {
+					JOptionPane.showMessageDialog(table, "未选择要修改的订单条目!");
+					break;
+				}
+				if (table.getSelectBean().isComplete()
+						&& Userman.loginUser.getLevel() > 0) {
+					JOptionPane.showMessageDialog(table, "该订单已经完成，不能再修改!");
+					break;
+				}
+				final PicPanel picPanel=new PicPanel(table.getSelectBean());
+				BeanDialog<PicBean> dialog=new BeanDialog<PicBean>(picPanel,"修改图纸") {
+
+					@Override
+					public boolean okButtonAction() {
+						picPanel.saveBill();
+						return true;
+					}
+				};
+				dialog.setLocationRelativeTo(null);
+				dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
+
+				dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+				dialog.setVisible(true);
+				break;
 			case "删除图纸":
 				if (table.getSelectBean() == null) {
 					JOptionPane.showMessageDialog(table, "未选择要删除的订单条目!");
@@ -119,7 +153,7 @@ public class PicAction extends AbstractAction {
 						+ table.getSelectBean().getPicid() + "】吗？", "删除确认",
 						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 					table.removeSelectRow();
-
+					
 				break;
 
 			case "订单客户管理":
@@ -213,6 +247,33 @@ public class PicAction extends AbstractAction {
 				break;
 			}
 
+	}
+
+	private void showPic() {
+		
+		PicBean pic=table.getSelectBean();
+		if (pic == null) {
+			JOptionPane.showMessageDialog(table, "未选择要修改的订单条目!");
+			return;
+		}
+		if(StringUtils.isNoneBlank(pic.getImageUrl())){
+			
+			JDialog dialog=new JDialog();
+			PicView imageView=new PicView();
+			try{
+				imageView.showFile(pic.getImageUrl());
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			dialog.setContentPane(imageView);
+			dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
+			
+			dialog.setLocationRelativeTo(null);
+			dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+			dialog.setVisible(true);
+			
+		}
+		
 	}
 
 	private void editFp() {

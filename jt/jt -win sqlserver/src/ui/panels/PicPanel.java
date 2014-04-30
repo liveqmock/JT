@@ -65,12 +65,13 @@ public class PicPanel extends BeanPanel<PicBean> {
 	
 	private JTextField noteFld;
 	private JTextField itemNoFld;
-	private JTextField priceFld;
+	private JTextField reportPriceFld;
+	private JTextField reportTaxPriceFld;
 	private JTextField outPriceFld;
 	private JTextField outNumFld;
 	private JTextField picNoFld;
 	private JTextField numFld;
-	private JComboBox<Object> outCustomCombox;
+	private JComboBox<String> outCustomCombox;
 	private JXDatePicker outgetDate;
 	private JCheckBox warehousCheckBox;
 	private JTextField cost;
@@ -88,7 +89,6 @@ public class PicPanel extends BeanPanel<PicBean> {
 	private ValidationPanel vPanel;
 	private JFileChooser fileChooser;
 	private File imgFile;
-	private JCheckBox taxCheck;
 	private JButton addOutCustomBt;
 	
 	public PicPanel(PicBean bean) {
@@ -161,7 +161,7 @@ public class PicPanel extends BeanPanel<PicBean> {
 		JLabel label_3 = new JLabel("\u5916\u534F\u5BA2\u6237\uFF1A");
 		panel_3.setLayout(new BoxLayout(panel_3, BoxLayout.X_AXIS));
 		//
-		outCustomCombox = new JComboBox<>(Custom.getCustomerNames(1).toArray());
+		outCustomCombox = new JComboBox<String>(Custom.getCustomerNames(1));
 		panel_3.add(outCustomCombox);
 
 		addOutCustomBt = new JButton("\u65B0\u589E\u5BA2\u6237");
@@ -192,7 +192,6 @@ public class PicPanel extends BeanPanel<PicBean> {
 		outgetDate = new JXDatePicker();
 		outgetDate.setFormats(new String[] { "yyyy-MM-dd" });
 
-		JLabel label_11 = new JLabel("\u5907\u6CE8\uFF1A");
 
 		JPanel panel_2 = new JPanel();
 		splitPane.setRightComponent(panel_2);
@@ -262,24 +261,14 @@ public class PicPanel extends BeanPanel<PicBean> {
 		JLabel lblNewLabel_3 = new JLabel("\u8BA2\u5355\u4EF7\u683C\uFF1A");
 		panel.add(lblNewLabel_3, "2, 4, right, default");
 
-		priceFld = new JTextField();
-		priceFld.setColumns(10);
-		panel.add(priceFld, "4, 4, fill, default");
-		taxCheck=new JCheckBox("\u542B\u7A0E\u6298\u7B97");
-		taxCheck.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent event) {
-				if(taxCheck.isSelected())
-					priceFld.setText(String.valueOf(Math.round(Float.valueOf(priceFld.getText())/0.0117f)/100.0f));
-				else 
-					priceFld.setText(String.valueOf(Math.round(Float.valueOf(priceFld.getText())*117f)/100.0f));
-
-			}
-		});
-		Label label_2 = new Label("含税折算");
+		reportPriceFld = new JTextField();
+		reportPriceFld.setColumns(10);
+		panel.add(reportPriceFld, "4, 4, fill, default");
+		reportTaxPriceFld = new JTextField();
+		
+		Label label_2 = new Label("含税价:");
 		panel.add(label_2, "6, 4, right, default");
-		panel.add(taxCheck, "8, 4, fill, default");		
+		panel.add(reportTaxPriceFld, "8, 4, fill, default");		
 		JLabel lblNewLabel_5 = new JLabel("\u6570\u91CF\uFF1A");
 		panel.add(lblNewLabel_5, "2, 6, right, default");
 
@@ -358,11 +347,11 @@ public class PicPanel extends BeanPanel<PicBean> {
 
 	private void outAdminEnable() {
 		itemNoFld.setEnabled(Userman.loginUser.isManager());
-		priceFld.setEnabled(Userman.loginUser.isManager());
+		reportPriceFld.setEnabled(Userman.loginUser.isManager());
+		reportTaxPriceFld.setEnabled(Userman.loginUser.isManager());
 		picNoFld.setEnabled(Userman.loginUser.isManager());
 		numFld.setEnabled(Userman.loginUser.isManager());
 		outPriceFld.setEnabled(Userman.loginUser.isManager());
-		taxCheck.setEnabled(Userman.loginUser.isManager());
 		itemCompleteDate.setEnabled(Userman.loginUser.isManager());
 	}
 
@@ -430,7 +419,9 @@ public class PicPanel extends BeanPanel<PicBean> {
 		//		 vPanel.getValidationGroup().add(outgetDate,Validators.REQUIRE_NON_EMPTY_STRING);
 		//		 vPanel.getValidationGroup().add(outBilledDate,Validators.REQUIRE_NON_EMPTY_STRING);
 		//
-		vPanel.getValidationGroup().add(priceFld,
+		vPanel.getValidationGroup().add(reportPriceFld,
+				Validators.REQUIRE_VALID_NUMBER);
+		vPanel.getValidationGroup().add(reportTaxPriceFld,
 				Validators.REQUIRE_VALID_NUMBER);
 		vPanel.getValidationGroup().add(outPriceFld,
 				Validators.REQUIRE_VALID_NUMBER);
@@ -463,7 +454,7 @@ public class PicPanel extends BeanPanel<PicBean> {
 			}
 		};
 		itemNoFld.addKeyListener(enterKeyListener);
-		priceFld.addKeyListener(enterKeyListener);
+		reportPriceFld.addKeyListener(enterKeyListener);
 		outPriceFld.addKeyListener(enterKeyListener);
 		outNumFld.addKeyListener(enterKeyListener);
 		picNoFld.addKeyListener(enterKeyListener);
@@ -478,7 +469,7 @@ public class PicPanel extends BeanPanel<PicBean> {
 	private void setFieldName() {
 
 		itemNoFld.setName("项目号");
-		priceFld.setName("订单价格");
+		reportPriceFld.setName("订单价格");
 		outPriceFld.setName("外协价格");
 		outNumFld.setName("外协数量");
 		picNoFld.setName("图号");
@@ -576,14 +567,15 @@ public class PicPanel extends BeanPanel<PicBean> {
 
 		BeanProperty<JCheckBox, Boolean> checkBoxBeanProperty = BeanProperty
 				.create("selected");
-		BeanProperty<JComboBox<Object>, String> jComboBoxBeanProperty = BeanProperty
+		BeanProperty<JComboBox<String>, String> jComboBoxBeanProperty = BeanProperty
 				.create("selectedItem");
 		BeanProperty<JXDatePicker, Date> dateBeanProperty = BeanProperty
 				.create("date");
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("warehoused"), warehousCheckBox,checkBoxBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("note"), noteFld,jTextFieldBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("item"), itemNoFld,jTextFieldBeanProperty).bind();
-		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("reportPrice"), priceFld,jTextFieldBeanProperty).bind();
+		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("reportPrice"), reportPriceFld,jTextFieldBeanProperty).bind();
+		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("reportTaxPrice"), reportTaxPriceFld,jTextFieldBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("outPrice"), outPriceFld,jTextFieldBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("outNum"), outNumFld,jTextFieldBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("picid"), picNoFld,jTextFieldBeanProperty).bind();

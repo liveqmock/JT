@@ -8,6 +8,7 @@ import java.io.IOException;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
@@ -66,6 +67,9 @@ public class PlanPnl extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
+					if(bean.getStartDate()==null){
+						savePlan();
+					}
 					new PlanPdf(bean).buildPdfViewer();
 				} catch (DocumentException | IOException e1) {
 					// TODO 自动生成的 catch 块

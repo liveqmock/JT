@@ -55,6 +55,12 @@ public class OperationPlan extends BeanMao implements Comparable<OperationPlan> 
 	@Caption("结束时间")
 	@Transient
 	private Date endDate;
+	@Caption( "已完成数量")
+	@Transient
+	private int productedNum;
+	@Caption( "剩余数量")
+	@Transient
+	private int remainNum;
 	@Caption( "耗时")
 	@Transient
 	private long planProcessTime;
@@ -213,8 +219,20 @@ public class OperationPlan extends BeanMao implements Comparable<OperationPlan> 
 		}catch (Exception e){
 			return 0;
 		}
+	}	
+	public int getProductedNum() {	
+		
+			productedNum=0;
+			if(operationWorks!=null)
+			for(OperationWork operationWork:operationWorks){
+				productedNum+=operationWork.getProductNum();
+			}
+			return productedNum;
 	}
 
+	public int getRemainNum() {
+		return picPlan.getNum()- getProductedNum() ;
+	}
 
 	public float getCost() {
 		return cost;

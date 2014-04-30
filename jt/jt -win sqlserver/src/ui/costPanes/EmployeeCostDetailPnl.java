@@ -70,7 +70,7 @@ public class EmployeeCostDetailPnl extends JPanel {
 		JLabel label_1 = new JLabel("\u5458\u5DE5\uFF1A");
 		panel.add(label_1);
 
-		name = new JComboBox<>(Employee.getNames());
+		name = new JComboBox<String>(Employee.getNames());
 		
 		panel.add(name);
 //		name.setMinimumSize(new Dimension(60, 20));

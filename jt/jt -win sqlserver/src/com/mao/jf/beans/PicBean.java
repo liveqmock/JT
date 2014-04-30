@@ -20,6 +20,7 @@ import com.mao.jf.beans.annotation.Caption;
 public class PicBean  {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
+	@Caption("ϵͳID")
 	private int id;
 	@ManyToOne
 	@JoinColumn(name = "bill", referencedColumnName = "id")
@@ -373,11 +374,12 @@ public class PicBean  {
 	}
 	public void setReportTaxPrice(float reportPriceS) {
 		this.reportTaxPrice = reportPriceS;
-		this.reportPrice= Math.round(reportPriceS/0.0117)/100.0f;
+		setReportPrice( Math.round(reportPriceS/0.0117)/100.0f);
+		
 	}
 	public void setReportPrice(float reportPrice) {
 		this.reportPrice = reportPrice;
-		this.reportTaxPrice= Math.round(reportPrice*117f)/100.0f;
+		setReportTaxPrice(Math.round(reportPrice*117f)/100.0f) ;
 	}
 	public void setBill(BillBean bill) {
 		this.bill = bill;

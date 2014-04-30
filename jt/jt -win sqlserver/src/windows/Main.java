@@ -37,7 +37,7 @@ public class Main extends JFrame {
 	 * Launch the application.
 	 */
 
-	public  static int ver=53;
+	public  static int ver=56;
 
 
 	public Main() {
@@ -107,8 +107,7 @@ public class Main extends JFrame {
 							break;
 						}
 					}
-					Userman user = (Userman) SerialiObject.loadFile(new File(
-							"user.dat"));
+					Userman user = (Userman) SerialiObject.loadFile(new File("user.dat"));
 					if (user == null)
 						user = new Userman();
 					Dialog dialog=new BeanDialog<Userman>(new LoginPanel(user), "µÇÂ¼") {

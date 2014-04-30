@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -39,9 +40,16 @@ public class GzReader {
 		smses.clear();
 		for(int rowNo=2;rowNo<sheet.getLastRowNum();rowNo++){
 			try{
-				String telno =new DecimalFormat("#").format(sheet.getRow(rowNo).getCell(telNoColNo).getNumericCellValue());
-				String smsString = sheet.getRow(rowNo).getCell(smsColNo).getStringCellValue();
-				String name = sheet.getRow(rowNo).getCell(nameColNo).getStringCellValue();
+				row=sheet.getRow(rowNo);
+				Cell cell = row.getCell(telNoColNo);
+				String telno=null;
+				if(cell.getCellType()==Cell.CELL_TYPE_NUMERIC)
+				  telno =new DecimalFormat("#").format(cell.getNumericCellValue());
+				else if(cell.getCellType()==Cell.CELL_TYPE_STRING)
+					telno =cell.getStringCellValue();
+				else continue;
+				String smsString =row.getCell(smsColNo).getStringCellValue();
+				String name =row.getCell(nameColNo).getStringCellValue();
 				if(StringUtils.isNotBlank(telno)&&StringUtils.isNotBlank(smsString)){
 					Sms sms=new Sms();
 					sms.setContent(smsString);
@@ -50,9 +58,11 @@ public class GzReader {
 					smses.add(sms);
 				}
 			}catch (Exception e) {
+				e.printStackTrace();
 			}
 
 		}
+		in.close();
 	}
 	
 	public  void readSmsFromXlsx(InputStream in) throws IOException {
@@ -75,9 +85,17 @@ public class GzReader {
 		}
 		for(int rowNo=2;rowNo<sheet.getLastRowNum();rowNo++){
 			try{
-				String telno =new DecimalFormat("#").format(sheet.getRow(rowNo).getCell(telNoColNo).getNumericCellValue());
-				String smsString = sheet.getRow(rowNo).getCell(smsColNo).getStringCellValue();
-				String name = sheet.getRow(rowNo).getCell(nameColNo).getStringCellValue();
+
+				row=sheet.getRow(rowNo);
+				Cell cell = row.getCell(telNoColNo);
+				String telno=null;
+				if(cell.getCellType()==Cell.CELL_TYPE_NUMERIC)
+				  telno =new DecimalFormat("#").format(cell.getNumericCellValue());
+				else if(cell.getCellType()==Cell.CELL_TYPE_STRING)
+					telno =cell.getStringCellValue();
+				else continue;
+				String smsString =row.getCell(smsColNo).getStringCellValue();
+				String name =row.getCell(nameColNo).getStringCellValue();
 				if(StringUtils.isNotBlank(telno)&&StringUtils.isNotBlank(smsString)){
 					Sms sms=new Sms();
 					sms.setContent(smsString);
@@ -86,9 +104,11 @@ public class GzReader {
 					smses.add(sms);
 				}
 			}catch (Exception e) {
+				e.printStackTrace();
 			}
 
 		}
+		in.close();
 	}
 
 	public ArrayList<Sms> getSmses() {

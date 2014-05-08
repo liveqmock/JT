@@ -8,6 +8,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -16,8 +23,15 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.jasper.tagplugins.jstl.core.If;
 import org.mozilla.universalchardet.UniversalDetector;
 
+
+
+
+
+import com.mao.tool.Datasource;
 import com.thoughtworks.xstream.XStream;
 
 public class DbSearch {
@@ -27,9 +41,13 @@ public class DbSearch {
 	private String fromString;
 	private String whereString;
 	private String sql;
-	private String selectSql="*";
+	private String selectSql="";
 	private String whereSql="";
+	private String groupSql="";
+	private String orderSql="";
 	private String database;
+	private int type;
+	private Class<?> beanClass;
 
 	private ArrayList<Object> jpaParms;
 
@@ -93,7 +111,7 @@ public class DbSearch {
 	public void createSql() {
 
 		getWhereSqlString();
-		sql= "select "+ selectSql + " from "+ fromString + whereSql ;
+		sql= "select "+ selectSql + " from "+ fromString + whereSql+" "+groupSql+" "+orderSql ;
 	}
 
 	private List<ColumnField<?>> distinctCollection( Collection<ColumnField<?>> columnFields2) {
@@ -112,7 +130,7 @@ public class DbSearch {
 
 
 	public ArrayList<Object> getParms() {
-		ArrayList<Object> parms=new ArrayList();
+		ArrayList<Object> parms=new ArrayList<>();
 		for(ColumnField<?> columnField:columnFields){
 
 			if(columnField.isWhereColumn()&&columnField.getScopeType()!=null&&columnField.getValue()!=null&&!columnField.equals("")){
@@ -136,7 +154,7 @@ public class DbSearch {
 	}
 
 
-	public  void saveAsXml() throws FileNotFoundException {
+	public  String saveAsXml() throws FileNotFoundException {
 		XStream xStream = new XStream();
 		xStream.alias("root", DbSearch.class);
 		xStream.alias("selectList", ArrayList.class);
@@ -146,18 +164,15 @@ public class DbSearch {
 		xStream.useAttributeFor(boolean.class);
 		xStream.useAttributeFor(int.class);
 
-		//		System.out.println(xStream.toXML(this));;
-		//		DbSearch dbSearch= (DbSearch) xStream.fromXML(xStream.toXML(this));
-		//		for(ColumnField columnField:columns.getColumnFields())
-		//			 if(columnField.getSelectList()!=null){
-		//				 for(SelectBean selectBean:columnField.getSelectList())
-		//					 System.out.println(selectBean.getCaption()+"\t"+selectBean.getValue());
-		//			 }
+		return xStream.toXML(this);
+//		DbSearch dbSearch= (DbSearch) xStream.fromXML(xStream.toXML(this));
+//		System.err.println(dbSearch.getBeanClass().getSimpleName());
 
 	}
 	public static DbSearch loadFromXml(String fileName) throws IOException {
-		if(new File(fileName).exists())
-			return  loadFromXml(new FileInputStream(fileName));
+		File file = new File(fileName);
+		if(file.exists())
+			return  loadFromXml(new FileInputStream(file));
 		else 
 			return null;
 	}
@@ -169,10 +184,10 @@ public class DbSearch {
 
 		IOUtils.copy(is, os);
 
-		ByteArrayInputStream inputStream=new ByteArrayInputStream(os.toByteArray());
+//		ByteArrayInputStream inputStream=new ByteArrayInputStream(os.toByteArray());
 		ByteArrayInputStream inputStream2=new ByteArrayInputStream(os.toByteArray());
 
-		String codeString = getCodeString(inputStream);
+//		String codeString = getCodeString(inputStream);
 		XStream xStream = new XStream();
 		xStream.alias("root", DbSearch.class);
 		xStream.alias("selectList", ArrayList.class);
@@ -181,11 +196,11 @@ public class DbSearch {
 		xStream.useAttributeFor(String.class);
 		xStream.useAttributeFor(boolean.class);
 		xStream.useAttributeFor(int.class);
-		DbSearch dbSearch= (DbSearch)xStream.fromXML(new InputStreamReader(inputStream2,codeString));
+		DbSearch dbSearch= (DbSearch)xStream.fromXML(new InputStreamReader(inputStream2,"GBK"));
 
 		is.close();
 		os.close();
-		inputStream.close();
+//		inputStream.close();
 		inputStream2.close();
 
 		return dbSearch;
@@ -206,6 +221,7 @@ public class DbSearch {
 	} 
 
 	public List<ColumnField<?>> getColumnFields() {
+		if(columnFields==null)columnFields=new ArrayList<>();
 		return columnFields;
 	}
 
@@ -255,9 +271,132 @@ public class DbSearch {
 		return jpaParms;
 	}
 
+
+	public Class<?> getBeanClass() {
+		return beanClass;
+	}
+
+	public void setBeanClass(Class<?> beanClass) {
+		this.beanClass = beanClass;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+	public void setWhereSql(String whereSql) {
+		this.whereSql = whereSql;
+	}
+
+	public String getGroupSql() {
+		return StringUtils.isBlank(groupSql)?"":" group by "+groupSql;
+	}
+
+	public void setGroupSql(String groupSql) {
+		this.groupSql = groupSql;
+	}
+
+	public void getColumns(ResultSetMetaData meta) throws SQLException {
+
+		for(int c=1;c<=meta.getColumnCount();c++){
+			ColumnField<?> columnField=null;
+			switch (meta.getColumnType(c)) {
+			case Types.CHAR:
+			case Types.NCHAR:
+			case Types.VARCHAR:
+			case Types.LONGNVARCHAR:
+			case Types.LONGVARCHAR:
+				columnField=new ColumnField<String>();	
+				columnField.setValueType("string");
+				break;
+
+			case Types.INTEGER:
+			case Types.SMALLINT:
+			case Types.TINYINT:
+			case Types.BIT:
+				columnField=new ColumnField<Integer>();		
+				columnField.setValueType("int");				
+				break;		
+			case Types.BIGINT:	
+				columnField=new ColumnField<Long>();		
+				columnField.setValueType("long");				
+				break;		
+
+			case Types.DECIMAL:
+			case Types.DOUBLE:
+				columnField=new ColumnField<Double>();	
+				columnField.setValueType("double");
+				break;
+
+			case Types.FLOAT:
+				columnField=new ColumnField<Float>();	
+				columnField.setValueType("float");				
+				break;
+			case Types.REAL:
+			case Types.NUMERIC:
+				columnField=new ColumnField<BigDecimal>();	
+				columnField.setValueType("number");	
+			case Types.DATE:
+				columnField=new ColumnField<java.sql.Date>();
+				columnField.setValueType("date");						
+				break;
+
+			case Types.TIME:
+				columnField=new ColumnField<java.sql.Time>();
+				columnField.setValueType("time");					
+				break;
+
+			case Types.TIMESTAMP:
+				columnField=new ColumnField<java.sql.Time>();
+				columnField.setValueType("timestamp");					
+				break;
+
+
+			default:
+				break;
+			}
+			columnField.setLabel(meta.getColumnLabel(c));
+			columnField.setName(meta.getColumnName(c));
+			getColumnFields().add(columnField);
+		}
+
+
+
+	}
+	public String getOrderSql() {
+		return StringUtils.isBlank(orderSql)?"":" order by "+orderSql;
+	}
+
+	public void setOrderSql(String orderSql) {
+		this.orderSql = orderSql;
+	}
+
 	public  static void main(String[] a) throws FileNotFoundException {
 		DbSearch dbSearch=new DbSearch();
-		dbSearch.setDatabase("database");;
+		dbSearch.setFromString("datacenter.role");
+		try (Connection conn = Datasource.getDataSource("").getConnection();
+				Statement	st=conn.createStatement();
+				ResultSet rs = st.executeQuery("select * from core.BBFMSTLR");
+				){
+			dbSearch.getColumns(rs.getMetaData());
+		} catch ( Exception e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		}
 		dbSearch.saveAsXml();
+		
+		
+		
+//		ZqlParser zqlParser=new ZqlParser(new ByteArrayInputStream("select STATUS from datacenter.role bb join sss aa where ass='' and ss between 12 and 122;".getBytes()));
+//		
+//		System.err.println(((ZQuery)zqlParser.readStatement()).getFrom());
+	}
+
+	public String getRightSqlString() {
+		// TODO 自动生成的方法存根
+		return " from "+ getFromString() +  getWhereSqlString()+ getGroupSql();
 	}
 }

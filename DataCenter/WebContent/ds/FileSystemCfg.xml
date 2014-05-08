@@ -1,0 +1,9 @@
+<root fromString="dwmm.U_MON_INFO a, dwmm.U_FL_SYS_TLD b" whereString="a.MON_INFO_ID=b.MON_INFO_ID"  database="system">
+  <columnFields>
+    <columnField name="a.MON_INFO_ID" label="ID" whereColumn="false" selectColumn="true" />
+    <columnField name="VOL_TLD_VAL" label="空间使用率阀值" whereColumn="true" selectColumn="true" valueType="int"/>
+    <columnField name="IND_TLD_VAL" label="INODE使用率阀值" whereColumn="true" selectColumn="true" valueType="int" />
+    <columnField name="a.CRT_DT" label="创建时间" whereColumn="true" selectColumn="true" valueType="date"/>
+    <columnField name="a.MON_INFO_NM"   />
+  </columnFields>
+</root>

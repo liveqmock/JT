@@ -31,7 +31,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
 import jcifs.smb.SmbFileOutputStream;
@@ -42,6 +41,7 @@ import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingx.JXDatePicker;
 
 import ui.customComponet.BeanPanel;
+import ui.customComponet.JTextField;
 import ui.menu.MenuAction;
 import validation.Problem;
 import validation.Severity;
@@ -65,6 +65,7 @@ public class PicPanel extends BeanPanel<PicBean> {
 	
 	private JTextField noteFld;
 	private JTextField itemNoFld;
+	private JTextField custBillNo;
 	private JTextField reportPriceFld;
 	private JTextField reportTaxPriceFld;
 	private JTextField outPriceFld;
@@ -74,6 +75,7 @@ public class PicPanel extends BeanPanel<PicBean> {
 	private JComboBox<String> outCustomCombox;
 	private JXDatePicker outgetDate;
 	private JCheckBox warehousCheckBox;
+	private JTextField outContent;
 	private JTextField cost;
 	private JTextField gjh;
 	private JTextField partName;
@@ -230,9 +232,14 @@ public class PicPanel extends BeanPanel<PicBean> {
 		}
 		panel_2.add(imageView, BorderLayout.CENTER);
 		meterial=new JComboBox<>();
+
+		meterial=new JComboBox<>(new String[] {"包工包料","来料加工"});
+		meterial.setEditable(true);
 		try(Statement st=SessionData.getConnection().createStatement()){
 			 List<String> list = (List<String>) BeanMao.beanManager.queryNativeList("Select distinct meterial from PicBean");
-			for(String s:list) {
+			 list.remove("包工包料");
+			 list.remove("来料加工");
+			 for(String s:list) {
 				meterial.addItem(s);
 			}
 		} catch (SQLException e1) {
@@ -258,48 +265,50 @@ public class PicPanel extends BeanPanel<PicBean> {
 		itemNoFld.setColumns(10);
 		panel.add(itemNoFld, "8, 2, fill, default");
 
-		JLabel lblNewLabel_3 = new JLabel("\u8BA2\u5355\u4EF7\u683C\uFF1A");
+		JLabel lblNewLabel_3 = new JLabel("订单号:");
 		panel.add(lblNewLabel_3, "2, 4, right, default");
+		
+		custBillNo = new JTextField();
+		custBillNo.setColumns(10);
+		panel.add(custBillNo, "4,4, fill, default");
+
+		JLabel lblNewLabel_31 = new JLabel("单价(未含税):");
+		panel.add(lblNewLabel_31, "2, 6, right, default");
 
 		reportPriceFld = new JTextField();
 		reportPriceFld.setColumns(10);
-		panel.add(reportPriceFld, "4, 4, fill, default");
+		panel.add(reportPriceFld, "4, 6, fill, default");
 		reportTaxPriceFld = new JTextField();
 		
-		Label label_2 = new Label("含税价:");
-		panel.add(label_2, "6, 4, right, default");
-		panel.add(reportTaxPriceFld, "8, 4, fill, default");		
+		Label label_2 = new Label("单价(含税):");
+		panel.add(label_2, "6, 6, right, default");
+		panel.add(reportTaxPriceFld, "8, 6, fill, default");		
 		JLabel lblNewLabel_5 = new JLabel("\u6570\u91CF\uFF1A");
-		panel.add(lblNewLabel_5, "2, 6, right, default");
+		panel.add(lblNewLabel_5, "2, 8, right, default");
 
 		numFld = new JTextField();
 		numFld.setColumns(10);
-		panel.add(numFld, "4, 6, fill, default");
+		panel.add(numFld, "4, 8, fill, default");
 		JLabel label = new JLabel("单件生产费用");
-		panel.add(label, "6, 6, right, default");
+		panel.add(label, "6, 8, right, default");
 
 		cost=new JTextField();
-		panel.add(cost, "8, 6, fill, fill");
-
-
-
+		panel.add(cost, "8, 8, fill, fill");
 
 		JLabel label_9 = new JLabel("\u5165\u5E93\uFF1A");
-		panel.add(label_9, "2, 8, right, default");
+		panel.add(label_9, "2, 10, right, default");
 		warehousCheckBox = new JCheckBox("\u5DF2\u5165\u5E93");
-		panel.add(warehousCheckBox, "4, 8");
+		panel.add(warehousCheckBox, "4, 10");
 
 		JLabel label_19 = new JLabel("\u5B8C\u5DE5\u65E5\u671F\uFF1A");
-		panel.add(label_19, "6, 8");
+		panel.add(label_19, "6, 10");
 
 		itemCompleteDate = new JXDatePicker();
 		itemCompleteDate.setFormats(new String[] {"yyyy-MM-dd"});
-		panel.add(itemCompleteDate, "8, 8");
+		panel.add(itemCompleteDate, "8, 10");
 		JLabel label_10 = new JLabel("材料类型");
 		panel.add(label_10, "2, 12");
 		//		
-		meterial=new JComboBox<>(new String[] {"包工包料","来料加工"});
-		meterial.setEditable(true);
 		panel.add(meterial, "4, 12, fill, default");
 		JLabel label_12 = new JLabel("材料编号");
 		panel.add(label_12, "6, 12, right, default");
@@ -324,6 +333,7 @@ public class PicPanel extends BeanPanel<PicBean> {
 		JLabel label_17 = new JLabel("技术条件");
 		panel.add(label_17, "2, 18, right, default");
 		techCondition=new JTextField();
+		outContent=new JTextField();
 		panel.add(techCondition, "4, 18");
 		panel.add(label_3, "2, 22");
 		panel.add(panel_3, "4, 22, 5, 1, fill, fill");
@@ -333,6 +343,8 @@ public class PicPanel extends BeanPanel<PicBean> {
 		panel.add(outNumFld, "8, 24, fill, default");
 		panel.add(label_4, "2, 26");
 		panel.add(outgetDate, "4, 26");
+		panel.add(new JLabel("外协内容:"), "6, 26");
+		panel.add(outContent, "8, 26");
 
 		JLabel label_5 = new JLabel("\u5907\u6CE8\uFF1A");
 		panel.add(label_5, "2, 30, right, default");
@@ -432,37 +444,11 @@ public class PicPanel extends BeanPanel<PicBean> {
 	}
 
 	private void addEnterKeyAction() {
-		KeyListener enterKeyListener = new KeyListener() {
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					((JComponent) e.getSource()).transferFocus();
-				}
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				// TODO 自动生成的方法存根
-
-			}
-		};
-		itemNoFld.addKeyListener(enterKeyListener);
-		reportPriceFld.addKeyListener(enterKeyListener);
-		outPriceFld.addKeyListener(enterKeyListener);
-		outNumFld.addKeyListener(enterKeyListener);
-		picNoFld.addKeyListener(enterKeyListener);
-		numFld.addKeyListener(enterKeyListener);
-		outCustomCombox.addKeyListener(enterKeyListener);
-		outgetDate.getEditor().addKeyListener(enterKeyListener);
-		itemCompleteDate.getEditor().addKeyListener(enterKeyListener);
-		warehousCheckBox.addKeyListener(enterKeyListener);
+		
+		outCustomCombox.addKeyListener(JTextField.enterKeyListener);
+		outgetDate.getEditor().addKeyListener(JTextField.enterKeyListener);
+		itemCompleteDate.getEditor().addKeyListener(JTextField.enterKeyListener);
+		warehousCheckBox.addKeyListener(JTextField.enterKeyListener);
 
 	}
 
@@ -579,18 +565,21 @@ public class PicPanel extends BeanPanel<PicBean> {
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("outPrice"), outPriceFld,jTextFieldBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("outNum"), outNumFld,jTextFieldBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("picid"), picNoFld,jTextFieldBeanProperty).bind();
+		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("custBillNo"), custBillNo,jTextFieldBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("num"), numFld,jTextFieldBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("outCustom"), outCustomCombox,jComboBoxBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("itemCompleteDate"), itemCompleteDate, dateBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("outGetDate"), outgetDate, dateBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("planCost"), cost, jTextFieldBeanProperty).bind();
-		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("meterial"), (JTextField)meterial.getEditor().getEditorComponent(), jTextFieldBeanProperty).bind();
+		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("meterial"), (javax.swing.JTextField)meterial.getEditor().getEditorComponent(), BeanProperty.create("text")).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("meterialz"), meterialz, jTextFieldBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("meterialType"), meterialType, jTextFieldBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("techCondition"), techCondition, jTextFieldBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("partName"), partName, jTextFieldBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("gjh"), gjh, jTextFieldBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("meterialCode"), meterialCode, jTextFieldBeanProperty).bind();
+		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("outContent"), outContent, jTextFieldBeanProperty).bind();
+		
 	}
 
 	public void saveBill() {

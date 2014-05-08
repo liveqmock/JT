@@ -36,6 +36,8 @@ public class MainMenu extends JMenuBar {
 			menu.add("员工产出统计").addActionListener(action);
 		if(Userman.loginUser.getMenus().contains("工序产出统计"))
 			menu.add("工序产出统计").addActionListener(action);
+		if(Userman.loginUser.getMenus().contains("生产情况表"))
+			menu.add("生产情况表").addActionListener(action);
 		if(Userman.loginUser.getMenus().contains("查看设备使用情况"))
 			menu.add("查看设备使用情况").addActionListener(action);
 		menu = new JMenu("客户管理");

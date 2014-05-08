@@ -41,12 +41,12 @@ public class PlanCreatePanel extends PicShowPnl {
 
 		splitPane=new JSplitPane();
 
-		picTable=new BeanTablePane<PicBean>(null, PicBean.class);
+		picTable=new BeanTablePane<PicBean>(null, PicBean.class,new String[]{"客户","订单号","项目号","图号","客户订单号","数量"});
 
 		splitPane.setLeftComponent(picTable);
 		planPnl=new PlanPnl(new PicPlan(new PicBean()));
 		plansTablePane=new BeanTablePane<PicPlan>(null, PicPlan.class);
-		plansTablePane.setPreferredSize(new Dimension(400, 150));
+		plansTablePane.setPreferredSize(new Dimension(400, 80));
 		
 		newPlanBt = new JButton("新增排产计划");
 		JPanel plansPanel=new JPanel();

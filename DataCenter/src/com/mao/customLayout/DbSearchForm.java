@@ -1,12 +1,13 @@
 package com.mao.customLayout;
 
+import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Date;
 
 import com.mao.customLayout.bean.ColumnField;
 import com.mao.customLayout.bean.DbSearch;
 import com.mao.customLayout.bean.SCOPE;
 import com.mao.customLayout.bean.SelectBean;
+import com.mao.layout.system.JgSelect;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -86,13 +87,17 @@ public class DbSearchForm extends GridLayout{
 		fieldGroup.bind(listSelect, columnField.getName()+"_scope");
 		listSelect.setValue(null);
 		
-		listSelect.addItem(SCOPE.EQUAL);
-		listSelect.addItem(SCOPE.NEQUAL);
 		if(columnField.getSelectList()==null){
-			if(columnField.getValueType().equals("string")){
+			if(columnField.getValueType().equals("string")||columnField.getValueType().equals("password")){
+				listSelect.addItem(SCOPE.EQUAL);
+				listSelect.addItem(SCOPE.NEQUAL);
 				listSelect.addItem(SCOPE.CONTAIN);
 				listSelect.addItem(SCOPE.NCONTAIN);
-			}else{
+			}else if(columnField.getValueType().equals("jg")){
+				listSelect.addItem(SCOPE.CONTAIN);				
+			} else{
+				listSelect.addItem(SCOPE.EQUAL);
+				listSelect.addItem(SCOPE.NEQUAL);
 				listSelect.addItem(SCOPE.GT);
 				listSelect.addItem(SCOPE.GE);
 				listSelect.addItem(SCOPE.LT);
@@ -180,6 +185,12 @@ public class DbSearchForm extends GridLayout{
 				field=new DateField();
 				((DateField)field).setImmediate(true);
 				((DateField)field).setDateFormat("hh:mm:ss");
+			}else if(columnField.getValueType().equals("timestamp")){
+				field=new DateField();
+				((DateField)field).setImmediate(true);
+				((DateField)field).setDateFormat("yyyy-MM-dd hh:mm:ss");
+			}else if(columnField.getValueType().equals("jg")){
+				field=new JgSelect();
 			}else if(columnField.getValueType().equals("password")){
 				field=new PasswordField();
 			}else{
@@ -221,12 +232,22 @@ public class DbSearchForm extends GridLayout{
 			((Field<Float>)field).setValue(((ColumnField<Float>)columnField).getValue());
 		}else if(columnField.getValue()!=null&&columnField.getValueType().equals("double")){			
 			((Field<Double>)field).setValue(((ColumnField<Double>)columnField).getValue());
+		}else if(columnField.getValue()!=null&&columnField.getValueType().equals("number")){			
+			((Field<Number>)field).setValue(((ColumnField<Number>)columnField).getValue());
+		}else if(columnField.getValue()!=null&&columnField.getValueType().equals("password")){	
+			((Field<String>)field).setValue(((ColumnField<String>)columnField).getValue());
 		}else if(columnField.getValue()!=null&&columnField.getValueType().equals("string")){	
 			((Field<String>)field).setValue(((ColumnField<String>)columnField).getValue());
 		}else if(columnField.getValue()!=null&&columnField.getValueType().equals("short")){			
 			((Field<Short>)field).setValue(((ColumnField<Short>)columnField).getValue());
-		}else if(columnField.getValueType().equals("date")||columnField.getValue()!=null&&columnField.getValueType().equals("time")){
+		}else if(columnField.getValue()!=null&&columnField.getValueType().equals("time")){
 			((Field<Date>)field).setValue(((ColumnField<Date>)columnField).getValue());
+		}else if(columnField.getValue()!=null&&columnField.getValueType().equals("date")){
+			((Field<Date>)field).setValue(((ColumnField<Date>)columnField).getValue());
+		}else if(columnField.getValue()!=null&&columnField.getValueType().equals("timestamp")){
+			((Field<Date>)field).setValue(((ColumnField<Date>)columnField).getValue());
+		}else{
+			((Field<Object>)field).setValue((Object)columnField.getValue());
 		}
 	}
 
@@ -242,6 +263,8 @@ public class DbSearchForm extends GridLayout{
 			return  new ObjectProperty<Float>(null,float.class);
 		}else if(columnField.getValueType().equals("double")){
 			return  new ObjectProperty<Double>(null,double.class);
+		}else if(columnField.getValueType().equals("number")){
+			return  new ObjectProperty<Number>(null,Number.class);
 		}else if(columnField.getValueType().equals("string")){
 			return  new ObjectProperty<String>(null,String.class);
 		}else if(columnField.getValueType().equals("date")){

@@ -97,9 +97,13 @@ public class OperationPlan extends BeanMao implements Comparable<OperationPlan> 
 
 
 	public EquipmentPlan getEarliestEquipmentPlan() {
-		return BeanMao.getBean(EquipmentPlan.class, " equipment.operation=?1 and "
-				+ "planEndTime=(select min(planEndTime) from EquipmentPlan a where  a.equipment.operation=?1 and a.nextEquipmentPlan is null) "
-				,operation);
+		Object planEndTime= BeanMao.beanManager.queryNativeSingle("select min(planEndTime) from ("
+				+ "select max(planEndTime) planEndTime from EquipmentPlan a join operationPlan b "
+				+ "on a.operationPlan=b.id join operation c on b.operation=c.id and c.id=?1 )a"
+				, operation.getId());
+
+		return BeanMao.getBean(EquipmentPlan.class, " equipment.operation=?1 and planEndTime=?2 "
+				,operation,planEndTime);
 	}
 	public EquipmentPlan getFreeEquipmentPlan(int userTime) {
 		return BeanMao.getBean(EquipmentPlan.class, " equipment.operation=?1 and freeTime>=?2",operation,userTime);
@@ -111,19 +115,15 @@ public class OperationPlan extends BeanMao implements Comparable<OperationPlan> 
 		for(EquipmentPlan equipmentPlan:equipmentPlans){
 			BeanMao.removeBean(equipmentPlan);
 		}
-		System.err.println(equipmentPlans.size());
+		equipmentPlans.clear();
 
 	}
 	public void createPlan() throws Exception {
-		deleteEquipmentPlans();
 		int eachEquipmentNum = picPlan.getNum()/equipmentNum;
 		int ye= picPlan.getNum()%equipmentNum;
 		if(equipmentPlans==null)equipmentPlans=new ArrayList<>();	
 		while(equipmentPlans.size()<equipmentNum){
-			Equipment equipment = BeanMao.getBean(Equipment.class,
-					" operation=?1 and a not in (" 
-							+ "select equipment from EquipmentPlan where operationPlan.operationWorks.size=0)",
-							operation);
+
 			int num=eachEquipmentNum;
 			if(ye>0){
 				num++;
@@ -133,66 +133,75 @@ public class OperationPlan extends BeanMao implements Comparable<OperationPlan> 
 			equipmentPlan.setNum(num);
 			equipmentPlan.setPlanUseTimes(prepareTime+unitUseTime*num);
 			equipmentPlan.setOperationPlan(this);
-			
-			if(equipment!=null){//有没有排产的设备，时间从现在开始
-				equipmentPlan.setEquipment(equipment);
-				Calendar calendar=Calendar.getInstance();
-				if(picPlan.getPlanDate()!=null&&calendar.getTimeInMillis()<picPlan.getPlanDate().getTime()){
-					calendar.setTime(picPlan.getPlanDate());
-				}
-				if(calendar.get(Calendar.HOUR_OF_DAY)>=17){
-					calendar.add(Calendar.DAY_OF_MONTH, 1);			
-					calendar.set(Calendar.HOUR_OF_DAY, 8);
-					calendar.set(Calendar.MINUTE, 0);
-					calendar.set(Calendar.SECOND, 0);
-				}
-				equipmentPlan.setPlanStartTime(calendar.getTime());
 
-			}else{
-				EquipmentPlan theEarliestEquipmentPlan=getFreeEquipmentPlan(equipmentPlan.getPlanUseTimes());//有中间空闲时间可以满足完成此排产的设备
-				if(theEarliestEquipmentPlan==null)
-					theEarliestEquipmentPlan=getEarliestEquipmentPlan();//最早空间的设备
-
-				theEarliestEquipmentPlan.toNextPlan(equipmentPlan);
-				OperationPlan preOperationPlan = picPlan.getpreOperationPlan(this);
-				if(preOperationPlan!=null){
-					Date preEndDate =preOperationPlan.getEndDate();
-					if(equipmentPlan.getPlanStartTime().getTime()<preEndDate.getTime())
-						equipmentPlan.setPlanStartTime(preEndDate);
-				}
-			}
-
-			adjustTime(equipmentPlan);
+			computeStartDate(equipmentPlan);
+			computeEndDate(equipmentPlan);
 			BeanMao.saveBean(equipmentPlan);
 			equipmentPlans.add(equipmentPlan);
 		}
 	}
-	private void adjustTime(EquipmentPlan equipmentPlan) {
+	private void computeStartDate(EquipmentPlan equipmentPlan){
+		Equipment equipment = BeanMao.getBean(Equipment.class,
+				" operation=?1 and a not in (" 
+						+ "select equipment from EquipmentPlan )",
+						operation);
+		if(equipment!=null){//有没有排产的设备，时间从现在开始
+			equipmentPlan.setEquipment(equipment);
+			Calendar calendar=Calendar.getInstance();
+			if(picPlan.getPlanDate()!=null&&calendar.getTimeInMillis()<picPlan.getPlanDate().getTime()){
+				calendar.setTime(picPlan.getPlanDate());
+			}
+			equipmentPlan.setPlanStartTime(calendar.getTime());
+
+		}else{
+			EquipmentPlan theEarliestEquipmentPlan=getFreeEquipmentPlan(equipmentPlan.getPlanUseTimes());//有中间空闲时间可以满足完成此排产的设备
+			if(theEarliestEquipmentPlan==null)
+				theEarliestEquipmentPlan=getEarliestEquipmentPlan();//最早空间的设备
+
+			equipmentPlan.setEquipment(theEarliestEquipmentPlan.getEquipment());
+			equipmentPlan.setPlanStartTime(theEarliestEquipmentPlan.getPlanEndTime());
+
+
+		}
+		OperationPlan preOperationPlan = picPlan.getpreOperationPlan(this);
+		if(preOperationPlan!=null){
+			Date preEndDate =preOperationPlan.getEndDate();
+			if(equipmentPlan.getPlanStartTime().getTime()<preEndDate.getTime())
+				equipmentPlan.setPlanStartTime(preEndDate);
+		}Calendar calendar=Calendar.getInstance();
+		calendar.setTime(equipmentPlan.getPlanStartTime());
+		if(calendar.get(Calendar.HOUR_OF_DAY)>=23){
+			calendar.add(Calendar.DAY_OF_MONTH, 1);			
+			calendar.set(Calendar.HOUR_OF_DAY, 8);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 0);
+		}
+		equipmentPlan.setPlanStartTime(calendar.getTime());
+
+	}
+	private void computeEndDate(EquipmentPlan equipmentPlan) {
 		Calendar calendarEnd=Calendar.getInstance();
-		calendarEnd.setTime(equipmentPlan.getPlanEndTime());
+		calendarEnd.setTimeInMillis(equipmentPlan.getPlanStartTime().getTime()+equipmentPlan.getPlanUseTimes()*60000);
 		Calendar calendarStart=Calendar.getInstance();
 		calendarStart.setTime(equipmentPlan.getPlanStartTime());
-		//如果用时小于等于8小时并且结束时间已经是下班时间，则安排到第二天排产
-
-		//双休日延迟
-
-		if(equipmentPlan.getPlanUseTimes()<=9*60&&
-				(calendarEnd.get(Calendar.HOUR_OF_DAY)>=17||
+		int dayWorkTime=15*60;
+		if(equipmentPlan.getPlanUseTimes()<=dayWorkTime&&
+				(calendarEnd.get(Calendar.HOUR_OF_DAY)>=23||
 				calendarEnd.get(Calendar.HOUR_OF_DAY)<8)){
 			calendarStart.add(Calendar.DAY_OF_MONTH, 1);			
 			calendarStart.set(Calendar.HOUR_OF_DAY, 8);
 			calendarStart.set(Calendar.MINUTE, 0);
 			calendarStart.set(Calendar.SECOND, 0);
 			equipmentPlan.setPlanStartTime(calendarStart.getTime());
-			adjustTime(equipmentPlan);
+			computeEndDate(equipmentPlan);
 			return;
-		}else if(equipmentPlan.getPlanUseTimes()>540){
-			int workDays = equipmentPlan.getPlanUseTimes()/540;
-			calendarEnd.setTimeInMillis(calendarEnd.getTimeInMillis()+workDays*15*3_600_000);
+		}else if(equipmentPlan.getPlanUseTimes()>dayWorkTime){
+			int workDays = equipmentPlan.getPlanUseTimes()/dayWorkTime;
+			calendarEnd.setTimeInMillis(calendarEnd.getTimeInMillis()+workDays*dayWorkTime*60000);
 
 		}	
 		int weekWorkDays=6;
-		int weeks = equipmentPlan.getPlanUseTimes()/(9*60*weekWorkDays);
+		int weeks = equipmentPlan.getPlanUseTimes()/(dayWorkTime*weekWorkDays);
 		calendarEnd.add(Calendar.DAY_OF_MONTH, weeks*(7-weekWorkDays));	
 		long time = calendarEnd.getTimeInMillis()-calendarStart.getTimeInMillis();
 		if(calendarEnd.get(Calendar.DAY_OF_WEEK)<calendarStart.get(Calendar.DAY_OF_WEEK)||
@@ -221,13 +230,13 @@ public class OperationPlan extends BeanMao implements Comparable<OperationPlan> 
 		}
 	}	
 	public int getProductedNum() {	
-		
-			productedNum=0;
-			if(operationWorks!=null)
+
+		productedNum=0;
+		if(operationWorks!=null)
 			for(OperationWork operationWork:operationWorks){
 				productedNum+=operationWork.getProductNum();
 			}
-			return productedNum;
+		return productedNum;
 	}
 
 	public int getRemainNum() {

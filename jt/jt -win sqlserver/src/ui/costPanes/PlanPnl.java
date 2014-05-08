@@ -5,23 +5,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
-import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingx.HorizontalLayout;
-
-import ui.customComponet.BeanPanel;
-import validation.builtin.NumberMaxE;
-import validation.builtin.Validators;
 
 import com.itextpdf.text.DocumentException;
 import com.mao.jf.beans.PicPlan;

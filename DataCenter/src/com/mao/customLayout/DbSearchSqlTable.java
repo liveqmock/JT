@@ -1,23 +1,15 @@
 package com.mao.customLayout;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.InputStream;
-import java.sql.Connection;
-
-import javax.sql.rowset.CachedRowSet;
 
 import com.mao.customLayout.bean.DbSearch;
 import com.mao.tool.Datasource;
-import com.sun.rowset.CachedRowSetImpl;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FileResource;
-import com.vaadin.server.StreamResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinResponse;
@@ -31,20 +23,19 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-
-public class DbSearchTable extends VerticalLayout implements ClickListener {
+public class DbSearchSqlTable extends VerticalLayout implements ClickListener {
 	private Table table=new Table();
 	private Button exportBt=new Button("导出");
-	private String caption;
+	private String caption="查询结果";
 	private TextField pageField;
 	private int pageSize=100;
 	private TextField pageNoField;
 
 	private DbSearch dbSearch;
 	
-	public DbSearchTable(String caption) {
+	public DbSearchSqlTable(DbSearch dbSearch) {
 		super();
-		this.caption=caption;
+		this.dbSearch=dbSearch;
 
 		table.setSizeFull();
 		table.setColumnCollapsingAllowed(true);
@@ -143,15 +134,16 @@ public class DbSearchTable extends VerticalLayout implements ClickListener {
 		addComponent(pageBar);
 		setExpandRatio(table, 1.0f);
 		
-		FileDownloader downloader=new FileDownloader(new FileResource(new File(""))){
+		FileDownloader downloader=new FileDownloader(new FileResource(new File("export.xls"))){
 
 			@Override
 			public boolean handleConnectorRequest(VaadinRequest request,
 					VaadinResponse response, String path)  {
 				try{
-				setFileDownloadResource(getResouce());
+				setFileDownloadResource(TableExcelExport.getResouce(table,caption));
 				return super.handleConnectorRequest(request, response, path);
 				}catch (Exception e){
+					e.printStackTrace();
 					Notification.show("请先执行【查询】，得到查询结果");
 					return false;
 				}
@@ -165,9 +157,9 @@ public class DbSearchTable extends VerticalLayout implements ClickListener {
 
 
 	}
-	public void executeQuery(DbSearch dbSearch) throws Exception{
+	public void executeQuery() throws Exception{
 		this.dbSearch=dbSearch;
-		DbSearchContainer container=new DbSearchContainer(Datasource.getConnection(),dbSearch,pageSize);
+		DbSearchSqlContainer container=new DbSearchSqlContainer(Datasource.getDataSource(dbSearch.getDatabase()).getConnection(),dbSearch,pageSize);
 		table.setContainerDataSource(container);
 		table.setColumnCollapsed("ROWNUM",true);
 		table.setColumnCollapsible("ROWNUM",true);
@@ -229,44 +221,6 @@ public class DbSearchTable extends VerticalLayout implements ClickListener {
 	}
 	
 	
-	public StreamResource getResouce() throws Exception {
-		if(dbSearch==null)
-			throw new Exception("no search");
-		
-		return new StreamResource(new StreamResource.StreamSource() {
 
-
-			@Override
-			public InputStream getStream() {
-
-				ByteArrayOutputStream os=new ByteArrayOutputStream();
-
-				try {
-					
-					Connection conn = Datasource.getConnection();
-					
-						
-					CachedRowSet crs = new CachedRowSetImpl();
-					crs.setCommand(dbSearch.getSql());
-					int i=1;
-					for(Object object:dbSearch.getParms())
-						crs.setObject(i++,object);
-					crs.execute(conn);
-					ExcelExport.sqlExport(os,crs);
-					crs.close();
-
-
-				}  catch (Exception e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-					Notification.show(e.getMessage(),Notification.Type.ERROR_MESSAGE);
-				}
-				ByteArrayInputStream in = new ByteArrayInputStream(os.toByteArray());
-				return in;
-				
-
-			}
-		},"search.xls");
-	}
 
 }

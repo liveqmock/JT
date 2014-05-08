@@ -92,7 +92,7 @@ public class DragDropRowTableUI<T> extends BasicTableUI {
 
 			for(int p=0;p< table.getRowCount();p++)
 				((OperationPlan)((BeanTableModel<T>) table.getModel()).getSelectBean(table
-							.convertRowIndexToModel(p))).setSequence(p);;
+							.convertRowIndexToModel(p))).setSequence(p+1);;
 				
 			table.repaint();
 		}

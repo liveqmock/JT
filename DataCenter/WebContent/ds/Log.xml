@@ -1,0 +1,10 @@
+<root fromString="dwmm.Logbean"  database="system">
+  <columnFields>
+    <columnField name="warningFrom" label="预警来源" whereColumn="true" selectColumn="true" valueType="string"/>
+    <columnField name="warningContent" label="预警内容" whereColumn="true" selectColumn="true" valueType="string"/>
+    <columnField name="createDate" label="创建时间" whereColumn="true" selectColumn="true" valueType="date"/>
+    <columnField name="completedDate" label="人工完成时间" whereColumn="true" selectColumn="true" valueType="date"/>
+    <columnField name="completedUser" label="完成人" whereColumn="true" selectColumn="true" valueType="string"/>
+    <columnField name="autoRemoveDate" label="自动消除时间" whereColumn="true" selectColumn="true" valueType="date"/>
+  </columnFields>
+</root>

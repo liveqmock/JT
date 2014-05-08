@@ -11,8 +11,8 @@ public class MainPanel extends JTabbedPane{
 		super();
 		 billManagerPnl= new BillManagerPnl();
 		 picManagerPnl=new PicManagerPnl();
-		add("按订单查找",billManagerPnl);
 		add("按图纸查找", picManagerPnl);
+		add("按订单查找",billManagerPnl);
 	}
 
 	public void saveTableStatus() {

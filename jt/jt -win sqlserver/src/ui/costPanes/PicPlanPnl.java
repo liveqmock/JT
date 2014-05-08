@@ -1,29 +1,19 @@
 package ui.costPanes;
 
-import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 
-import com.mao.jf.beans.PicPlan;
+import net.miginfocom.swing.MigLayout;
+
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Bindings;
+import org.jdesktop.swingx.JXDatePicker;
 
 import ui.customComponet.BeanPanel;
 import validation.builtin.Validators;
 
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import com.jgoodies.forms.factories.FormFactory;
-
-import javax.swing.JLabel;
-
-import net.miginfocom.swing.MigLayout;
-
-import javax.swing.JTextField;
-
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
-import org.jdesktop.swingx.JXDatePicker;
-
-import javax.swing.JButton;
+import com.mao.jf.beans.PicPlan;
 
 public class PicPlanPnl extends BeanPanel<PicPlan> {
 	private JTextField numFld;

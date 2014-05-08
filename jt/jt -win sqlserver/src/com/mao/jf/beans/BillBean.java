@@ -1,5 +1,6 @@
 package com.mao.jf.beans;
 
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.awt.Color;
@@ -17,7 +18,6 @@ import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
 import com.mao.jf.beans.annotation.Caption;
-import static javax.persistence.CascadeType.ALL;
 @Entity
 public class BillBean extends BeanMao {	
 	@Id
@@ -32,9 +32,6 @@ public class BillBean extends BeanMao {
 	private String billid;
 	@Caption("订单组")
 	private String billgroup;
-	@Caption("最终报价(未含税)")
-	@Transient
-	private float reportMoney;
 	@Caption("最终报价(含税)")
 	@Transient
 	private float reportTaxMoney;
@@ -241,9 +238,7 @@ public class BillBean extends BeanMao {
 	public void setOutFpBeans(Collection<FpBean> outFpBeans) {
 		this.outFpBeans = outFpBeans;
 	}
-	public void setReportMoney(float reportMoney) {
-		this.reportMoney = reportMoney;
-	}
+
 	public void setReportTaxMoney(float reportTaxMoney) {
 		this.reportTaxMoney = reportTaxMoney;
 	}
@@ -259,8 +254,9 @@ public class BillBean extends BeanMao {
 	}
 	
 
+	@Caption("最终报价(未含税)")
 	public float getReportMoney() {
-		reportMoney=0;
+		int reportMoney = 0;
 		 for(PicBean picBean:picBeans){
 			 reportMoney+=picBean.getReportMoney();
 		 }

@@ -1,25 +1,33 @@
 package ui.costPanes;
 
-import java.awt.Component;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.text.DecimalFormat;
+import java.util.Calendar;
 import java.util.Vector;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.JOptionPane;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingx.JXDatePicker;
 
 import ui.customComponet.BeanPanel;
+import ui.customComponet.JTextField;
 import validation.builtin.Validators;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
+import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Employee;
 import com.mao.jf.beans.OperationPlan;
 import com.mao.jf.beans.OperationWork;
@@ -32,7 +40,7 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 	private JTextField prepareTime;
 	private JTextField useTime    ;
 	private JTextField note       ;
-	private JComboBox<OperationPlan> operationPlan;
+	private JTextField operationId;
 	private JComboBox<Employee> employee          ;
 	private JComboBox<Employee> superintendent          ;
 	private JComboBox<Employee> firstChecker          ;
@@ -40,6 +48,8 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 	private JXDatePicker finishDate               ;
 	private JComboBox<Employee> prepareEmployee   ;
 	private JTextField checkData;
+	private JTextField planId;
+	private JTextField operationName;
 
 	/**
 	 * Create the panel.
@@ -74,6 +84,8 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,}));
 		getNum=new JTextField();      
 		productNum=new JTextField();  
@@ -82,7 +94,7 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		prepareTime=new JTextField(); 
 		useTime=new JTextField();     
 		note=new JTextField();        
-		operationPlan= new JComboBox<OperationPlan>();;
+		operationId= new JTextField();
 		employee= new JComboBox<Employee>(new Vector<Employee>(Employee.loadOperaters()));
 		checker= new JComboBox<Employee>();
 		finishDate=new JXDatePicker();
@@ -91,66 +103,118 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		firstChecker=new JComboBox<Employee>(new Vector<Employee>(Employee.loadAll()));
 		checkData=new JTextField();
 
-		add( new JLabel("工序:"), "2, 2, right, default");		
-		add(operationPlan, "4, 2, fill, default");
-
-
-		add( new JLabel("操作员:"), "6, 2, right, default");		
-		add(employee, "8, 2, fill, default");
+		add( new JLabel("操作员:"), "2, 2, right, default");		
+		add(employee, "4, 2, fill, default");
 		employee.setName("操作员");
 
-		add(new JLabel("实发数:"), "2, 4, right, default");
-		add(getNum, "4, 4, fill, default");
+
+		add( new JLabel("工艺编号:"), "6, 2, right, default");		
+		add(operationId, "8, 2, fill, default");
+		operationId.setName("工艺编号");
+
+		add(new JLabel("工艺卡号:"), "2, 4, right, default");
+		planId=new JTextField();
+		planId.setEditable(false);
+		add(planId, "4, 4, fill, default");
+
+		operationName=new JTextField();
+		operationName.setEditable(false);
+		add(new JLabel("工艺名:"), "6, 4, right, default");
+		add(operationName, "8, 4, fill, default");
+
+
+		add(new JLabel("投入数:"), "2, 6, right, default");
+		add(getNum, "4, 6, fill, default");
 		getNum.setName("实发数");
 
 
-		add(new JLabel("成品数："), "6, 4, right, default");
-		add(productNum, "8, 4, fill, default");
-		productNum.setName("成品数");
+		add(new JLabel("良品数:"), "6, 6, right, default");
+		add(productNum, "8, 6, fill, default");
+		productNum.setName("良品数");
 
-		add(new JLabel("报废数:"), "2, 6, right, default");
-		add(scrapNum, "4, 6, fill, default");
-		scrapNum.setName("报废数");
+		add(new JLabel("不良数:"), "2, 8, right, default");
+		add(scrapNum, "4, 8, fill, default");
+		scrapNum.setName("不良数");
 
 
-		add(new JLabel("报废原因:"), "6, 6, right, default");		
-		add(scrapReason, "8, 6, fill, default");
+		add(new JLabel("不良描述:"), "6,8, right, default");		
+		add(scrapReason, "8, 8, fill, default");
 
-		add(new JLabel("用时:"), "2, 8, right, default");		
-		add(useTime, "4, 8, fill, default");
+		add(new JLabel("用时:"), "2, 10, right, default");		
+		add(useTime, "4, 10, fill, default");
 		useTime.setName("用时");
+		JLabel label_11 = new JLabel("生产时间:");
+		add(label_11, "6, 10,right,default");
 
-		JLabel label_11 = new JLabel("完成时间:");
-		add(label_11, "6, 8");
+        Calendar calendar=Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        finishDate.setDate(calendar.getTime());
+        calendar=null;
 		finishDate.setFormats(new String[] {"yyyy\u5E74MM\u6708dd\u65E5"});
-		add(finishDate, "8, 8");
+		add(finishDate, "8, 10,left,default");
+		finishDate.getEditor().setName("生产时间");
 
-
-		add( new JLabel("调机用时:"), "2, 10, right, default");	
-		add(prepareTime, "4, 10, fill, default");
+		add( new JLabel("调机用时:"), "2, 12, right, default");	
+		add(prepareTime, "4, 12, fill, default");
 		prepareTime.setName("调机用时");
 
 
-		add(new JLabel("调机员:"), "6, 10, right, default");		
-		add(prepareEmployee, "8, 10, fill, default");
+		add(new JLabel("调机员:"), "6, 12, right, default");		
+		add(prepareEmployee, "8, 12, fill, default");
 
-		add(new JLabel("首件检验人:"), "2, 12, right, default");		
-		add(firstChecker, "4, 12, fill, default");
-		add(new JLabel("首件检验数据:"), "6, 12, right, default");		
-		add(checkData, "8, 12, fill, default");
+		add(new JLabel("首件检验人:"), "2, 14, right, default");		
+		add(firstChecker, "4, 14, fill, default");
+		add(new JLabel("首件检验数据:"), "6, 14, right, default");		
+		add(checkData, "8, 14, fill, default");
 
-		add(new JLabel("检验员:"), "2, 14, right, default");		
-		add(checker, "4, 14, fill, default");
-		
-		add(new JLabel("主管:"), "6, 14, right, default");		
-		add(superintendent, "8, 14, fill, default");
+		add(new JLabel("检验员:"), "2, 16, right, default");		
+		add(checker, "4, 16, fill, default");
 
-		
-		
-		add(new JLabel("备注:"), "2, 16, right, default");		
-		add(note, "4, 16, fill, default");
+		add(new JLabel("主管:"), "6, 16, right, default");		
+		add(superintendent, "8, 16, fill, default");
 
+
+
+		add(new JLabel("备注:"), "2, 18, right, default");		
+		add(note, "4, 18, fill, default");
+		operationId.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				showOperationPlan();
+
+			}
+
+			
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				// TODO 自动生成的方法存根
+
+			}
+		});
 		addValidators();
+		addEnterKeyAction();
+	}
+	private void showOperationPlan() {
+		if(StringUtils.isNoneBlank(operationId.getText())){
+			try{
+				OperationPlan operationPlan= BeanMao.beanManager.find(OperationPlan.class, Integer.valueOf(operationId.getText()));
+				if(operationPlan==null) {
+					JOptionPane.showMessageDialog(this,"没有找到对应的工艺,请确认有没有输入正确");
+					operationId.setText(null);
+					return;					
+				}
+				operationName.setText(operationPlan.getName());
+				planId.setText(new DecimalFormat("000,000").format(operationPlan.getPicPlan().getId()).replaceAll(",", "-"));
+				getBean().setOperationPlan(operationPlan);
+			}catch(Exception e1){
+				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this,"没有找到对应的工艺,请确认有没有输入正确");
+				operationId.setText(null);
+			}
+		}
+		
 	}
 	public void addValidators() {
 
@@ -158,22 +222,27 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		getValidationGroup().add(getNum,Validators.REQUIRE_VALID_INTEGER);
 		getValidationGroup().add(getNum,Validators.numberMin(0));
 		getValidationGroup().add(getNum,Validators.REQUIRE_NON_EMPTY_STRING);
-		getValidationGroup().add(operationPlan,Validators.notNull());
+		getValidationGroup().add(operationId,Validators.REQUIRE_VALID_INTEGER);
+		getValidationGroup().add(operationId,Validators.numberMin(0));
+		getValidationGroup().add(operationId,Validators.REQUIRE_NON_EMPTY_STRING);
 		getValidationGroup().add(productNum,Validators.REQUIRE_VALID_INTEGER);
 		getValidationGroup().add(productNum,Validators.REQUIRE_NON_NEGATIVE_NUMBER);
 		getValidationGroup().add(scrapNum,Validators.REQUIRE_VALID_INTEGER);
 		getValidationGroup().add(scrapNum,Validators.REQUIRE_VALID_NUMBER);
 		getValidationGroup().add(scrapNum,Validators.REQUIRE_NON_NEGATIVE_NUMBER);
 		getValidationGroup().add(useTime,Validators.REQUIRE_VALID_NUMBER);
-		getValidationGroup().add(useTime,Validators.REQUIRE_NON_NEGATIVE_NUMBER);
+		getValidationGroup().add(useTime,Validators.numberMin(0));
 		getValidationGroup().add(prepareTime,Validators.numberMinE(0));
 		getValidationGroup().add(employee,Validators.notNull());
+		getValidationGroup().add(finishDate.getEditor(),Validators.notNull());
+		getValidationGroup().add(finishDate.getEditor(),Validators.REQUIRE_NON_EMPTY_STRING);
 	}
 
 	@Override
 	protected void dataBinding() {
 		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
 		BeanProperty<Object, Object> comboBoxBeanProperty = BeanProperty.create("selectedItem");
+		
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("getNum"), getNum, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("productNum"), productNum, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("scrapNum"), scrapNum, jTextFieldBeanProperty));
@@ -186,22 +255,51 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("employee"), employee, comboBoxBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("checker"), checker, comboBoxBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("prepareEmployee"), prepareEmployee, comboBoxBeanProperty));
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("operationPlan"), operationPlan, comboBoxBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("firstChecker"), firstChecker, comboBoxBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("superintendent"), superintendent, comboBoxBeanProperty));
 
 
 
 	}
-	@Override
-	public void setBean(OperationWork bean) {
-		unBind();
-		try{
-		operationPlan.setModel(new DefaultComboBoxModel<>(new Vector<>(bean.getPlan().getOperationPlans())));
-		}catch(Exception e){
-			operationPlan.removeAllItems();
-		}
-		super.setBean(bean);
-	}
+	private void addEnterKeyAction() {
+		KeyListener enterKeyListener = new KeyListener() {
 
+			@Override
+			public void keyTyped(KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					((JComponent) e.getSource()).transferFocus();
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO 自动生成的方法存根
+
+			}
+		};
+		
+		getNum.addKeyListener(enterKeyListener);
+		productNum.addKeyListener(enterKeyListener);
+		scrapNum.addKeyListener(enterKeyListener);
+		scrapReason.addKeyListener(enterKeyListener);
+		prepareTime.addKeyListener(enterKeyListener);
+		useTime.addKeyListener(enterKeyListener);
+		note.addKeyListener(enterKeyListener);
+		operationId.addKeyListener(enterKeyListener);
+		employee.addKeyListener(enterKeyListener);
+		superintendent.addKeyListener(enterKeyListener);
+		firstChecker.addKeyListener(enterKeyListener);
+		checker.addKeyListener(enterKeyListener);
+		finishDate.addKeyListener(enterKeyListener);
+		prepareEmployee.addKeyListener(enterKeyListener);
+		checkData.addKeyListener(enterKeyListener);
+		operationName.addKeyListener(enterKeyListener);
+		planId.addKeyListener(enterKeyListener);
+	}
 }

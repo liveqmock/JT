@@ -1,10 +1,6 @@
 package com.mao.jf.beans;
 
 
-import static javax.persistence.CascadeType.MERGE;
-import static javax.persistence.CascadeType.PERSIST;
-import static javax.persistence.CascadeType.REFRESH;
-
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -37,26 +33,7 @@ public class EquipmentPlan {
 	private int planUseTimes;
 	private int freeTime;
 
-	@OneToOne(fetch = FetchType.LAZY,  orphanRemoval = true)
-	@JoinColumn(name = "preEquipmentPlan", referencedColumnName = "id")
-	private EquipmentPlan	preEquipmentPlan;
 
-	@OneToOne(fetch = FetchType.LAZY,orphanRemoval = true)
-	@JoinColumn(name = "nextEquipmentPlan", referencedColumnName = "id")
-	private EquipmentPlan	nextEquipmentPlan;
-	public void	toNextPlan(EquipmentPlan equipmentPlan) throws Exception {
-		equipmentPlan.setEquipment(equipment);
-		equipmentPlan.setPlanStartTime(getPlanEndTime());
-		if(nextEquipmentPlan!=null){
-			nextEquipmentPlan.setPreEquipmentPlan(equipmentPlan);
-			equipmentPlan.setNextEquipmentPlan(nextEquipmentPlan);			
-			equipmentPlan.setFreeTime(((Long)(nextEquipmentPlan.getPlanStartTime().getTime()-equipmentPlan.getPlanEndTime().getTime())).intValue()/60000);
-		}
-		equipmentPlan.setPreEquipmentPlan(this);
-		this.setNextEquipmentPlan(equipmentPlan);
-
-
-	}
 	public int getId() {
 		return id;
 	}
@@ -80,12 +57,7 @@ public class EquipmentPlan {
 	}
 	public void setPlanStartTime(Date planStartTime) {
 		this.planStartTime = planStartTime;
-		setPlanEndTime(new Date(getPlanStartTime().getTime()+planUseTimes*60000));
-		if(getPreEquipmentPlan()!=null){
-			long c =( planStartTime.getTime()-getPreEquipmentPlan().getPlanEndTime().getTime())/60000;
-			getPreEquipmentPlan().setFreeTime(((Long)c).intValue());
 
-		}
 	}
 	public int getPlanUseTimes() {
 		return planUseTimes;
@@ -99,18 +71,7 @@ public class EquipmentPlan {
 	public void setPlanEndTime(Date planEndTime) {
 		this.planEndTime = planEndTime;
 	}
-	public EquipmentPlan getPreEquipmentPlan() {
-		return preEquipmentPlan;
-	}
-	public void setPreEquipmentPlan(EquipmentPlan preEquipmentPlan) {
-		this.preEquipmentPlan = preEquipmentPlan;
-	}
-	public EquipmentPlan getNextEquipmentPlan() {
-		return nextEquipmentPlan;
-	}
-	public void setNextEquipmentPlan(EquipmentPlan nextEquipmentPlan) {
-		this.nextEquipmentPlan = nextEquipmentPlan;
-	}
+
 	public int getFreeTime() {
 		return freeTime;
 	}
@@ -123,21 +84,6 @@ public class EquipmentPlan {
 	public void setNum(int num) {
 		this.num = num;
 	}
-	@PreRemove
-	private void preRemove(){
-		try{
-			if(preEquipmentPlan!=null&&nextEquipmentPlan!=null){
-				preEquipmentPlan.setFreeTime((((Long)(nextEquipmentPlan.getPlanStartTime().getTime()-preEquipmentPlan.getPlanEndTime().getTime())).intValue()/60000));
-				preEquipmentPlan.setNextEquipmentPlan(nextEquipmentPlan);
-				nextEquipmentPlan.setPreEquipmentPlan(preEquipmentPlan);
-			}else if(nextEquipmentPlan!=null){
-				nextEquipmentPlan.setPreEquipmentPlan(null);
-			}else if(preEquipmentPlan!=null){
-				preEquipmentPlan.setNextEquipmentPlan(null);
-			}
-		}catch(Exception e){
 
-		}
-	}
 
 }

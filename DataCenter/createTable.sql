@@ -50,3 +50,39 @@ CREATE TABLE "DATACENTER"."MARKETINFO"  (
 		  "ACCTNO" VARCHAR(50) , 
 		  "CUSTNAME" VARCHAR(50) )   
 		 IN "USERSPACE1" ; 
+		 
+CREATE TABLE "DATACENTER".role  (
+		  "ID" INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (  
+		    START WITH +1  
+		    INCREMENT BY +1  
+		    MINVALUE +1  
+		    MAXVALUE +2147483647  
+		    NO CYCLE  
+		    CACHE 20  
+		    NO ORDER ) , 
+		  role_Name varCHAR(50) , 
+		  remark  varCHAR(50) , 
+		 status smallint  )   ;
+	CREATE TABLE "DATACENTER".resource  (
+		  "ID" INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (  
+		    START WITH +1  
+		    INCREMENT BY +1  
+		    MINVALUE +1  
+		    MAXVALUE +2147483647  
+		    NO CYCLE  
+		    CACHE 20  
+		    NO ORDER ) , 
+		  resource_Name varCHAR(50) , 
+		  parent int,
+		  resourcePnl  varCHAR(50) ,  
+		 status smallint ,
+		 iorder int,
+		  remark  varCHAR(50) )   ;		 
+ Create table DATACENTER.USER_ROLE (
+    user_id                        int                 NOT NULL    ,
+    role_id                        int                 NOT NULL    ) 
+ Create table DATACENTER.ROLE_RESOURCE (
+    resource_id                        int                 NOT NULL    ,
+    role_id                        int                 NOT NULL    ) ;
+alter table DATACENTER.USER add status smallint not null default 1;
+

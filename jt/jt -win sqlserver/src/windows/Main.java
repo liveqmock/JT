@@ -21,7 +21,6 @@ import jcifs.smb.SmbFileInputStream;
 import ui.customComponet.BeanDialog;
 import ui.frames.About;
 import ui.menu.MainMenu;
-import ui.panels.BillManagerPnl;
 import ui.panels.LoginPanel;
 import ui.panels.MainPanel;
 
@@ -37,7 +36,7 @@ public class Main extends JFrame {
 	 * Launch the application.
 	 */
 
-	public  static int ver=56;
+	public  static int ver=68;
 
 
 	public Main() {

@@ -3,13 +3,9 @@ package com.mao.tool;
 import java.beans.PropertyVetoException;
 import java.io.Serializable;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.HashMap;
 
-import javax.persistence.NoResultException;
 import javax.sql.DataSource;
-
-import org.hibernate.Hibernate;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -33,7 +29,7 @@ public class Datasource implements Serializable {
 		DataSource dataSource = dataSources.get(dataSourceName);
 		if (dataSource == null) {
 			try{
-				dataSource=createDataSource("db2", "154.63.100.61", "50000","coredb","db2", "db2");
+				dataSource=createDataSource("db2", "192.168.1.103", "50000","phdb","db2", ".");
 				dataSource.getConnection();
 				dataSources.put(dataSourceName,dataSource);
 			}catch (Exception e) {
@@ -76,7 +72,8 @@ public class Datasource implements Serializable {
 //		return druidDataSource;
 	}
 	public static Connection getConnection() throws Exception {
-		try{ return  getDataSource("coredb").getConnection();
+		try{ 
+			return  getDataSource("coredb").getConnection();
 		}catch(Exception e){
 			dataSources.remove("coredb");
 			throw e;

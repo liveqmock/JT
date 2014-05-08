@@ -2,19 +2,18 @@ package com.mao.layout.resource;
 
 import java.util.List;
 
-import com.mao.bean.BusinessMarket;
 import com.mao.bean.MarketInfo;
 import com.mao.customLayout.BeansTable;
 import com.mao.tool.BeanManager;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.Reindeer;
 
 public class MarketDetail extends VerticalLayout {

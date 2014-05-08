@@ -28,6 +28,8 @@ public class FpBean {
 	private float money;
 	@Caption("开票时间")
 	private Date createDate;
+	@Caption("发票内容")
+	private String content;
 	
 	@OneToOne
 	@JoinColumn(name = "inputUser", referencedColumnName = "id")
@@ -71,6 +73,12 @@ public class FpBean {
 		this.fpNo = fpNo;
 	}
 	
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
 	@PostPersist
 	public void refreshBill(){
 		BeanMao.beanManager.refresh(bill);

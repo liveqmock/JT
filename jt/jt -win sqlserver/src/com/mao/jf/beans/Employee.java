@@ -2,10 +2,8 @@ package com.mao.jf.beans;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.beans.Transient;
 import java.util.Collection;
 import java.util.List;
-import java.util.Vector;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.mao.jf.beans.annotation.Caption;
 
 @Entity
@@ -22,44 +19,41 @@ public class Employee extends BeanMao {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private int id;
+	@Caption(order = 1, value= "姓名")
 	private String name;
 	
 	@OneToOne
 	@JoinColumn(name = "operation", referencedColumnName = "id")
+	@Caption(order = 2, value= "操作工序")
 	private Operation operation ;
+
+	@Caption(order = 3, value= "分工资")
 	private float wage;
-	private String employeeType;
 	
+	@Caption(order = 5, value= "是否为操作员")
+	private boolean operationer;
+	@Caption(order = 6, value= "是否为检验员")
+	private boolean checker;
+	@Caption(order = 6, value= "是否为主管")
+	private boolean superintendent;
 	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
 	}
-	@Caption(order = 1, value= "姓名")
 	public String getName() {
 		return name;
 	}
-	@Caption(order = 2, value= "操作工序")
 	public Operation getOperation() {
 		return operation;
 	}
-	@Caption(order = 3, value= "分工资")
 	public float getWage() {
 		return wage;
 	}
-	
-	@Transient
 	@Caption(order = 4, value= "月工资")
 	public float getMonWage() {
 		return (int)(wage*convert);
-	}
-	@Caption(order = 5, value= "类型")
-	public String getEmployeeType() {
-		return employeeType;
-	}
-	public void setEmployeeType(String employeeType) {
-		this.employeeType = employeeType;
 	}
 	public void setName(String name) {
 		this.name = name;
@@ -80,12 +74,12 @@ public class Employee extends BeanMao {
 	}
 	public static List<Employee> loadCheckers() {
 		
-			return getBeans(Employee.class, " a.employeeType='检验员'");
+			return getBeans(Employee.class, " checker=true");
 		
 	}
 	public static List<Employee> loadOperaters() {
 		
-				return getBeans(Employee.class, "a.employeeType='操作员'");
+				return getBeans(Employee.class, " operationer=true");
 		
 	}
 	
@@ -100,9 +94,33 @@ public class Employee extends BeanMao {
 			return names;
 		
 	}
+	public static float getConvert() {
+		return convert;
+	}
+	public static void setConvert(float convert) {
+		Employee.convert = convert;
+	}
+	public boolean isChecker() {
+		return checker;
+	}
+	public void setChecker(boolean checker) {
+		this.checker = checker;
+	}
+	public boolean isSuperintendent() {
+		return superintendent;
+	}
+	public void setSuperintendent(boolean superintendent) {
+		this.superintendent = superintendent;
+	}
+	public boolean isOperationer() {
+		return operationer;
+	}
+	public void setOperationer(boolean operationer) {
+		this.operationer = operationer;
+	}
 	public static Collection<? extends Employee> loadSuperintendents() {
 
-		return getBeans(Employee.class, "a.employeeType='主管'");
+		return getBeans(Employee.class, " superintendent=true");
 	}
 	public static Collection<? extends Employee> loadAll() {
 

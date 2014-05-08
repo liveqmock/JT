@@ -3,7 +3,6 @@ package com.mao.jf.beans;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.List;
-import java.util.Vector;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -111,6 +110,7 @@ public  class Custom extends BeanMao {
 	public static String[] getStrings(String name, int out) {
 		
 		List<String> namelist = (List<String>) BeanMao.beanManager.queryList("select distinct contact from Custom where out=?1 and name=?2", String.class,out,name );
+		namelist.add(0, null);
 		String names[]=new String[namelist.size()];
 		namelist.toArray(names);
 		return names;
@@ -118,6 +118,7 @@ public  class Custom extends BeanMao {
 
 	public static String[] getCustomerNames(int out) {
 		List<String> namelist = (List<String>) BeanMao.beanManager.queryList("select distinct name from Custom where out=?1", String.class,out );
+		namelist.add(0, null);
 		String names[]=new String[namelist.size()];
 		namelist.toArray(names);
 		return names;

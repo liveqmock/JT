@@ -5,15 +5,12 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 
 import com.mao.jf.beans.annotation.Caption;
 
@@ -22,17 +19,27 @@ public class Operation extends BeanMao {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private int id;
+	@Caption( "设备类型")
 	private String name;  
+	@Caption("费用")
 	private float cost ;
+	@Caption("外协")
+	private boolean out ;
+	public boolean isOut() {
+		return out;
+	}
+
+	public void setOut(boolean out) {
+		this.out = out;
+	}
+
+	@Caption( "备注")
 	private String note  ;
-	private int num  ;
 	@OneToMany(mappedBy = "operation", fetch = EAGER)
 	@OrderBy("code")
 	private Collection<Equipment> equipments;
 
-
 	
-	@Caption(order = 1, value= "工序名称")
 	public String getName() {
 		return name;
 	}
@@ -45,15 +52,13 @@ public class Operation extends BeanMao {
 		this.id = id;
 	}
 
-	@Caption(order = 3, value= "设备数量")
+	@Caption( "设备数量")
 	public int getNum() {
-		return num;
+		return  getEquipments().size();
 	}
-	@Caption(order = 5, value= "费用")
 	public float getCost() {
 		return cost;
 	}
-	@Caption(order = 6, value= "备注")
 	public String getNote() {
 		return note;
 	}
@@ -69,12 +74,10 @@ public class Operation extends BeanMao {
 		this.note = note;
 	}
 	public Collection<Equipment> getEquipments() {
+		if(equipments==null)equipments=new ArrayList<Equipment>();
 		return equipments;
 	}
 
-	public void setNum(int num) {
-		this.num = num;
-	}
 
 	public void setEquipments(Collection<Equipment> equipments) {
 		this.equipments = equipments;
@@ -111,37 +114,7 @@ public class Operation extends BeanMao {
 		return true;
 	}
 
-	@PrePersist
-	@PreUpdate
-	public void prePersist() {
-		if(equipments==null )equipments=new ArrayList<>();
-		if(num>equipments.size()){
-			for(int i=equipments.size();i<num;i++){
-				Equipment equipment=new Equipment(this);
-				equipment.setCode(i+1);
-				BeanMao.saveBean(equipment);
-				equipments.add(equipment);
-			}
-				
-		}
-		if(num<equipments.size()){
-			ArrayList<Equipment> newEquipments = new ArrayList<>();
-			int i=0;
-			Iterator<Equipment> it = equipments.iterator();
-			while(i<num){
-				newEquipments.add(it.next());
-				i++;
-			}
-			for(Equipment equipment:equipments){
-				if(!newEquipments.contains(equipment)){
-					BeanMao.removeBean(equipment);
-				}
-					
-			}
-			equipments.clear();
-			equipments.addAll(newEquipments);
-		}
-	}
+	
 	
 	
 }

@@ -25,11 +25,15 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTree;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 
+import jcifs.smb.SmbFileInputStream;
+
 import org.apache.commons.lang3.StringUtils;
+import org.icepdf.core.views.DocumentViewController;
 import org.icepdf.ri.common.MyAnnotationCallback;
 import org.icepdf.ri.common.SwingController;
 import org.icepdf.ri.common.SwingViewBuilder;
@@ -49,7 +53,7 @@ public class PicView extends JScrollPane {
 	private SwingWorker swingWorker;
 	public PicView() {
 		super();
-
+		buildPdfViewer();
 	}
 
 	private void showImage() throws IOException {
@@ -91,24 +95,32 @@ public class PicView extends JScrollPane {
 	}
 
 	private void showPdf() throws IOException {
+//		if(pdfViewPanel==null)buildPdfViewer();		
+//		controller.openDocument(smbToLocal(fileName).getAbsolutePath());
+//		pdfViewPanel.setPreferredSize(new Dimension(getVisibleRect().width-50, getVisibleRect().height-50));
+//		setViewportView(pdfViewPanel);
+//		controller.getDocumentViewController().setFitMode(DocumentViewController.PAGE_FIT_WINDOW_WIDTH);
 		if(pdfViewPanel==null)buildPdfViewer();			
-		URL url = new URL("http://192.168.1.103/pics/"
-				+ fileName);
-		controller.openDocument(url);
+		URL url = new URL("http://192.168.1.103/pics/"+ fileName);
+		controller.openDocument(url.openStream(),"图纸",null);
+		pdfViewPanel.setPreferredSize(new Dimension(getVisibleRect().width-50, getVisibleRect().height-50));
 		setViewportView(pdfViewPanel);
-
-
+		controller.getDocumentViewController().setFitMode(DocumentViewController.PAGE_FIT_WINDOW_WIDTH);
+		
 	}
 	public void showFile(String path) {
 		//		this.isSmbConnect=isSmbConnect;
-		if(StringUtils.isBlank(path))return;
+		if(StringUtils.isBlank(path)){
+			setViewportView(null);
+			return;
+		};
 		type=1;
 		String a[] =path.split("\\\\");
 		fileName=a[a.length - 1];
 		String sss[]=fileName.split("\\.");
 		String s=null;
 		if(sss.length>1) s=sss[sss.length-1];
-		setPiff(s);
+		piff=s;
 		final String ass = s;
 		if(swingWorker!=null)swingWorker.cancel(true);
 		swingWorker=new SwingWorker<Void, Void>() {
@@ -159,16 +171,11 @@ public class PicView extends JScrollPane {
 		MyAnnotationCallback myAnnotationCallback = new MyAnnotationCallback(
 				controller.getDocumentViewController());
 		controller.getDocumentViewController().setAnnotationCallback(myAnnotationCallback);
-		controller.getDocumentViewController().setFitMode(org.icepdf.ri.common.views.DocumentViewController.PAGE_FIT_WINDOW_WIDTH);
 		
 		pdfViewPanel = factory.buildViewerPanel();
-
 	}
-	public String getPiff() {
+	private String getPiff() {
 		return piff;
-	}
-	public void setPiff(String piff) {
-		this.piff = piff;
 	}
 
 	public void saveImage() {
@@ -208,15 +215,9 @@ public class PicView extends JScrollPane {
 	}
 	private InputStream getIs() {
 		try {
-			//			if(type==0){
-			//				return new SmbFileInputStream(
-			//						"smb://192.168.1.103/pics/"+fileName);
-			//
-			//			}else 
-			//			
 			if(type==1){
 				return new URL("http://192.168.1.103/pics/"
-					+ fileName).openStream();
+						+ fileName).openStream();
 			}else if(type==2){
 				return new FileInputStream(imgFile);
 			}
@@ -274,5 +275,24 @@ public class PicView extends JScrollPane {
 		// TODO 自动生成的方法存根
 		return imageView.getImage();
 	}
+	private  File smbToLocal(String smbFile ) throws IOException{
 
+		File dir=new File("picFiles");
+		if(!dir.exists()) dir.mkdir();
+		File localFile = new File("picFiles/"+smbFile);
+		if(localFile.exists())return localFile;
+		
+		int byteread = 0;
+		OutputStream fs = new FileOutputStream(localFile);
+		SmbFileInputStream inStream = new SmbFileInputStream(
+				"smb://192.168.1.103/pics/" + smbFile);
+		byte[] buffer = new byte[20480];
+		while ((byteread = inStream.read(buffer)) != -1) {
+
+			fs.write(buffer, 0, byteread);
+		}
+		inStream.close();
+		fs.close();
+		return localFile;
+	}
 }

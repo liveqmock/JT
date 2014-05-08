@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
 
 import javax.swing.Box;
@@ -151,7 +150,7 @@ public abstract class PicShowPnl extends JPanel{
 							field = "bill.custom";
 							break;
 						case "订单号":
-							field = "bill.billid";
+							field = "custBillNo";
 							break;
 						case "项目号":
 							field = "item";
@@ -185,9 +184,9 @@ public abstract class PicShowPnl extends JPanel{
 						String field = "";
 						switch ((String) dateBox.getSelectedItem()) {
 						case "订单日期":
-							field = "bill.createDate";
+							field = "bill.billDate";
 							break;
-						case "请求交货日期":
+						case "求交货日期":
 							field = "bill.requestDate";
 							break;
 						case "订单交货日期":

@@ -1,6 +1,5 @@
 package ui.costPanes;
 
-import javax.swing.JOptionPane;
 
 import ui.customComponet.BeansPanel;
 
@@ -17,19 +16,9 @@ public class OperarionPlansPnl extends BeansPanel<OperationPlan> {
 	}
 	@Override
 	public OperationPlan saveBean() {
-		if (!getBeanPanel().isValide()) {
-			return null;
-		}
 		OperationPlan bean = getPanelBean();
-		
-		for(OperationPlan bean2:getBeans()){
-			if(bean2.equals(bean)&&bean2!=bean){
-				JOptionPane.showMessageDialog(this, "此工序已经存在，不能再添加！","错误",JOptionPane.ERROR_MESSAGE);
-				return null;
-			}
-
-		}
-		bean.setSequence(getTablePane().getTable().getRowCount());
+		if(bean.getSequence()==0)
+			bean.setSequence(getTablePane().getTable().getRowCount()+1);
 		bean.save();
 		return bean;
 

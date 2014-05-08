@@ -9,14 +9,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import ui.customComponet.BeanTablePane;
-import ui.menu.BillPopMenu;
-import ui.menu.PicPopmenu;
 import ui.tables.BillTable;
 import ui.tables.PicTable;
 
 import com.mao.jf.beans.BillBean;
-import com.mao.jf.beans.PicBean;
 
 public class BillManagerPnl extends BillShowPnl {
 

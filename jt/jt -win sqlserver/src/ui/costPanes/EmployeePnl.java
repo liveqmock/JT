@@ -3,6 +3,7 @@ package ui.costPanes;
 import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -26,7 +27,12 @@ public class EmployeePnl extends BeanPanel<Employee> {
 	private JTextField name;
 	private JTextField wage;
 	private JComboBox<Operation> comboBox;
-	private JComboBox<String> type;
+	private JCheckBox operationer;
+
+	private JCheckBox checker;
+
+	private JCheckBox superintendent;
+	
 	public EmployeePnl(Employee bean) {
 		super(bean);
 	}
@@ -38,6 +44,10 @@ public class EmployeePnl extends BeanPanel<Employee> {
 				FormFactory.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),},
 			new RowSpec[] {
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
@@ -70,15 +80,22 @@ public class EmployeePnl extends BeanPanel<Employee> {
 		name.setName("姓名");
 		comboBox.setName("岗位");
 		wage.setName("工资");
-		
-		JLabel label_2 = new JLabel("\u7C7B\u578B\uFF1A");
+
+		JLabel label_2 = new JLabel("是否为操作员:");
 		add(label_2, "2, 8, right, default");
 		
-		 type = new JComboBox();
-		type.setModel(new DefaultComboBoxModel(new String[] {"\u64CD\u4F5C\u5458", "\u68C0\u9A8C\u5458","主管"}));
+		 operationer=new JCheckBox("操作员");
+		add(operationer, "4, 8, fill, default");
+
+		add(new JLabel("是否为检验员:"), "2, 10, right, default");
 		
-		type.setSelectedIndex(0);
-		add(type, "4, 8, fill, default");
+		 checker=new JCheckBox("检验员");
+		add(checker, "4, 10, fill, default");
+
+		add( new JLabel("是否为主管:"), "2, 12, right, default");
+		
+		 superintendent=new JCheckBox("主管");
+		add(superintendent, "4, 12, fill, default");
 		
 
 		getValidationGroup().add(comboBox,Validators.notNull());
@@ -95,7 +112,9 @@ public class EmployeePnl extends BeanPanel<Employee> {
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("name"), name, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("monWage"), wage, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("operation"), comboBox, BeanProperty.create("selectedItem")));
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("employeeType"), type, BeanProperty.create("selectedItem")));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("operationer"), operationer, BeanProperty.create("selected")));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("checker"), checker, BeanProperty.create("selected")));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("superintendent"), superintendent, BeanProperty.create("selected")));
 		
 		
 	}

@@ -120,7 +120,7 @@ public abstract class BeanDialog<T> extends JDialog {
 				});
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
+//				getRootPane().setDefaultButton(okButton);
 			}
 			{
 				JButton cancelButton = new JButton("È¡Ïû");

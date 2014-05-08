@@ -6,12 +6,10 @@ import java.util.Date;
 import javax.naming.NamingException;
 
 import com.mao.bean.BusinessType;
-import com.mao.bean.Employee;
 import com.mao.bean.MarketInfo;
 import com.mao.bean.User;
 import com.mao.customLayout.BeansEditPanel;
 import com.mao.tool.BeanManager;
-import com.sun.org.apache.xpath.internal.operations.String;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.ComboBox;
 public class MarketInfoLayout  extends BeansEditPanel<MarketInfo>{

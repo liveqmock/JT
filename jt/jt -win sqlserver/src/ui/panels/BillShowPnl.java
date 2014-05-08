@@ -11,7 +11,6 @@ import java.awt.event.ItemListener;
 import java.text.SimpleDateFormat;
 
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -28,8 +27,6 @@ import org.jdesktop.swingx.HorizontalLayout;
 import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.VerticalLayout;
-
-import sun.net.www.content.image.jpeg;
 
 import com.mao.jf.beans.Custom;
 
@@ -180,7 +177,7 @@ public abstract class BillShowPnl extends JPanel{
 						String field = "";
 						switch ((String) dateBox.getSelectedItem()) {
 						case "订单日期":
-							field = "createDate";
+							field = "billDate";
 							break;
 						case "要求交货日期":
 							field = "requestdate";

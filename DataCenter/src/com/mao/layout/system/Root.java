@@ -4,7 +4,6 @@ package com.mao.layout.system;
 
 import javax.servlet.annotation.WebServlet;
 
-import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;

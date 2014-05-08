@@ -25,7 +25,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.JTextField;
 
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
@@ -33,8 +32,8 @@ import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingx.JXDatePicker;
 
 import ui.customComponet.BeanDialog;
-import ui.customComponet.BeanTablePane;
 import ui.customComponet.BeansPanel;
+import ui.customComponet.JTextField;
 import ui.menu.MenuAction;
 import ui.tables.PicTable;
 import validation.Problem;
@@ -263,36 +262,14 @@ public class BillPanel extends JPanel {
 	}
 
 	private void addEnterKeyAction() {
-		KeyListener enterKeyListener = new KeyListener() {
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					((JComponent) e.getSource()).transferFocus();
-				}
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				// TODO 自动生成的方法存根
-
-			}
-		};
-		billidFld.addKeyListener(enterKeyListener);
-		billgroup.addKeyListener(enterKeyListener);
-		customCombox.addKeyListener(enterKeyListener);
-		contactManCombox.addKeyListener(enterKeyListener);
-		billcreateDate.getEditor().addKeyListener(enterKeyListener);
-		requestDate.getEditor().addKeyListener(enterKeyListener);
-		billgetDate.getEditor().addKeyListener(enterKeyListener);
-		warehousCheckBox.addKeyListener(enterKeyListener);
-		addCustomButton.addKeyListener(enterKeyListener);
+		
+		customCombox.addKeyListener(JTextField.enterKeyListener);
+		contactManCombox.addKeyListener(JTextField.enterKeyListener);
+		billcreateDate.getEditor().addKeyListener(JTextField.enterKeyListener);
+		requestDate.getEditor().addKeyListener(JTextField.enterKeyListener);
+		billgetDate.getEditor().addKeyListener(JTextField.enterKeyListener);
+		warehousCheckBox.addKeyListener(JTextField.enterKeyListener);
+		addCustomButton.addKeyListener(JTextField.enterKeyListener);
 
 	}
 
@@ -384,7 +361,7 @@ public class BillPanel extends JPanel {
 			public boolean okButtonAction() {
 				// TODO 自动生成的方法存根
 				((PicPanel)getContentPanel()).saveBill();
-				picTable.addNew(getBean());
+				picTable.insertBean(getBean());
 				return true;
 			}
 		};

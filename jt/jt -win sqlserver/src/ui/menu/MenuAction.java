@@ -20,14 +20,13 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 
-import org.apache.poi.hssf.record.PageBreakRecord.Break;
-
 import ui.costPanes.EmployeeCostPnl;
 import ui.costPanes.EmployeePnl;
+import ui.costPanes.EquipmentManagerPnl;
 import ui.costPanes.OperationPnl;
+import ui.costPanes.OperationWorkPnl;
 import ui.costPanes.PlanCreatePanel;
 import ui.costPanes.ShowWorkCostPnl;
-import ui.costPanes.UnStartPlanPnl;
 import ui.costPanes.WorkCostPnl;
 import ui.costPanes.WorkCreatePanel;
 import ui.customComponet.BeanDialog;
@@ -44,6 +43,7 @@ import com.mao.jf.beans.BillBean;
 import com.mao.jf.beans.Custom;
 import com.mao.jf.beans.Employee;
 import com.mao.jf.beans.Operation;
+import com.mao.jf.beans.OperationWork;
 import com.mao.jf.beans.SessionData;
 import com.mao.jf.beans.Userman;
 
@@ -119,9 +119,6 @@ public class MenuAction extends AbstractAction {
 				employeeManager();
 
 				break;
-			case "查看未开始的排产计划":
-				showUnStartPlan();
-				break;
 			case "月度统计":
 				monStatistic();
 				break;
@@ -140,7 +137,20 @@ public class MenuAction extends AbstractAction {
 			case "生产数据录入":
 				workManager();
 				break;
-			
+			case "设备管理":
+				try {
+					operationManager();
+				} catch (InstantiationException | IllegalAccessException
+						| IllegalArgumentException | InvocationTargetException
+						| NoSuchMethodException | SecurityException
+						| IntrospectionException e2) {
+					// TODO 自动生成的 catch 块
+					e2.printStackTrace();
+				}
+				break;
+			case "生产情况表":
+				SqlFrame("select * from planWorkDetail", "生产情况表");
+				break;
 			case "用户管理":
 				try {
 					manageUser();
@@ -159,10 +169,10 @@ public class MenuAction extends AbstractAction {
 
 
 	private void showEquipmentUsing() {
-		String sql = "select NAME 设备编号,a.code 设备编号, endtime 计划完工时间 from "
+		String sql = "select a.NAME 设备名称,a.code 设备编号, endtime 计划完工时间 from "
 				+ "dbo.equipment a join operation b on a.operation=b.id left "
 				+ "join (Select equipment,max(planEndTime) endtime from dbo.equipmentplan  "
-				+ "group by equipment) c on a.id=c.equipment order by name,code";
+				+ "group by equipment) c on a.id=c.equipment order by a.name,code";
 		SqlFrame(sql, "设备使用情况");
 	}
 
@@ -250,15 +260,6 @@ public class MenuAction extends AbstractAction {
 		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 		dialog.setVisible(true);
 	}
-	private void showUnStartPlan(){
-		JDialog dialog=new JDialog();
-		dialog.setTitle("未开始的排产计划");
-		dialog.setContentPane(new UnStartPlanPnl());
-		dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
-		dialog.setLocationRelativeTo(null);
-		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-		dialog.setVisible(true);
-	}
 
 
 	private void planProduct() {
@@ -272,13 +273,34 @@ public class MenuAction extends AbstractAction {
 	}
 	private void workManager() {
 
+		
+		
+		OperationWorkPnl operationWorkPnl=new OperationWorkPnl(new OperationWork());
+		BeansPanel<OperationWork> panel=new BeansPanel<OperationWork>(new ArrayList<OperationWork>(),operationWorkPnl,OperationWork.class) {
+
+			@Override
+			public OperationWork saveBean() {
+				getBeanPanel().getBean().save();
+				return getBeanPanel().getBean();
+			}
+
+			@Override
+			protected OperationWork createNewBean() {
+				OperationWork operationWork= new OperationWork();
+				operationWork.setEmployee(getBeanPanel().getBean().getEmployee());
+				return operationWork;
+			}
+
+			
+			
+		};
+
 		JFrame dialog=new JFrame();
 		dialog.setTitle("生产数据录入");
-		dialog.setContentPane(new WorkCreatePanel());
+		dialog.add(panel);
 		dialog.setExtendedState(Frame.MAXIMIZED_BOTH );
 		dialog.setLocationRelativeTo(null);
 		dialog.setVisible(true);
-
 	}
 	private void showBillGroup() {
 
@@ -316,25 +338,10 @@ public class MenuAction extends AbstractAction {
 
 	private void operationManager() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
 
-		OperationPnl beanPanel = new OperationPnl(new Operation());
-		BeansPanel<Operation> panel = new BeansPanel<Operation>(BeanMao.getBeans(Operation.class),beanPanel,Operation.class,true) {
-
-
-			@Override
-			public Operation saveBean() {
-				getPanelBean().save();
-				return getPanelBean();
-
-			}
-		};
-		BeanDialog<Operation> dialog=new BeanDialog<Operation>(panel,"操作工序管理") {
-
-			@Override
-			public boolean okButtonAction() {
-				return true;
-			}
-
-		};
+		JDialog dialog=new JDialog();
+		dialog.setTitle("设备管理");
+		EquipmentManagerPnl equipmentManagerPnl=new EquipmentManagerPnl();
+		dialog.setContentPane(equipmentManagerPnl);
 		dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
 		dialog.setLocationRelativeTo(null);
 		dialog.setVisible(true);

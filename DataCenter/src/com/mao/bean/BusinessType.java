@@ -1,12 +1,12 @@
 package com.mao.bean;
 
+import static javax.persistence.GenerationType.AUTO;
+
 import java.util.Collection;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
-
-import static javax.persistence.GenerationType.AUTO;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 

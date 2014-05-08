@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.TreeSet;
 
 import javax.swing.JFileChooser;
@@ -38,26 +39,27 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	private BeanTableModelHeader[] heads;
 	private ArrayList<T> beanArrays;
 	public BeanTableModel(Collection<T> beans,Class<T> class1) {
-		this(beans,class1,(Collection<String>)null);
+		this(beans,class1,(List<String>)null);
 
 	}
 	public BeanTableModel(Collection<T> beans,Class<T> class1, String[] showHeaders) {
 		this(beans,class1,showHeaders==null?null:Arrays.asList(showHeaders));
 	}
-	public BeanTableModel(Collection<T> beans,Class<T> class1, Collection<String> showHeaders) {
+	public BeanTableModel(Collection<T> beans,Class<T> class1, List<String> showHeaders) {
 			super();
 		TreeSet<BeanTableModelHeader> headers = new TreeSet<BeanTableModelHeader>();
+		int p=0;
 		for(Field fld:class1.getDeclaredFields()){
 			if(fld.getAnnotation(Hidden.class)==null){
 				Caption captionAn =fld.getAnnotation(Caption.class);
 				if(captionAn!=null){
 					if(showHeaders!=null){
-						if(showHeaders.contains(captionAn.value())){
-								headers.add(new BeanTableModelHeader(captionAn,fld.getName(),fld.getType()));
-								break;
+						int index=showHeaders.indexOf(captionAn.value());
+						if( index>-1 ) {
+								headers.add(new BeanTableModelHeader(index, captionAn.value(),fld.getName(),fld.getType()));
 						}
 					}
-					else headers.add(new BeanTableModelHeader(captionAn,fld.getName(),fld.getType()));
+					else headers.add(new BeanTableModelHeader(p++,captionAn.value(),fld.getName(),fld.getType()));
 
 				}
 
@@ -71,12 +73,12 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 			if(captionAn!=null&&name.startsWith("get")){
 				name=name.substring(3,4).toLowerCase()+name.substring(4,name.length());
 				if(showHeaders!=null){
-					if(showHeaders.contains(captionAn.value())){
-							headers.add(new BeanTableModelHeader(captionAn,name,method.getReturnType()));
-							break;
-						}
+					int index=showHeaders.indexOf(captionAn.value());
+					if( index>-1 ) {
+							headers.add(new BeanTableModelHeader(index, captionAn.value(),name,method.getReturnType()));
+					}
 				}
-				else headers.add(new BeanTableModelHeader(captionAn,name,method.getReturnType()));
+				else headers.add(new BeanTableModelHeader(p++,captionAn.value(),name,method.getReturnType()));
 
 			}
 		}
@@ -94,7 +96,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 	@Override
 	public String getColumnName(int column) {
 		// TODO Auto-generated method stub
-		return heads[column].getCaption().value();
+		return heads[column].getCaption();
 	}
 
 	public T getSelectBean(int r) {	
@@ -207,7 +209,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 			for(int c=0;c<heads.length;c++){
 				Cell cell=row.createCell(c);
 				cell.setCellStyle(headerStyle);
-				cell.setCellValue(heads[c].getCaption().value());
+				cell.setCellValue(heads[c].getCaption());
 			}
 
 			for (T bean : beans) {

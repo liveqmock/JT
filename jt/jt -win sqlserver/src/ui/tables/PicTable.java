@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Vector;
 
 import javax.swing.ListSelectionModel;
 
@@ -20,11 +19,19 @@ import ui.menu.PicPopmenu;
 
 import com.mao.jf.beans.PicBean;
 import com.mao.jf.beans.SerialiObject;
+import com.mao.jf.beans.Userman;
 
 public class PicTable extends BeanTablePane<PicBean> {
 	boolean columnInit=false;
+	private final static String[] admHeaders=new String[]{"客户","订单号","项目号","图号","客户订单号","数量","良品数","不良数","最终报价(未含税)","最终报价(含税)","检验人"
+			,"总价","订单时间","客户要求交货时间","订单交货时间","特殊采用","特采客户确认人","特采确认人","外协单位","外协价格","外协数量","外协交货日期","构件号","材料名","材料编号","材质","材料型号","材料技术条件","材料部件名"
+			,"完成时间","入库"};
+
+	private final static String[] nomheaders=new String[]{"客户","订单号","项目号","图号","客户订单号","数量","数量","良品数","检验人"
+			,"订单时间","客户要求交货时间","订单交货时间","外协单位","外协价格","外协数量","外协交货日期","构件号","材料名","材料编号"
+			,"材质","材料型号","材料技术条件","材料部件名","完成时间","入库"};
 	public PicTable(Collection<PicBean> beans) {
-		super(beans,PicBean.class);
+		super(beans,PicBean.class,Userman.loginUser.isManager()?admHeaders:nomheaders);
 
 		setPopupMenu(new PicPopmenu(this));
 		getTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

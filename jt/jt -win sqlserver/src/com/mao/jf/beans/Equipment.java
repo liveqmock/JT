@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.mao.jf.beans.annotation.Caption;
+
 @Entity
 public class Equipment {
 	@Id
@@ -15,8 +17,14 @@ public class Equipment {
 	private int id;
 	@ManyToOne
 	@JoinColumn(name = "operation", referencedColumnName = "id")
+	@Caption("设备类型")
 	private Operation operation;
+	@Caption("设备名称")
+	private String name;
+	@Caption("设备编号")
 	private int code;
+	@Caption("可用性")
+	private boolean good;
 	public Equipment() {
 	}
 	public Equipment(Operation operation) {
@@ -29,7 +37,7 @@ public class Equipment {
 		this.id = id;
 	}
 	public String getName() {
-		return operation.getName()+" #"+code;
+		return name==null?(operation==null?"":operation.getName()):name;
 	}
 	public Operation getOperation() {
 		return operation;
@@ -38,10 +46,19 @@ public class Equipment {
 		this.operation = operation;
 	}
 	public int getCode() {
-		return code;
+		return code==0?(operation==null?1:operation.getEquipments().size()):code;
 	}
 	public void setCode(int code) {
 		this.code = code;
+	}
+	public boolean isGood() {
+		return good;
+	}
+	public void setGood(boolean good) {
+		this.good = good;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

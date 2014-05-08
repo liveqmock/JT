@@ -7,10 +7,11 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 
@@ -20,15 +21,18 @@ public class Department {
 	@Id	
 	@Column(name = "ORCABRNO")
 	private String id;
-	
+
 	@Column(name = "ORCAFLNM")
 	private String name;
+	
+	@Column(name = "ORCANM30")
+	private String simpleName;
 	
 	@Column(name = "ORCABRLV")
 	private String level;
 	
 
-	@ManyToOne
+	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "ORCFBRNO", referencedColumnName = "ORCABRNO")
 	private Department topDepartment;
 	
@@ -84,6 +88,14 @@ public class Department {
 
 	public void setEmployees(Collection<Employee> employees) {
 		this.employees = employees;
+	}
+
+	public String getSimpleName() {
+		return simpleName;
+	}
+
+	public void setSimpleName(String simpleName) {
+		this.simpleName = simpleName;
 	}
 
 	@Override

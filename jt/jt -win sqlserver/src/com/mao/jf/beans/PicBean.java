@@ -3,6 +3,8 @@ package com.mao.jf.beans;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.awt.Color;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Collection;
 import java.util.Date;
 
@@ -14,10 +16,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Transient;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
 
 import com.mao.jf.beans.annotation.Caption;
+import javax.persistence.OneToOne;
+import javax.persistence.Basic;
+import static javax.persistence.FetchType.LAZY;
 @Entity
 public class PicBean  {
+	@Transient
+	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Caption("系统ID")
@@ -25,7 +34,7 @@ public class PicBean  {
 	@ManyToOne
 	@JoinColumn(name = "bill", referencedColumnName = "id")
 	private BillBean bill;
-	  
+
 	@Caption("项目号")
 	private String item;  
 	@Caption("图号")
@@ -44,11 +53,19 @@ public class PicBean  {
 	private float reportPrice;
 	@Caption("最终报价(含税)")
 	private float reportTaxPrice;
-	@Caption("总价")
-	@Transient
-	private float reportTaxMoney;
+	@Caption("检验人")
+	@OneToOne
+	@JoinColumn(name = "checker", referencedColumnName = "id")
+	@Basic(fetch = LAZY)
+	private Employee checker;
+	@Caption("良品数")
+	private int nondefective;
+	@Caption("不良数")
+	private int defective;
+	
 	
 	@Caption("构件号")
+	@Basic(fetch = LAZY)
 	private String gjh;
 	@Caption("材料名")
 	private String meterial;
@@ -75,8 +92,19 @@ public class PicBean  {
 	private long outNum;
 	@Caption("外协交货日期")
 	private Date outGetDate;
+	@Caption("外协内容")
+	private String outContent;
+	@Caption("特殊采用")
+	private boolean special;
+	@Caption("特采客户确认人")
+	private String specialMan;
+	@Caption("特采确认人")
+	private String specialUser;
+	@Caption("已完结")
+	private boolean complete;
+	private boolean cancel;
 	
-	@OneToMany(mappedBy = "pic")
+	@OneToMany(mappedBy = "pic")	
 	private Collection<PicPlan> plans;
 
 	@OneToMany(mappedBy = "pic")
@@ -88,15 +116,12 @@ public class PicBean  {
 	@OneToMany(mappedBy = "pic")
 	private Collection<ShipingBean> shipingBeans;
 
-	@Caption("报价记录")
 	@OneToMany(mappedBy = "pic")
 	@OrderBy("reportDate desc")
 	private Collection<ReportPrice> reportPrices;
 	
 	
 
-	private boolean complete;
-	private boolean cancel;
 	public int getId() {
 		return id;
 	}
@@ -186,7 +211,32 @@ public class PicBean  {
 		return plans;
 	}
 
+	public Employee getChecker() {
+		return checker;
+	}
+
+	public void setChecker(Employee checker) {
+		this.checker = checker;
+	}
+
+	public int getNondefective() {
+		return nondefective;
+	}
+
+	public void setNondefective(int nondefective) {
+		this.nondefective = nondefective;
+	}
+
+	public int getDefective() {
+		return defective;
+	}
+
+	public void setDefective(int defective) {
+		this.defective = defective;
+	}
+
 	public String getCustBillNo() {
+		if(custBillNo==null) custBillNo=bill.getBillid();
 		return custBillNo;
 	}
 
@@ -227,6 +277,39 @@ public class PicBean  {
 
 	public String getOleImgUrl() {
 		return oleImgUrl;
+	}
+
+
+	public String getOutContent() {
+		return outContent;
+	}
+
+	public void setOutContent(String outContent) {
+		this.outContent = outContent;
+	}
+
+	public boolean isSpecial() {
+		return special;
+	}
+
+	public void setSpecial(boolean special) {
+		this.special = special;
+	}
+
+	public String getSpecialMan() {
+		return specialMan;
+	}
+
+	public void setSpecialMan(String specialMan) {
+		this.specialMan = specialMan;
+	}
+
+	public String getSpecialUser() {
+		return specialUser;
+	}
+
+	public void setSpecialUser(String specialUser) {
+		this.specialUser = specialUser;
 	}
 
 	public Date getItemCompleteDate() {
@@ -358,7 +441,7 @@ public class PicBean  {
 	
 	public float getReportPrice() {
 		
-	return reportPrice;
+		return reportPrice;
 	}
 	
 	public float getReportTaxPrice() {
@@ -368,18 +451,24 @@ public class PicBean  {
 		// TODO 自动生成的方法存根
 		return reportPrice*num;
 	}
+	@Caption("总价")
 	public float getReportTaxMoney() {
 		// TODO 自动生成的方法存根
 		return reportTaxPrice*num;
 	}
 	public void setReportTaxPrice(float reportPriceS) {
 		this.reportTaxPrice = reportPriceS;
-		setReportPrice( Math.round(reportPriceS/0.0117)/100.0f);
+		float oldValue = getReportPrice();
+		this.reportPrice= Math.round(reportPriceS/0.0117)/100.0f;
+		this.pcs.firePropertyChange("reportPrice", oldValue, this.reportPrice);
+
 		
 	}
 	public void setReportPrice(float reportPrice) {
 		this.reportPrice = reportPrice;
-		setReportTaxPrice(Math.round(reportPrice*117f)/100.0f) ;
+		float oldValue = reportTaxPrice;
+		this.reportTaxPrice=Math.round(reportPrice*117f)/100.0f;
+		this.pcs.firePropertyChange("reportTaxPrice", oldValue, this.reportTaxPrice);
 	}
 	public void setBill(BillBean bill) {
 		this.bill = bill;
@@ -401,6 +490,32 @@ public class PicBean  {
 				return null;//org.hibernate.connection.C3P0ConnectionProvide
 			
 	}
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
 
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.removePropertyChangeListener(listener);
+    }
 
+    @Caption("客户")
+    public String getCustom() {
+		return bill.getCustom();
+	}
+    @Caption("订单号")
+    public String getBillId() {
+		return bill.getBillid();
+	}
+    @Caption("订单时间")
+    public Date getBillDate() {
+		return bill.getBillDate();
+	}
+    @Caption("客户要求交货时间")
+    public Date getRequestDate() {
+		return bill.getRequestDate();
+	}
+    @Caption("订单交货时间")
+    public Date getBillGetDate() {
+		return bill.getBillGetDate();
+	}
 }

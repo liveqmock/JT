@@ -6,8 +6,6 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
-
 public class SerialiObject { 
 	public static void save(Object object, File file) throws Exception {
 		if (file.createNewFile() || file.isFile()) {

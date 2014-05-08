@@ -1,0 +1,12 @@
+<root fromString="dwmm.JOB_LD_DEL_RGST"  database="job">
+  <columnFields>
+    <columnField name="JOB_SEQ_ID" label="业务日期" selectColumn="true" whereColumn="true"     valueType="date"/>
+    <columnField name="job_Nm" label="作业名称"     selectColumn="true" whereColumn="true"     valueType="string"/>
+    <columnField name="TAB_NAME" label="作业状态"   selectColumn="true" whereColumn="true"     valueType="string" />
+    <columnField name="DATA_PRD" label="业务日期"   selectColumn="true" whereColumn="true"     valueType="date"/>
+    <columnField name="DEL_NUM" label="删除数量"    selectColumn="true"                        valueType="int"/>
+    <columnField name="RGST_DT" label="作业创建日期"  selectColumn="true" whereColumn="true"     valueType="date"/>
+    <columnField name="RGST_TM" label="作业创建时间"  selectColumn="true"                        valueType="time"/>
+  </columnFields>
+</root>
+

@@ -39,10 +39,10 @@ public  class LoginLayout extends HorizontalLayout implements ClickListener,View
 		userName.setInputPrompt("请输入登录用户名！");
 		password.setInputPrompt("请输入登录密码");
 		userName.setInvalidAllowed(false);
-		//
-		//		userName.setValue("admin");
-		//		password.setValue("admin");
-		//		
+		
+				userName.setValue("8730001");
+				password.setValue("1");
+				
 		userName.setWidth("100%");
 		password.setWidth("100%");
 		setSizeFull();

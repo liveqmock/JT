@@ -1,7 +1,6 @@
 package ui.panels;
 
 import javax.swing.JLabel;
-import javax.swing.JTextField;
 
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
@@ -9,6 +8,7 @@ import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingx.JXDatePicker;
 
 import ui.customComponet.BeanPanel;
+import ui.customComponet.JTextField;
 import validation.builtin.NumberMaxE;
 import validation.builtin.Validators;
 
@@ -24,6 +24,7 @@ private JTextField money;
 private JXDatePicker createDate;
 private JTextField billNoFld;
 private NumberMaxE moneyMaxE;
+private JTextField content;
 	public FpPanel(FpBean bean) {
 		super(bean);
 	}
@@ -63,11 +64,16 @@ private NumberMaxE moneyMaxE;
 		JLabel numLabel = new JLabel("发票号码：");
 		add(numLabel, "2, 4");
 		
+		content=new JTextField();
+		add(content, "4, 10, fill, default");
+		
 		JLabel label = new JLabel("开票日期：");
 		add(label, "2, 6");
 		
 		JLabel label_1 = new JLabel("金  额：");
 		add(label_1, "2, 8, right, default");
+		
+		add( new JLabel("发票内容："), "2, 10");
 		
 		
 		fbNoFld.setName("发票号码");
@@ -87,6 +93,7 @@ private NumberMaxE moneyMaxE;
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("fpNo"), fbNoFld, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("money"), money, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("createDate"), createDate, BeanProperty.create("date")));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("content"), content, jTextFieldBeanProperty));
 
 	}
 	@Override

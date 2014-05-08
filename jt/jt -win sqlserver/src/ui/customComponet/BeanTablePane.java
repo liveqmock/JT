@@ -37,10 +37,10 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
-import com.mao.jf.beans.BillBean;
-
 import ui.costPanes.DateCellRenderer;
 import ui.costPanes.NumberCellRenderer;
+
+import com.mao.jf.beans.BillBean;
 
 public class BeanTablePane<T> extends JPanel {
 
@@ -296,7 +296,7 @@ public class BeanTablePane<T> extends JPanel {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void addNew(T t) {
+	public void insertBean(T t) {
 		((BeanTableModel<T>) getTable().getModel()).insertRow(t);
 	}
 

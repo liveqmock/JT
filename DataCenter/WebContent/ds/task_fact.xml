@@ -1,0 +1,18 @@
+<root whereString=" (CALSTATUS=1 or CALSTATUS=4) and STATISTICDATE=current_date " 
+fromString=" istaudit.t18_task_fact a join istaudit.t18_task b on a.domainkey=b.domainkey and a.taskkey=b.taskkey and a.tasktype=b.tasktype and a.serverkey=b.serverkey and a.granularity=b.granularitys "  database="report">
+ <Database dbname="app" address="158.222.2.88" port="50000" user="db2iadev" passwd="db2iadevABC123"/>
+
+  <columnFields>
+    <columnField name="b.taskname" label="任务名称" whereColumn="true" selectColumn="true" valueType="string"/>
+   <columnField name="a.SCHEDULEKEY"  selectColumn="true" valueType="int"/>
+    <columnField name="a.TASKKEY"  selectColumn="true" valueType="int"/>
+    <columnField name="a.SERVERKEY"  selectColumn="true" valueType="int"/>
+    <columnField name="a.DOMAINKEY"  selectColumn="true" valueType="int"/>
+    <columnField name="a.TASKTYPE"  selectColumn="true" valueType="int"/>
+    <columnField name="a.begindate" label="开始时间" selectColumn="true" valueType="date"/><columnField name="begindate" label="作业结束时间" selectColumn="true" valueType="date"/>
+    <columnField name="a.begindate" label="作业结束时间" selectColumn="true" valueType="date"/>
+    <columnField name="a.statisticdate" label="会计时间" whereColumn="true"  selectColumn="true" valueType="date"/>
+  	<columnField name="a.CALSTATUS" label="作业状态" whereColumn="true" selectColumn="true" valueType="int"/>
+  	
+  </columnFields>
+</root>

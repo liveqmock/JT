@@ -26,7 +26,6 @@ public class OperationPnl extends BeanPanel<Operation> {
 	private JTextField num;
 	private JTextField cost;
 	private JTextField note;
-	private JCheckBox out;
 	@Override
 	protected void createContents() {
 		setLayout(new FormLayout(new ColumnSpec[] {
@@ -57,6 +56,7 @@ public class OperationPnl extends BeanPanel<Operation> {
 		add(label_1, "2, 4, right, default");
 		
 		num = new JTextField();
+		num.setEditable(false);
 		num.setColumns(10);
 		num.setToolTipText("\u53ef\u540c\u65f6\u64cd\u4f5c\u7684\u8bbe\u5907\u6570\u91cf\u3002");
 		add(num, "4, 4, fill, default");
@@ -68,24 +68,18 @@ public class OperationPnl extends BeanPanel<Operation> {
 		cost.setColumns(10);
 		add(cost, "4, 6, fill, default");
 		
-		JLabel label_3 = new JLabel("\u662f\u5426\u5916\u53d1\uff1a");
-		add(label_3, "2, 8");
-		
-		out = new JCheckBox("\u5916\u53d1");
-		add(out, "4, 8");
 		
 		JLabel label_4 = new JLabel("\u5907\u6ce8\uff1a");
-		add(label_4, "2, 10, right, default");
+		add(label_4, "2, 8, right, default");
 		
 		note = new JTextField();
 		note.setColumns(10);
-		add(note, "4, 10, fill, default");
+		add(note, "4, 8, fill, default");
 
 		name.setName("\u540d\u79f0");
 		num.setName("\u8ba1\u91cf\u5355\u4f4d");
 		cost.setName("\u8d39\u7528");
 		getValidationGroup().add(name,Validators.REQUIRE_NON_EMPTY_STRING);
-		getValidationGroup().add(num,Validators.REQUIRE_NON_EMPTY_STRING);
 		getValidationGroup().add(cost,Validators.REQUIRE_VALID_NUMBER);
 		getValidationGroup().add(cost,Validators.numberMin(0));
 		getValidationGroup().add(cost,Validators.REQUIRE_NON_EMPTY_STRING);
@@ -95,10 +89,9 @@ public class OperationPnl extends BeanPanel<Operation> {
 	protected void dataBinding() {
 		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("name"), name, jTextFieldBeanProperty));
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("num"), num, jTextFieldBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ, bean,  BeanProperty.create("num"), num, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("cost"), cost, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("note"), note, jTextFieldBeanProperty));
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("out"), out, BeanProperty.create("selected")));
 		
 		
 	}

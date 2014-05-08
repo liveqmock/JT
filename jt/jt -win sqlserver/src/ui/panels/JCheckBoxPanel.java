@@ -3,10 +3,6 @@ package ui.panels;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
-
-
-
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;

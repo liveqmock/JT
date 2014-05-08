@@ -18,9 +18,9 @@ public class PicPopmenu extends JPopupMenu {
 			add("修改订单").addActionListener(action);
 		if(Userman.loginUser.getMenus().contains("修改图纸"))
 			add("修改图纸").addActionListener(action);
+		if(Userman.loginUser.getMenus().contains("检验数据"))
+			add("检验数据").addActionListener(action);
 		if(Userman.loginUser.getMenus().contains("查看图纸"))
-			add("查看图纸").addActionListener(action);
-		if(Userman.loginUser.getMenus().contains("删除图纸"))
 			add("删除图纸").addActionListener(action);
 		if(Userman.loginUser.getMenus().contains("返修"))
 			add("返修").addActionListener(action);
@@ -41,6 +41,8 @@ public class PicPopmenu extends JPopupMenu {
 		}
 
 		addSeparator();
+		if(Userman.loginUser.getMenus().contains("特采设定"))
+			add("特采设定").addActionListener(action);
 		if(Userman.loginUser.getMenus().contains("添加发货信息"))
 			add("添加发货信息").addActionListener(action);
 		if(Userman.loginUser.getMenus().contains("添加发票信息"))

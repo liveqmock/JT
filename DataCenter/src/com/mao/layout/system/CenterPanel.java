@@ -5,9 +5,11 @@ import java.sql.SQLException;
 import javax.naming.NamingException;
 
 import com.mao.bean.User;
-import com.mao.layout.resource.MarketDetail;
-import com.mao.layout.resource.MarketInfoLayout;
-import com.mao.layout.resource.MarketStatistic;
+import com.mao.layout.resource.SystemResource;
+import com.mao.layout.resource.SystemRole;
+import com.mao.layout.resource.SystemRoleAuth;
+import com.mao.layout.resource.SystemUser;
+import com.mao.layout.resource.SystemUserAuth;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
 
@@ -19,9 +21,11 @@ public class CenterPanel extends VerticalLayout{
 		sheet.setSizeFull();
 		
 		try {
-			sheet.addTab(new MarketInfoLayout());
-			sheet.addTab(new MarketStatistic());
-			sheet.addTab(new MarketDetail());
+			sheet.addTab(new SystemResource());
+			sheet.addTab(new SystemRole());
+			sheet.addTab(new SystemRoleAuth());
+			sheet.addTab(new SystemUser());
+			sheet.addTab(new SystemUserAuth());
 			addComponent(sheet);
 		} catch (ClassNotFoundException e) {
 			// TODO 自动生成的 catch 块

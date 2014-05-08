@@ -6,7 +6,6 @@ import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.beans.IntrospectionException;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,11 +26,9 @@ import ui.costPanes.EmployeePnl;
 import ui.costPanes.OperationPnl;
 import ui.costPanes.PlanCreatePanel;
 import ui.costPanes.ShowWorkCostPnl;
-import ui.costPanes.UnStartPlanPnl;
 import ui.costPanes.WorkCostPnl;
 import ui.costPanes.WorkCreatePanel;
 import ui.customComponet.BeanDialog;
-import ui.customComponet.BeanTableModel;
 import ui.customComponet.BeanTablePane;
 import ui.customComponet.BeansPanel;
 import ui.customComponet.RsTablePane;
@@ -168,9 +165,6 @@ public class BillAction extends AbstractAction {
 				employeeManager();
 
 				break;
-			case "查看未开始的排产计划":
-				showUnStartPlan();
-				break;
 			case "月度统计":
 				monStatistic();
 				break;
@@ -238,7 +232,6 @@ public class BillAction extends AbstractAction {
 
 			@Override
 			public boolean okButtonAction() {
-				// TODO 自动生成的方法存根
 				return true;
 			}
 		};
@@ -371,16 +364,6 @@ public class BillAction extends AbstractAction {
 		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 		dialog.setVisible(true);
 	}
-	private void showUnStartPlan(){
-		JDialog dialog=new JDialog();
-		dialog.setTitle("未开始的排产计划");
-		dialog.setContentPane(new UnStartPlanPnl());
-		dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
-		dialog.setLocationRelativeTo(null);
-		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-		dialog.setVisible(true);
-	}
-
 
 	private void planProduct() {
 		JFrame dialog=new JFrame();

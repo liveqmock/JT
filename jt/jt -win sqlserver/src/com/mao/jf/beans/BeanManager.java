@@ -1,5 +1,7 @@
 package com.mao.jf.beans;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -9,6 +11,9 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+
+import com.mao.jf.beans.annotation.Caption;
+import com.mao.jf.beans.annotation.Hidden;
 
 public class BeanManager {
 
@@ -80,7 +85,10 @@ public class BeanManager {
 			return query.getResultList().get(0);
 		}
 	}
-
+	public Object queryNativeSingle(String queryString,Object... objects ) {
+		
+		return queryNativeSingle(queryString,null,objects);
+	}
 	public Object queryNativeSingle(String queryString,Class<?> class1,Object... objects ) {
 		
 		Query query =class1==null?em.createNativeQuery( queryString ): em.createNativeQuery( queryString ,class1);
@@ -194,7 +202,12 @@ public class BeanManager {
 			em.getTransaction().commit();
 			e.printStackTrace();
 			}catch(Exception e1){
-				e.printStackTrace();
+				try{
+					em.getTransaction().rollback();
+					}catch(Exception e2){
+						e2.printStackTrace();
+						
+					}
 				
 			}
 		}
@@ -209,8 +222,11 @@ public class BeanManager {
 		}catch(Exception e){
 			try{			
 				em.getTransaction().commit();
-			}catch(Exception e1){
-				e.printStackTrace();
+			}catch(Exception e1){try{			
+				em.getTransaction().rollback();
+			}catch(Exception e2){
+				e2.printStackTrace();
+			}
 			}
 		}
 		
@@ -228,8 +244,32 @@ public class BeanManager {
 
 
 
-	
+	public static String getCaption(Class<?> class1) {
+		String caption="\"";
+		for(Field fld:class1.getDeclaredFields()){
+			if(fld.getAnnotation(Hidden.class)==null){
+				Caption captionAn =fld.getAnnotation(Caption.class);
+				if(captionAn!=null){
+					caption+=captionAn.value()+ "\",\"";
+				}
 
+
+			}
+		}
+
+		for(Method method:class1.getDeclaredMethods()){
+			Caption captionAn =method.getAnnotation(Caption.class);
+			String name=method.getName();
+			if(captionAn!=null&&name.startsWith("get")){
+				caption+=captionAn.value()+ "\",\"";
+			}
+		}
+		return caption;
+	}
+
+	public static void main(String a[]) {
+		System.err.println(getCaption(PicBean.class));
+	}
 	
 
 

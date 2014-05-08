@@ -14,15 +14,14 @@ import java.util.HashSet;
 
 import javax.sql.rowset.CachedRowSet;
 
+import com.mao.MyLogger;
 import com.mao.customLayout.bean.DbSearch;
-import com.mao.tool.MaoLogger;
 import com.sun.rowset.CachedRowSetImpl;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.ObjectProperty;
-
-public class DbSearchContainer  implements Container {
+public class DbSearchSqlContainer  implements Container {
 
 
 	private CachedRowSet crs;
@@ -37,10 +36,10 @@ public class DbSearchContainer  implements Container {
 	private ArrayList<String> propertyIds=new ArrayList<String>();
 	private ArrayList<Integer> c;
 	private int columns;
-	public DbSearchContainer(Connection connection, DbSearch dbSearch) {
+	public DbSearchSqlContainer(Connection connection, DbSearch dbSearch) {
 		this(connection,dbSearch,100);
 	}
-	public DbSearchContainer(Connection connection, DbSearch dbSearch,int pageSize) {
+	public DbSearchSqlContainer(Connection connection, DbSearch dbSearch,int pageSize) {
 		this.connection=connection;
 		this.dbSearch=dbSearch;
 		this.pageSize=pageSize;
@@ -48,8 +47,9 @@ public class DbSearchContainer  implements Container {
 
 			init();
 		}catch(Exception e){
-			System.out.println(dbSearch.getSql());
-			MaoLogger.error("容器初始化失败",e);
+			System.err.println(crs.getCommand());
+			e.printStackTrace();
+			MyLogger.error("容器初始化失败",e);
 		}
 	}
 	private void init() throws SQLException, ClassNotFoundException {
@@ -62,7 +62,7 @@ public class DbSearchContainer  implements Container {
 
 
 	private void getsize() throws SQLException {
-		crs.setCommand("select count(1) from "+ dbSearch.getFromString() +  dbSearch.getWhereSql());
+		crs.setCommand("select count(1)  "+ dbSearch.getRightSqlString());
 		int i=1;
 		for(Object object:dbSearch.getParms())
 			crs.setObject(i++,object);
@@ -72,7 +72,8 @@ public class DbSearchContainer  implements Container {
 
 	}
 	public void getData() throws SQLException {
-		crs.setCommand("select * from ( select ROW_NUMBER() OVER() AS ROWNUM, "+ dbSearch.getSelectSql() + " from "+ dbSearch.getFromString()  + dbSearch.getWhereSql()+") a where  ROWNUM>=? and ROWNUM<?");
+		crs.setCommand("select * from ( select ROW_NUMBER() OVER() AS ROWNUM, "+ dbSearch.getSelectSql() + dbSearch.getRightSqlString()+" ) a where  ROWNUM>=? and ROWNUM<? "+dbSearch.getOrderSql());
+		System.err.println(crs.getCommand());
 		int i = 1;
 		for(Object object:dbSearch.getParms())
 			crs.setObject(i++,object);
@@ -139,7 +140,7 @@ public class DbSearchContainer  implements Container {
 		try {
 			return new Row(id);
 		} catch (SQLException e) {
-			MaoLogger.error("获取数据项错误",e);
+			MyLogger.error("获取数据项错误",e);
 			return null;
 		}
 	}
@@ -179,7 +180,7 @@ public class DbSearchContainer  implements Container {
 			value = crs.getObject(propertyIds.indexOf(propertyId)+1);
 
 		} catch (final Exception e) {
-			MaoLogger.error("获取数据失败"+propertyId,e);
+			MyLogger.error("获取数据失败"+propertyId,e);
 			return null;
 		}
 
@@ -261,19 +262,19 @@ public class DbSearchContainer  implements Container {
 
 	}
 
-	public void export(ByteArrayOutputStream os) throws SQLException {
-
-		CachedRowSet crs = new CachedRowSetImpl();
-		crs.setCommand(dbSearch.getSql());
-		int i=1;
-		for(Object object:dbSearch.getParms())
-			crs.setObject(i++,object);
-		crs.execute(connection);
-		ExcelExport.sqlExport(os,crs);
-		crs.close();
-
-
-	}
+//	public void export(ByteArrayOutputStream os) throws SQLException {
+//
+//		CachedRowSet crs = new CachedRowSetImpl();
+//		crs.setCommand(dbSearch.getSql());
+//		int i=1;
+//		for(Object object:dbSearch.getParms())
+//			crs.setObject(i++,object);
+//		crs.execute(connection);
+//		ExcelExport.sqlExport(os,crs);
+//		crs.close();
+//
+//
+//	}
 
 
 	public void addPageChangeListener(PageChangeListener listener) {

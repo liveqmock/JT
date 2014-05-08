@@ -1,0 +1,27 @@
+<root fromString="dwmm.JOB_LOG"  database="job">
+  <columnFields>
+    <columnField name="data_Prd" label="业务日期" whereColumn="true" selectColumn="true" valueType="date"/>
+    <columnField name="job_Nm" label="作业名称" whereColumn="true" selectColumn="true" valueType="string"/>
+    <columnField name="job_Sts" label="作业状态" whereColumn="true" selectColumn="true" valueType="string">
+      
+      <selectList>
+      	<option caption="完成">
+      		<value class="java.lang.String">DONE</value>
+      	</option>
+      	<option caption="错误">
+      		<value class="java.lang.String">ERROR</value>
+      	</option>
+      	<option caption="等待">
+      		<value class="java.lang.String">WAITING</value>
+      	</option>
+      	<option caption="运行">
+      		<value class="java.lang.String">RUNNING</value>
+      	</option>
+      </selectList>
+    </columnField>
+    <columnField name="act_St_Dt" label="作业开始日期" whereColumn="true" selectColumn="true" valueType="date"/>
+    <columnField name="act_St_Tm" label="作业开始时间" selectColumn="true" valueType="time"/>
+     <columnField name="act_Ed_Dt" label="作业结束日期" whereColumn="true" selectColumn="true" valueType="date"/>
+   <columnField name="act_Ed_Tm" label="作业结束时间" selectColumn="true" valueType="time"/>
+  </columnFields>
+</root>

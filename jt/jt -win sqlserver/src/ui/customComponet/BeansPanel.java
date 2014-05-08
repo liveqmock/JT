@@ -11,6 +11,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public abstract class BeansPanel<T> extends JPanel {
@@ -20,7 +21,7 @@ public abstract class BeansPanel<T> extends JPanel {
 	private boolean vertical=false;
 	private Class<T> class1;
 	protected Collection<T> beans;
-	
+
 	public BeansPanel() {
 		super(null);
 	}
@@ -46,7 +47,7 @@ public abstract class BeansPanel<T> extends JPanel {
 	protected void createContents() {
 
 		if(beanPanel==null)return;
-		
+
 		beanPanel.setBorder(BorderFactory.createEtchedBorder());
 		setLayout(new BorderLayout(0, 0));
 		tablePane = new BeanTablePane<T>(beans,class1, filterColumns);
@@ -63,9 +64,9 @@ public abstract class BeansPanel<T> extends JPanel {
 					break;
 				case "ÐÞ¸Ä":
 
-						reEditRow();
+					reEditRow();
 
-						break;
+					break;
 
 				default:
 					break;
@@ -104,10 +105,10 @@ public abstract class BeansPanel<T> extends JPanel {
 
 			}
 
-			
+
 		});
 		panel.add(this.beanPanel.getvPanel(),vertical? BorderLayout.NORTH:BorderLayout.CENTER);
-		
+
 		panel.add(panel_1, vertical?BorderLayout.CENTER:BorderLayout.SOUTH);
 
 		tablePane.setPreferredSize(new Dimension(tablePane.getWidth(), 200));
@@ -115,24 +116,27 @@ public abstract class BeansPanel<T> extends JPanel {
 		add(tablePane, BorderLayout.CENTER);
 	}
 	protected void dataBinding() {
-		
+
 	}
 	public void reEditRow() {
 		beanPanel.setBean( tablePane.getSelectBean());
-		
-		
+
+
 	}
 	private void addNew() {
 		if (!beanPanel.isValide()) {
 			return;
 		}
-		
-		T newbean = saveBean();
-		if (newbean != null) {
-			tablePane.addNew(newbean);
-			T newBean = createNewBean();
-			setPanelBean(newBean);
-			
+		try{
+			T newbean = saveBean();
+			if (newbean != null) {
+				tablePane.insertBean(newbean);
+				T newBean = createNewBean();
+				setPanelBean(newBean);
+
+			}
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(this, "±£´æ´íÎó!");
 		}
 	}
 
@@ -152,13 +156,13 @@ public abstract class BeansPanel<T> extends JPanel {
 	 * 
 	 * @see com.mao.beanAdapter.BeanPanel#setBean(java.lang.Object)
 	 */
-	
+
 	public void setBean(Collection<T> beans) {
 		this.beans=beans;
 		tablePane.setBeans(beans);
 		T newBean = createNewBean();
 		beanPanel.setBean(newBean);
-		
+
 	}
 	protected T createNewBean() {
 		try {
@@ -200,7 +204,7 @@ public abstract class BeansPanel<T> extends JPanel {
 
 	public void reset() {
 		BeansPanel.this.beanPanel.setBean(createNewBean());
-		
+
 	}
 	public Collection<T> getBeans() {
 		return beans;

@@ -1,11 +1,11 @@
 package com.mao.customLayout;
 
 import java.lang.reflect.Field;
-import java.sql.Date;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import com.mao.annotations.Caption;
 import com.mao.annotations.Hidden;
@@ -44,7 +44,7 @@ public class BeansTable<T> extends Table {
 	@Override
 	protected String formatPropertyValue(Object rowId, Object colId,
 			Property<?> property) {
-		if (property.getType() == Date.class&&property.getValue()!=null) 
+		if (property.getType() == java.sql.Date.class&&property.getValue()!=null) 
             return dateDf.format((Date)property.getValue());
 		else if (property.getType() == Time.class&&property.getValue()!=null) 
             return timeDf.format((Time)property.getValue());
@@ -79,4 +79,5 @@ public class BeansTable<T> extends Table {
 		// TODO 自动生成的方法存根
 		return container;
 	}
+	
 }

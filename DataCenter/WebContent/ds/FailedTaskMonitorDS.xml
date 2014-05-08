@@ -1,0 +1,23 @@
+<root fromString="dwmm.JOB_WARNINGS" database="job">
+  <columnFields>
+    <columnField name="data_Prd" label="业务日期" whereColumn="true" selectColumn="true" valueType="date"/>
+    <columnField name="job_Nm" label="作业名称" whereColumn="true" selectColumn="true" valueType="string"/>
+    <columnField name="job_Sts" label="作业状态" whereColumn="false" selectColumn="true" valueType="string" >
+     <selectList>
+      	<option caption="错误">
+      		<value class="java.lang.String">ERROR</value>
+      	</option>
+      	<option caption="运行">
+      		<value class="java.lang.String">RUNNING</value>
+      	</option>
+      </selectList>
+     </columnField>
+    <columnField name="err_times" label="错误次数" whereColumn="true" selectColumn="true" valueType="int"/>
+    <columnField name="usetime" label="运行时间" whereColumn="true" selectColumn="true" valueType="int"/>
+    <columnField name="act_St_Dt" label="作业开始日期" whereColumn="true" selectColumn="true" valueType="date"/>
+    <columnField name="act_St_Tm" label="作业开始时间" selectColumn="true" valueType="time"/>
+    <columnField name="act_Ed_Dt" label="作业结束日期" whereColumn="true" selectColumn="true" valueType="date"/>
+    <columnField name="act_Ed_Tm" label="作业结束时间" selectColumn="true" valueType="time"/>
+    <columnField name="CON_NM" label="联系人" selectColumn="true" valueType="string"/>
+  </columnFields>
+</root>

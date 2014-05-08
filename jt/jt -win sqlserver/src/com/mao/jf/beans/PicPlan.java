@@ -27,7 +27,7 @@ public class PicPlan extends BeanMao {
 	@Caption("系统ID")
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	
+
 
 
 	@Caption(order=0,value="序号")
@@ -46,13 +46,13 @@ public class PicPlan extends BeanMao {
 	private Collection<OperationPlan> operationPlans;
 
 	private int completed;
-	
+
 	@OneToMany(mappedBy = "plan",cascade = ALL)
 	private Collection<OperationWork> operationWorks;
-	
+
 	@OneToOne(fetch = LAZY)	@JoinColumn(name = "prePlan", referencedColumnName = "id")	
 	private PicPlan prePlan;
-	
+
 	@OneToOne(fetch = LAZY)	@JoinColumn(name = "nextPlan", referencedColumnName = "id")	
 	private PicPlan nextPlan;
 	@Transient
@@ -60,6 +60,13 @@ public class PicPlan extends BeanMao {
 	private int useTime;
 	public void initOperationPlans() {
 		if(operationPlans!=null){
+			for(OperationPlan operationPlan:getOperationPlans())
+				try {
+					operationPlan.deleteEquipmentPlans();
+				} catch (Exception e) {
+					// TODO 自动生成的 catch 块
+					e.printStackTrace();
+				}
 			for(OperationPlan operationPlan:getOperationPlanSet())
 				try {
 					operationPlan.createPlan();
@@ -75,9 +82,9 @@ public class PicPlan extends BeanMao {
 	public PicPlan(PicBean picBean) {
 		this.pic=picBean;
 	}
-	
-	
-	
+
+
+
 
 	public int getId() {
 		return id;
@@ -94,12 +101,12 @@ public class PicPlan extends BeanMao {
 	public Collection<OperationPlan> getOperationPlans() {
 		return   operationPlans;
 	}
-    public  OperationPlan getNextOperationPlan(OperationPlan operationPlan) {
-    	return getOperationPlanSet().higher(operationPlan);
+	public  OperationPlan getNextOperationPlan(OperationPlan operationPlan) {
+		return getOperationPlanSet().higher(operationPlan);
 	}
 
-    public  OperationPlan getpreOperationPlan(OperationPlan operationPlan) {
-    	return getOperationPlanSet().lower(operationPlan);
+	public  OperationPlan getpreOperationPlan(OperationPlan operationPlan) {
+		return getOperationPlanSet().lower(operationPlan);
 	}
 	public int getCompleted() {
 		return completed;
@@ -136,7 +143,7 @@ public class PicPlan extends BeanMao {
 			try{
 				sequenceNum=pic.getPlans().size();
 			}catch(Exception e){
-				
+
 			}
 		}
 		return sequenceNum;
@@ -164,7 +171,7 @@ public class PicPlan extends BeanMao {
 		this.num = num;
 	}
 
-	
+
 	public void setOperationPlans(Collection<OperationPlan> operationPlans) {
 		this.operationPlans = operationPlans;
 	}
@@ -184,7 +191,7 @@ public class PicPlan extends BeanMao {
 	public void setSequenceNum(int sequenceNum) {
 		this.sequenceNum = sequenceNum;
 	}
-	
+
 
 	public Collection<OperationWork> getOperationWorks() {
 		if(operationWorks==null)operationWorks=new ArrayList<>();
@@ -193,13 +200,13 @@ public class PicPlan extends BeanMao {
 
 	public static List<PicPlan> getUnstartPlan() {
 		return BeanMao.getBeans(PicPlan.class, " a.id not in (select plan from OperationWork) order by produceDate");
-		
+
 	}
 
 	@Caption(order = 3, value= "计划结束时间")
 	public Date getEndDate() {
 		if(getOperationPlans().size()>0)endDate=getOperationPlanSet().last().getEndDate();
-		
+
 		return endDate;
 	}
 
@@ -243,5 +250,10 @@ public class PicPlan extends BeanMao {
 			return false;
 		return true;
 	}
-	
+
+	@Override
+	public String toString() {
+		return String.valueOf(id);
+	}
+
 }

@@ -26,7 +26,6 @@ import com.vaadin.ui.TextField;
 
 public class BeanForm<T> extends GridLayout{
 	private T bean;
-	private T editBean;
 	private BeanItem<T> beanItem;
 	private FieldGroup fieldGroup=new FieldGroup();
 
@@ -75,18 +74,7 @@ public class BeanForm<T> extends GridLayout{
 	public  void binder(Field<?> field, String propertyId) {
 		fieldGroup.bind(field, propertyId);
 	}
-	/**
-	 * 将编辑的值同步的原bean中
-	 * @throws Exception 
-	 */
-	public void sync() throws Exception {
-		try {
-			PropertyUtils.copyProperties(this.bean, this.editBean);
-		} catch (Exception e) {
-			MaoLogger.error("复制BEAN错误：",e);
-			throw e;
-		}
-	}
+
 	public T getBean() {
 
 		return this.bean;
@@ -94,11 +82,7 @@ public class BeanForm<T> extends GridLayout{
 	@SuppressWarnings("unchecked")
 	public void setBean(T bean) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
 		this.bean = bean;
-		if(this.editBean==null)
-			this.editBean=(T) BeanUtils.cloneBean(this.bean);
-		else
-			PropertyUtils.copyProperties(this.editBean,this.bean );
-		beanItem = new BeanItem<T>(editBean);
+		beanItem = new BeanItem<T>(bean);
 		fieldGroup.setItemDataSource(beanItem);
 
 	}
@@ -124,7 +108,6 @@ public class BeanForm<T> extends GridLayout{
 	}
 	public void saveBean() throws Exception {
 		commit();
-		sync();
 		BeanManager.BM.saveBean(bean);
 	}
 }

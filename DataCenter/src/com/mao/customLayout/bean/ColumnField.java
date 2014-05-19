@@ -63,22 +63,22 @@ public class ColumnField<T>  implements Serializable{
 	public void setWhereColumn(boolean whereColumn) {
 		this.whereColumn = whereColumn;
 	}
-	public String getSelectColStr() {
-		String selectStr;
+	public StringBuffer getSelectColStr() {
+		StringBuffer selectStr=new StringBuffer();
 		if(selectList!=null&&selectList.size()>0){
-			selectStr="case " + name;
+			selectStr.append("case ").append( name);
 			for(SelectBean<T> selectBean:selectList){
 				if(valueType.equals("string"))
-					selectStr+=" when '"+selectBean.getValue()+"' then '"+selectBean.getCaption()+"' ";
+					selectStr.append(" when '").append(selectBean.getValue()).append("' then '").append(selectBean.getCaption()).append("' ");
 				else
-					selectStr+=" when "+selectBean.getValue()+" then '"+selectBean.getCaption()+"' ";
+					selectStr.append(" when ").append(selectBean.getValue()).append(" then '").append(selectBean.getCaption()).append("' ");
 
 			}
-			selectStr+=" end";
+			selectStr.append(" else ").append(name).append(" end");
 		}else
-			selectStr=name;
+			selectStr.append(name);
 		if(label!=null)
-			selectStr+= " as "+label;
+			selectStr.append( " as ").append(label);
 		return selectStr;
 	}
 	public String getWhereColStr() {

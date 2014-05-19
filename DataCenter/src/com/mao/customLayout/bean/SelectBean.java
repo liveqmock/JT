@@ -3,6 +3,13 @@ package com.mao.customLayout.bean;
 public class SelectBean<T> {
 	private String caption;
 	private T value;
+	
+	
+	public SelectBean(T value,String caption ) {
+		super();
+		this.caption = caption;
+		this.value = value;
+	}
 	public String getCaption() {
 		return caption==null?value.toString():caption;
 	}

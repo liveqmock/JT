@@ -31,6 +31,9 @@ import org.mozilla.universalchardet.UniversalDetector;
 
 
 
+
+
+import com.mao.tool.BeanManager;
 import com.mao.tool.Datasource;
 import com.thoughtworks.xstream.XStream;
 
@@ -58,14 +61,14 @@ public class DbSearch {
 		for(ColumnField<?> columnField:columnFields){
 
 			if(columnField.isSelectColumn()&&!columnField.getValueType().equals("password")){
-				selectSqlb.append(columnField.getSelectColStr()+",");
+				selectSqlb.append(columnField.getSelectColStr()).append(",");
 			}
 			if(columnField.isWhereColumn()&&columnField.getScopeType()!=null&&columnField.getValue()!=null&&!columnField.equals("")){
-				whereSqlb.append(columnField.getWhereColStr()+" and ");
+				whereSqlb.append(columnField.getWhereColStr()).append(" and ");
 			}
 		}
 		if(whereString!=null&&!whereString.equals(""))
-			whereSqlb.append(whereString+" and " );
+			whereSqlb.append(whereString).append(" and " );
 		if(selectSqlb.length()>0)
 			selectSql=selectSqlb.substring(0,selectSqlb.length()-1);
 
@@ -77,7 +80,6 @@ public class DbSearch {
 	}
 
 	public String  getWhereHqlString() {
-		StringBuffer selectSqlb = new StringBuffer();
 		StringBuffer whereSqlb = new StringBuffer();
 		int parmNo=1;
 		jpaParms=new ArrayList<Object>();
@@ -99,8 +101,6 @@ public class DbSearch {
 		}
 		if(whereString!=null&&!whereString.equals(""))
 			whereSqlb.append(whereString+" and " );
-		if(selectSqlb.length()>0)
-			selectSql=selectSqlb.substring(0,selectSqlb.length()-1);
 
 		if(whereSqlb.length()>0)
 			whereSql=" where "+whereSqlb.substring(0,whereSqlb.length()-5);
@@ -111,7 +111,7 @@ public class DbSearch {
 	public void createSql() {
 
 		getWhereSqlString();
-		sql= "select "+ selectSql + " from "+ fromString + whereSql+" "+groupSql+" "+orderSql ;
+		sql= "FROM "+ fromString + whereSql+" "+groupSql+" "+orderSql ;
 	}
 
 	private List<ColumnField<?>> distinctCollection( Collection<ColumnField<?>> columnFields2) {
@@ -165,8 +165,8 @@ public class DbSearch {
 		xStream.useAttributeFor(int.class);
 
 		return xStream.toXML(this);
-//		DbSearch dbSearch= (DbSearch) xStream.fromXML(xStream.toXML(this));
-//		System.err.println(dbSearch.getBeanClass().getSimpleName());
+		//		DbSearch dbSearch= (DbSearch) xStream.fromXML(xStream.toXML(this));
+		//		System.err.println(dbSearch.getBeanClass().getSimpleName());
 
 	}
 	public static DbSearch loadFromXml(String fileName) throws IOException {
@@ -180,14 +180,14 @@ public class DbSearch {
 
 	public static DbSearch loadFromXml(InputStream is) throws IOException {
 
-//		ByteArrayOutputStream os = new ByteArrayOutputStream();
-//
-//		IOUtils.copy(is, os);
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-//		ByteArrayInputStream inputStream=new ByteArrayInputStream(os.toByteArray());
-//		ByteArrayInputStream inputStream2=new ByteArrayInputStream(os.toByteArray());
+		IOUtils.copy(is, os);
 
-//		String codeString = getCodeString(inputStream);
+		//		ByteArrayInputStream inputStream=new ByteArrayInputStream(os.toByteArray());
+		ByteArrayInputStream inputStream2=new ByteArrayInputStream(os.toByteArray());
+
+		//		String codeString = getCodeString(inputStream);
 		XStream xStream = new XStream();
 		xStream.alias("root", DbSearch.class);
 		xStream.alias("selectList", ArrayList.class);
@@ -196,9 +196,12 @@ public class DbSearch {
 		xStream.useAttributeFor(String.class);
 		xStream.useAttributeFor(boolean.class);
 		xStream.useAttributeFor(int.class);
-		DbSearch dbSearch= (DbSearch)xStream.fromXML(new InputStreamReader(is,"GBK"));
+		DbSearch dbSearch= (DbSearch)xStream.fromXML(new InputStreamReader(inputStream2,"GBK"));
 
 		is.close();
+		os.close();
+		//		inputStream.close();
+		inputStream2.close();
 
 		return dbSearch;
 
@@ -355,9 +358,21 @@ public class DbSearch {
 			default:
 				break;
 			}
+
 			columnField.setLabel(meta.getColumnLabel(c));
 			columnField.setName(meta.getColumnName(c));
-			System.err.println(meta.getColumnClassName(c));
+
+			List list=BeanManager.BM.queryNativeList("select fieldCode,fieldDes from apps.metas where fieldName=?1", null, columnField.getName());
+			if(list!=null&&list.size()>0){
+				columnField.setSelectColumn(true);
+				ArrayList<SelectBean<String>> selectBeans=new ArrayList<>();
+				for(Object metas:list){
+					System.err.println(metas);
+					Object[] fieldCode = (Object[])metas;
+					selectBeans.add(new SelectBean<>((String)fieldCode[0],(String)fieldCode[1]));
+				}
+				((ColumnField<String>)columnField).setSelectList(selectBeans);
+			}
 			getColumnFields().add(columnField);
 		}
 
@@ -380,21 +395,18 @@ public class DbSearch {
 				ResultSet rs = st.executeQuery("select * from core.BBFMSTLR");
 				){
 			dbSearch.getColumns(rs.getMetaData());
-			for(ColumnField<?> columnField:dbSearch.getColumnFields())
-				System.err.println(columnField.getValue().getClass());
 		} catch ( Exception e) {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();
 		}
-		
-		
 		System.err.println(dbSearch.saveAsXml());
-		
-		
-		
-//		ZqlParser zqlParser=new ZqlParser(new ByteArrayInputStream("select STATUS from datacenter.role bb join sss aa where ass='' and ss between 12 and 122;".getBytes()));
-//		
-//		System.err.println(((ZQuery)zqlParser.readStatement()).getFrom());
+		;
+
+
+
+		//		ZqlParser zqlParser=new ZqlParser(new ByteArrayInputStream("select STATUS from datacenter.role bb join sss aa where ass='' and ss between 12 and 122;".getBytes()));
+		//		
+		//		System.err.println(((ZQuery)zqlParser.readStatement()).getFrom());
 	}
 
 	public String getRightSqlString() {

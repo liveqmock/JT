@@ -24,7 +24,10 @@ public class Equipment {
 	@Caption("设备编号")
 	private int code;
 	@Caption("可用性")
-	private boolean good;
+	private boolean good=true;
+
+	@Caption("日工作时间")
+	private long workTime;
 	public Equipment() {
 	}
 	public Equipment(Operation operation) {
@@ -56,6 +59,12 @@ public class Equipment {
 	}
 	public void setGood(boolean good) {
 		this.good = good;
+	}
+	public long getWorkTime() {
+		return workTime;
+	}
+	public void setWorkTime(long workTime) {
+		this.workTime = workTime;
 	}
 	public void setName(String name) {
 		this.name = name;

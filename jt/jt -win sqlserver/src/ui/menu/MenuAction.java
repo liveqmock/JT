@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.sql.rowset.CachedRowSet;
@@ -30,6 +31,7 @@ import ui.costPanes.ShowWorkCostPnl;
 import ui.costPanes.WorkCostPnl;
 import ui.costPanes.WorkCreatePanel;
 import ui.customComponet.BeanDialog;
+import ui.customComponet.BeanTablePane;
 import ui.customComponet.BeansPanel;
 import ui.customComponet.RsTablePane;
 import ui.frames.About;
@@ -44,6 +46,7 @@ import com.mao.jf.beans.Custom;
 import com.mao.jf.beans.Employee;
 import com.mao.jf.beans.Operation;
 import com.mao.jf.beans.OperationWork;
+import com.mao.jf.beans.PicPlan;
 import com.mao.jf.beans.SessionData;
 import com.mao.jf.beans.Userman;
 
@@ -122,7 +125,7 @@ public class MenuAction extends AbstractAction {
 			case "月度统计":
 				monStatistic();
 				break;
-			case "排产时间查看":
+			case "查看排产情况":
 				showBillTime();
 				break;
 			case "年度统计":
@@ -197,7 +200,15 @@ public class MenuAction extends AbstractAction {
 
 
 	private void showBillTime() {
+		List<PicPlan> list = BeanMao.getBeans(PicPlan.class," startDate>=?1 and completed=0",new Date());
+		BeanTablePane<PicPlan> tablePane=new BeanTablePane<PicPlan>(list,PicPlan.class);
+		JDialog dialog=new JDialog();
+		dialog.setContentPane(tablePane);
+		dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
 
+		dialog.setLocationRelativeTo(null);
+		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+		dialog.setVisible(true);
 	}
 
 	private void showWorkCost() {

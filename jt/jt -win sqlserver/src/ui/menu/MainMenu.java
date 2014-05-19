@@ -58,8 +58,8 @@ public class MainMenu extends JMenuBar {
 		
 		if(Userman.loginUser.getMenus().contains("查看排产计划"))
 			menu.add("查看未开始的排产计划").addActionListener(action);
-		if(Userman.loginUser.getMenus().contains("排产时间查看"))
-			menu.add("排产时间查看").addActionListener(action);
+		if(Userman.loginUser.getMenus().contains("查看排产情况"))
+			menu.add("查看排产情况").addActionListener(action);
 		if(Userman.loginUser.getMenus().contains("生产成本统计"))
 			menu.add("生产成本统计").addActionListener(action);
 		if(Userman.loginUser.getMenus().contains("生产计划与实际成本对照"))

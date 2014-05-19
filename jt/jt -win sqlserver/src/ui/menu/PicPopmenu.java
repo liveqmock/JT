@@ -47,6 +47,8 @@ public class PicPopmenu extends JPopupMenu {
 			add("添加发货信息").addActionListener(action);
 		if(Userman.loginUser.getMenus().contains("添加发票信息"))
 			add("添加发票信息").addActionListener(action);
+		if(Userman.loginUser.getMenus().contains("添加发票信息"))
+			add("添加外协发票信息").addActionListener(action);
 	}
 
 

@@ -3,6 +3,7 @@ package com.mao.customLayout;
 import java.sql.Date;
 import java.util.ArrayList;
 
+import com.mao.bean.User;
 import com.mao.customLayout.bean.ColumnField;
 import com.mao.customLayout.bean.DbSearch;
 import com.mao.customLayout.bean.SCOPE;
@@ -13,6 +14,8 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Alignment;
@@ -50,13 +53,14 @@ public class DbSearchForm extends GridLayout{
 			if(columnField.isWhereColumn()){
 				columnField.setScopeType((SCOPE) fieldGroup.getItemDataSource().getItemProperty(columnField.getName()+"_scope").getValue());
 				if(columnField.getScopeType()!=null){
-					columnField.setValue( fieldGroup.getField(columnField.getName()).getValue());
+					columnField.setValue( fieldGroup.getItemDataSource().getItemProperty(columnField.getName()).getValue());
 					if(columnField.getScopeType()==SCOPE.BETWEEN)
-						columnField.setValue2( fieldGroup.getField(columnField.getName()+"_2").getValue());
+						columnField.setValue2(fieldGroup.getItemDataSource().getItemProperty(columnField.getName()+"_2").getValue());
 
 				}
 			}
 		}
+		BeanItemContainer<User> userBeanItemContainer=new BeanItemContainer<>(User.class);
 		dbSearch.createSql();
 	}
 	public void commit() throws CommitException {

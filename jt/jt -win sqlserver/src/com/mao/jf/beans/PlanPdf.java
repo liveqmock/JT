@@ -330,7 +330,7 @@ public class PlanPdf {
 		JPanel pdfViewPanel = factory.buildViewerPanel();
 		controller.openDocument(new ByteArrayInputStream(createPdf().toByteArray()),"图纸",null);
 		JDialog dialog=new JDialog();
-		dialog.setTitle("排产工序单预览打印");
+		dialog.setTitle("排产工序单预览打印"); 
 		dialog.setContentPane(pdfViewPanel);
 		dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
 		dialog.setLocationRelativeTo(null);

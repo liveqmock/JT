@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -15,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.PostLoad;
 import javax.persistence.Transient;
 
 import com.mao.jf.beans.annotation.Caption;
@@ -45,17 +47,17 @@ public class BillBean extends BeanMao {
 	@Caption("是否完结")
 	private boolean complete;
 	private boolean cancel;
-	
-	
+
+
 
 	@OneToMany(mappedBy = "bill", cascade = ALL)
 	private Collection<PicBean> picBeans;
 	@OneToMany(mappedBy = "bill", cascade = ALL)
 	@OrderBy("changeDate")
 	private Collection<ChangeLog> changeLogs;
-	
+
 	@OneToMany(mappedBy = "bill", cascade = ALL)
-	@OrderBy("createDate")
+	@OrderBy("createDate desc")
 	private Collection<FpBean> fpBeans;
 
 	@OneToMany(mappedBy = "bill", cascade = ALL)
@@ -67,36 +69,40 @@ public class BillBean extends BeanMao {
 	private String color;
 	@Caption("备注")
 	private String note;
-	
-	
-//	public static List<BillBean> loadBySearch(String searchString) {
-//
-//		return loadBySearch(searchString, true);
-//
-//	}
-//	public static List<BillBean> loadBySearch(String searchString,boolean isShowCompelete) {
-//
-//		List<BillBean> billItems=null;
-//		if(Userman.loginUser.isManager()|| isShowCompelete){
-//			searchString=(searchString==null?"":searchString+" ")+" order by a.itemCompleteDate ,a.requestDate";
-//
-//		}else{
-//			searchString=(searchString==null?"":searchString+" and ")+" a.itemCompleteDate is null  order by a.itemCompleteDate ,a.requestDate";
-//
-//		}
-//		billItems=getBeans(BillBean.class,searchString);
-//
-//		return billItems;
-//
-//	}
-//	public static List<BillBean> loadByGrp(String billGrp) {
-//
-//		return loadBySearch(" a.billgroup='"+billGrp+"'",true);
-//	}
-	
-	
-	
-	
+	@Transient
+	private Date lastBillDate;
+	transient
+	private float fpMoney;
+
+
+	//	public static List<BillBean> loadBySearch(String searchString) {
+	//
+	//		return loadBySearch(searchString, true);
+	//
+	//	}
+	//	public static List<BillBean> loadBySearch(String searchString,boolean isShowCompelete) {
+	//
+	//		List<BillBean> billItems=null;
+	//		if(Userman.loginUser.isManager()|| isShowCompelete){
+	//			searchString=(searchString==null?"":searchString+" ")+" order by a.itemCompleteDate ,a.requestDate";
+	//
+	//		}else{
+	//			searchString=(searchString==null?"":searchString+" and ")+" a.itemCompleteDate is null  order by a.itemCompleteDate ,a.requestDate";
+	//
+	//		}
+	//		billItems=getBeans(BillBean.class,searchString);
+	//
+	//		return billItems;
+	//
+	//	}
+	//	public static List<BillBean> loadByGrp(String billGrp) {
+	//
+	//		return loadBySearch(" a.billgroup='"+billGrp+"'",true);
+	//	}
+
+
+
+
 	public static List<PicBean> SearchPics(String searchString) {
 
 		return SearchPics(searchString, true);
@@ -183,7 +189,7 @@ public class BillBean extends BeanMao {
 	public void setBillid(String billid) {
 		this.billid = billid;
 	}
-	
+
 	public Date getRequestDate() {
 		return requestDate;
 	}
@@ -208,14 +214,14 @@ public class BillBean extends BeanMao {
 	public void setCancel(boolean cancel) {
 		this.cancel = cancel;
 	}
-	
+
 	public String getNote() {
 		return note;
 	}
 	public void setNote(String note) {
 		this.note = note;
 	}
-	
+
 	public Collection<ChangeLog> getChangeLogs() {
 		return changeLogs;
 	}
@@ -245,34 +251,34 @@ public class BillBean extends BeanMao {
 	public void setFpBeans(Collection<FpBean> fpBeans) {
 		this.fpBeans = fpBeans;
 	}
-	
+
 	public String getColor() {
 		return color;
 	}
 	public void setColor(String color) {
 		this.color = color;
 	}
-	
+
 
 	@Caption("最终报价(未含税)")
 	public float getReportMoney() {
 		int reportMoney = 0;
-		 for(PicBean picBean:picBeans){
-			 reportMoney+=picBean.getReportMoney();
-		 }
-		 return reportMoney;
+		for(PicBean picBean:picBeans){
+			reportMoney+=picBean.getReportMoney();
+		}
+		return reportMoney;
 	}
-	
+
 	public float getReportTaxMoney() {
 		reportTaxMoney=0;
-		 for(PicBean picBean:picBeans){
-			 reportTaxMoney+=picBean.getReportTaxMoney();
-		 }
-		 return reportTaxMoney;
+		for(PicBean picBean:picBeans){
+			reportTaxMoney+=picBean.getReportTaxMoney();
+		}
+		return reportTaxMoney;
 	}
 	public float getRemainNotFbMoney() {
 		if(getFpBeans()==null)return getReportTaxMoney();
-		
+
 		float remainNotFbMoney=getReportTaxMoney();
 		for( FpBean fp:getFpBeans()){
 			remainNotFbMoney-=fp.getMoney();
@@ -291,5 +297,32 @@ public class BillBean extends BeanMao {
 	public void setBillgroup(String billgroup) {
 		this.billgroup = billgroup;
 	}
+	@Caption("发票数量")
+	public int getFpNum() {
+		if(getFpBeans()!=null)
+			return getFpBeans().size();
+		else return 0;
+	}
+	@Caption("发票金额")
+	public float getFpMoney() {
+		return fpMoney;
+	}
+	@Caption("最后开票时间")
+	public Date getFpDate() {
+		return lastBillDate;
+	}
 
+	@PostLoad
+	
+	public void getFpInfo() {
+		fpMoney=0;
+		if(getFpBeans()!=null)
+		{	
+			Iterator<FpBean> it = getFpBeans().iterator();
+			while(it.hasNext())
+				fpMoney+=it.next().getMoney();
+		}
+		if(getFpBeans()!=null&&getFpBeans().iterator().hasNext())
+			lastBillDate= getFpBeans().iterator().next().getCreateDate();
+	}
 }

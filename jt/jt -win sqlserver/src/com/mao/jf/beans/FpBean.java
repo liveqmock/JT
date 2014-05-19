@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PostPersist;
+import javax.persistence.PostUpdate;
 
 import com.mao.jf.beans.annotation.Caption;
 
@@ -80,7 +81,10 @@ public class FpBean {
 		this.content = content;
 	}
 	@PostPersist
+	@PostUpdate
 	public void refreshBill(){
 		BeanMao.beanManager.refresh(bill);
+		bill.getFpInfo();
 	}
+	
 }

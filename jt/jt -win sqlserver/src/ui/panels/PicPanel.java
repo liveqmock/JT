@@ -570,7 +570,7 @@ public class PicPanel extends BeanPanel<PicBean> {
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("outCustom"), outCustomCombox,jComboBoxBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("itemCompleteDate"), itemCompleteDate, dateBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("outGetDate"), outgetDate, dateBeanProperty).bind();
-		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("planCost"), cost, jTextFieldBeanProperty).bind();
+		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("plancost"), cost, jTextFieldBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("meterial"), (javax.swing.JTextField)meterial.getEditor().getEditorComponent(), BeanProperty.create("text")).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("meterialz"), meterialz, jTextFieldBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("meterialType"), meterialType, jTextFieldBeanProperty).bind();

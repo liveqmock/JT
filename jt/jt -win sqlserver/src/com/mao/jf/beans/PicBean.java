@@ -7,6 +7,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,13 +16,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.PostLoad;
 import javax.persistence.Transient;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.mao.jf.beans.annotation.Caption;
+
 import javax.persistence.OneToOne;
 import javax.persistence.Basic;
+
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 @Entity
 public class PicBean  {
@@ -31,7 +37,7 @@ public class PicBean  {
 	@GeneratedValue(strategy = IDENTITY)
 	@Caption("系统ID")
 	private int id;
-	@ManyToOne
+	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "bill", referencedColumnName = "id")
 	private BillBean bill;
 
@@ -42,13 +48,14 @@ public class PicBean  {
 	@Caption("客户订单号")
 	private String custBillNo;
 	private String oleImgUrl;
-	private String imageUrl;  
+	private String imageUrl; 
+	@Caption("额定单件成本")
 	private float plancost;
 	@Caption("数量")
 	private int num;
 	private String color;
 
-	
+
 	@Caption("最终报价(未含税)")
 	private float reportPrice;
 	@Caption("最终报价(含税)")
@@ -62,8 +69,8 @@ public class PicBean  {
 	private int nondefective;
 	@Caption("不良数")
 	private int defective;
-	
-	
+
+
 	@Caption("构件号")
 	@Basic(fetch = LAZY)
 	private String gjh;
@@ -79,7 +86,7 @@ public class PicBean  {
 	private String techCondition;
 	@Caption("材料部件名")
 	private String partName;
-	  
+
 	@Caption("完成时间")
 	private Date itemCompleteDate ;  
 	@Caption("入库")
@@ -103,7 +110,7 @@ public class PicBean  {
 	@Caption("已完结")
 	private boolean complete;
 	private boolean cancel;
-	
+
 	@OneToMany(mappedBy = "pic")	
 	private Collection<PicPlan> plans;
 
@@ -119,8 +126,16 @@ public class PicBean  {
 	@OneToMany(mappedBy = "pic")
 	@OrderBy("reportDate desc")
 	private Collection<ReportPrice> reportPrices;
-	
-	
+
+	@OneToMany(mappedBy = "pic", cascade = ALL)
+	@OrderBy("createDate desc")
+	private Collection<OutFpBean> fpOutBeans;
+	@Transient   
+	private int outFpMoney;
+	@Transient
+	private Date OutFpDate;
+
+
 
 	public int getId() {
 		return id;
@@ -189,6 +204,14 @@ public class PicBean  {
 
 	public void setNum(int num) {
 		this.num = num;
+	}
+
+	public Collection<OutFpBean> getFpOutBeans() {
+		return fpOutBeans;
+	}
+
+	public void setFpOutBeans(Collection<OutFpBean> fpOutBeans) {
+		this.fpOutBeans = fpOutBeans;
 	}
 
 	public String getColor() {
@@ -438,12 +461,12 @@ public class PicBean  {
 	public BillBean getBill() {
 		return bill;
 	}
-	
+
 	public float getReportPrice() {
-		
+
 		return reportPrice;
 	}
-	
+
 	public float getReportTaxPrice() {
 		return reportTaxPrice;
 	}
@@ -462,7 +485,7 @@ public class PicBean  {
 		this.reportPrice= Math.round(reportPriceS/0.0117)/100.0f;
 		this.pcs.firePropertyChange("reportPrice", oldValue, this.reportPrice);
 
-		
+
 	}
 	public void setReportPrice(float reportPrice) {
 		this.reportPrice = reportPrice;
@@ -475,7 +498,7 @@ public class PicBean  {
 	}
 	public int getRemainNotShipingNum() {
 		if(getShipingBeans()==null)return num;
-		
+
 		int remainNotShipingNum=num;
 		for( ShipingBean shipingBean:getShipingBeans()){
 			remainNotShipingNum-=shipingBean.getNum();
@@ -484,38 +507,110 @@ public class PicBean  {
 	}
 
 	public PicBean getSamePicBill() {
-			if(picid!=null)
-				return BeanMao.beanManager.getBean(PicBean.class, "bill=?1 and picid=?2",getBill(),picid);
-			else
-				return null;//org.hibernate.connection.C3P0ConnectionProvide
-			
+		if(picid!=null)
+			return BeanMao.beanManager.getBean(PicBean.class, "bill=?1 and picid=?2",getBill(),picid);
+		else
+			return null;//org.hibernate.connection.C3P0ConnectionProvide
+
 	}
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        this.pcs.addPropertyChangeListener(listener);
-    }
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		this.pcs.addPropertyChangeListener(listener);
+	}
 
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        this.pcs.removePropertyChangeListener(listener);
-    }
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		this.pcs.removePropertyChangeListener(listener);
+	}
 
-    @Caption("客户")
-    public String getCustom() {
+	@Caption("客户")
+	public String getCustom() {
 		return bill.getCustom();
 	}
-    @Caption("订单号")
-    public String getBillId() {
+	@Caption("订单号")
+	public String getBillId() {
 		return bill.getBillid();
 	}
-    @Caption("订单时间")
-    public Date getBillDate() {
+	@Caption("订单时间")
+	public Date getBillDate() {
 		return bill.getBillDate();
 	}
-    @Caption("客户要求交货时间")
-    public Date getRequestDate() {
+	@Caption("客户要求交货时间")
+	public Date getRequestDate() {
 		return bill.getRequestDate();
 	}
-    @Caption("订单交货时间")
-    public Date getBillGetDate() {
+	@Caption("订单交货时间")
+	public Date getBillGetDate() {
 		return bill.getBillGetDate();
+	}
+
+	@Caption("发货时间")
+	public Date getPicShipingDate() {
+		if(getShipingBeans()!=null&&getShipingBeans().iterator().hasNext())
+			return getShipingBeans().iterator().next().getShipingDate();
+		else return null;
+	}
+	@Caption("发货数量")
+	public int getPicShipingNum() {
+		if(getShipingBeans()!=null)
+		{	
+			int total=0;
+			Iterator<ShipingBean> it = getShipingBeans().iterator();
+			while(it.hasNext())
+				total+=it.next().getNum();
+			return total;
+		}
+		else return 0;
+	}
+
+
+	public Number getRemainOutNotFbMoney() {
+		if(getFpOutBeans()==null)return getOutNum()*getOutPrice();
+
+		float remainNotFbMoney=getReportTaxMoney();
+		for( OutFpBean fp:getFpOutBeans()){
+			remainNotFbMoney-=fp.getMoney();
+		}
+		return remainNotFbMoney;
+
+	}
+
+	@Caption("外协发票数量")
+	public int getFpOutNum() {
+		if(getFpOutBeans()!=null)
+			return getFpOutBeans().size();
+		else return 0;
+	}
+	@Caption("外协发票时间")
+	public Date getFpOutDate() {
+		return OutFpDate;
+	}
+	@Caption("外协发票金额")
+	public float getOutFpMoney() {
+		return outFpMoney;
+	}
+
+	@PostLoad
+	public void getOutFpInfo() {
+
+		outFpMoney=0;
+		if(getFpOutBeans()!=null)
+		{	
+			Iterator<OutFpBean> it = getFpOutBeans().iterator();
+			while(it.hasNext())
+				outFpMoney+=it.next().getMoney();
+		}
+		if(getFpOutBeans()!=null&&getFpOutBeans().iterator().hasNext())
+			OutFpDate= getFpOutBeans().iterator().next().getCreateDate();
+	}
+	@Caption("最后开票日期")
+	public Date getFpDate() {
+		return bill.getFpDate();
+	}
+	@Caption("开票金额")
+	public float getFpMoney() {
+		return bill.getFpMoney();
+	}
+	@Caption("发票张数")
+	public int getFpNum() {
+		return bill.getFpNum();
 	}
 }

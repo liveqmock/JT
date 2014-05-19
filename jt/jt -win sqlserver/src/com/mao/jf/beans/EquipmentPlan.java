@@ -12,6 +12,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PreRemove;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.CascadeType.REMOVE;
+import static javax.persistence.CascadeType.REFRESH;
+import static javax.persistence.CascadeType.DETACH;
 
 @Entity
 public class EquipmentPlan {
@@ -30,10 +40,9 @@ public class EquipmentPlan {
 
 	private Date planStartTime;
 	private Date planEndTime;
-	private int planUseTimes;
-	private int freeTime;
+	private long planUseTimes;
 
-
+	
 	public int getId() {
 		return id;
 	}
@@ -59,10 +68,13 @@ public class EquipmentPlan {
 		this.planStartTime = planStartTime;
 
 	}
-	public int getPlanUseTimes() {
+	public long getPlanUseTimesOf24Hour() {
+		return (( planUseTimes)/equipment.getWorkTime())*86400000l+(planUseTimes%equipment.getWorkTime())*60000l;
+	}
+	public long getPlanUseTimes() {
 		return planUseTimes;
 	}
-	public void setPlanUseTimes(int planUseTimes) {
+	public void setPlanUseTimes(long planUseTimes) {
 		this.planUseTimes = planUseTimes;
 	}
 	public Date getPlanEndTime() {
@@ -72,17 +84,17 @@ public class EquipmentPlan {
 		this.planEndTime = planEndTime;
 	}
 
-	public int getFreeTime() {
-		return freeTime;
-	}
-	public void setFreeTime(int freeTime) {
-		this.freeTime = freeTime;
-	}
 	public int getNum() {
 		return num;
 	}
 	public void setNum(int num) {
 		this.num = num;
+	}
+	public EquipmentFreeTime getEquipmentFreeTime() {
+		
+			EquipmentFreeTime equipmentFreeTime = new EquipmentFreeTime();
+			equipmentFreeTime.setEquipment(this.equipment);
+		return equipmentFreeTime;
 	}
 
 

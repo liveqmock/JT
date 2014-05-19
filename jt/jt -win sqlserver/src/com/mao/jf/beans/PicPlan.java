@@ -17,30 +17,39 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PostLoad;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.mao.jf.beans.annotation.Caption;
 
 @Entity
 public class PicPlan extends BeanMao {
 
-	@Caption("系统ID")
+//	@Caption("系统ID")
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 
 
-	@Caption(order=0,value="序号")
+//	@Caption(order=0,value="序号")
 	private int sequenceNum;
 
-	@Caption(order=1,value="数量")
+	@Caption(order=4,value="数量")
 	private int num;
-	@ManyToOne @JoinColumn(name = "pic", referencedColumnName = "id")
+	@ManyToOne(fetch = LAZY) @JoinColumn(name = "pic", referencedColumnName = "id")
+	@NotFound(action=NotFoundAction.IGNORE)
 	private PicBean pic;
 	private Date planDate;
-	@Transient
+
+	@Caption(order = 6, value= "开始时间")
 	private Date startDate;
-	@Transient
+	@Caption(order = 7, value= "计划结束时间")
 	private Date endDate;
 	@OneToMany(mappedBy = "picPlan", cascade = ALL) 
 	private Collection<OperationPlan> operationPlans;
@@ -56,27 +65,43 @@ public class PicPlan extends BeanMao {
 	@OneToOne(fetch = LAZY)	@JoinColumn(name = "nextPlan", referencedColumnName = "id")	
 	private PicPlan nextPlan;
 	@Transient
-	@Caption(order=4,value="用时")
+	@Caption(order=5,value="用时")
 	private int useTime;
-	public void initOperationPlans() {
+
+	@Transient
+	TreeSet<OperationPlan> operationPlanSet;
+	public void removeEquipmentPlans() {
+		for(OperationPlan operationPlan:getOperationPlans())
+			try {
+				operationPlan.deleteEquipmentPlans();
+			} catch (Exception e) {
+				// TODO 自动生成的 catch 块
+				e.printStackTrace();
+			}
+	}
+
+
+	public void createEquipmentPlans() {
 		if(operationPlans!=null){
-			for(OperationPlan operationPlan:getOperationPlans())
-				try {
-					operationPlan.deleteEquipmentPlans();
-				} catch (Exception e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
+
 			for(OperationPlan operationPlan:getOperationPlanSet())
 				try {
 					operationPlan.createPlan();
 				} catch (Exception e) {
-					// TODO 自动生成的 catch 块
 					e.printStackTrace();
 				}
+
+			getPlanInfo();
+			save();
+			
 		}
 	}
-
+	public void initOperationPlans() {
+		getOpSet();
+		removeEquipmentPlans();
+		createEquipmentPlans();
+		getPlanInfo();
+	}
 	public PicPlan() {
 	}
 	public PicPlan(PicBean picBean) {
@@ -95,8 +120,7 @@ public class PicPlan extends BeanMao {
 	}
 
 	public TreeSet<OperationPlan> getOperationPlanSet() {
-		if(operationPlans==null)return new TreeSet<>();
-		return new TreeSet<>(operationPlans);
+		return operationPlanSet;
 	}
 	public Collection<OperationPlan> getOperationPlans() {
 		return   operationPlans;
@@ -127,15 +151,10 @@ public class PicPlan extends BeanMao {
 	}
 
 	public int  getUseTime() {
-		int time = 0;
-		for(OperationPlan operationPlan:getOperationPlans()){
-			time+=operationPlan.getPlanProcessTime();
-		}
-		return time;
+
+		return useTime;
 	}
-	@Caption(order = 2, value= "开始时间")
 	public Date getStartDate() {
-		if(getOperationPlans().size()>0) startDate=getOperationPlanSet().first().getStartDate();
 		return startDate;
 	}
 	public int getSequenceNum() {
@@ -203,9 +222,7 @@ public class PicPlan extends BeanMao {
 
 	}
 
-	@Caption(order = 3, value= "计划结束时间")
 	public Date getEndDate() {
-		if(getOperationPlans().size()>0)endDate=getOperationPlanSet().last().getEndDate();
 
 		return endDate;
 	}
@@ -255,5 +272,48 @@ public class PicPlan extends BeanMao {
 	public String toString() {
 		return String.valueOf(id);
 	}
+	
+	public void getOpSet() {
+		if(getOperationPlans()==null){
+			operationPlanSet=new TreeSet<>();
 
+		}else{
+			operationPlanSet=new TreeSet<>(operationPlans);
+
+		}
+	}
+	@PostLoad
+	public void postLoad() {
+		getOpSet();
+		getPlanInfo();
+	}
+	public void getPlanInfo() {
+		if(getOperationPlans()!=null&&getOperationPlans().size()>0) startDate=getOperationPlanSet().first().getStartDate();
+		if(getOperationPlans()!=null&&getOperationPlans().size()>0)endDate=getOperationPlanSet().last().getEndDate();
+
+		useTime = 0;
+		if(getOperationPlans()!=null)
+			for(OperationPlan operationPlan:getOperationPlans()){
+				useTime+=operationPlan.getPlanProcessTime();
+			}
+		
+
+	}
+	
+	@Caption(value="客户", order=1)
+	public String getCustom(){
+		return pic.getBill().getCustom();
+		
+	}
+	
+	@Caption(value="图号", order=2)
+	public String getPicId(){
+		return pic.getPicid();
+		
+	}
+	@Caption(value="要求交货时间", order=3)
+	public Date getRequestDate(){
+		return pic.getBill().getRequestDate();
+		
+	}
 }

@@ -19,11 +19,18 @@ import ui.menu.BillPopMenu;
 
 import com.mao.jf.beans.BillBean;
 import com.mao.jf.beans.SerialiObject;
+import com.mao.jf.beans.Userman;
 
 public class BillTable extends BeanTablePane<BillBean> {
 	boolean columnInit=false;
+	private final static String[] admHeaders=new String[]{"客户","联系人","订单号",
+		"订单组","订单日期","要求交货时间","订单交货日期","是否完结","最终报价(未含税)","最终报价(含税)",
+		"发票数量","发票金额","最后开票时间","备注"};
+
+private final static String[] nomheaders=new String[]{"客户","联系人","订单号",
+	"订单组","订单日期","要求交货时间","订单交货日期","是否完结","备注"};
 	public BillTable(Vector<BillBean> beans) {
-		super(beans,BillBean.class);
+		super(beans,BillBean.class,Userman.loginUser.isManager()?admHeaders:nomheaders);
 		setPopupMenu(new BillPopMenu(this));
 		getTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 

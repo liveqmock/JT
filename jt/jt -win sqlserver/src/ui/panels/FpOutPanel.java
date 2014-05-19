@@ -16,16 +16,16 @@ import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
-import com.mao.jf.beans.FpBean;
+import com.mao.jf.beans.OutFpBean;
 
-public class FpPanel extends BeanPanel<FpBean> {
+public class FpOutPanel extends BeanPanel<OutFpBean> {
 private JTextField fbNoFld;
 private JTextField money;
 private JXDatePicker createDate;
 private JTextField billNoFld;
 private NumberMaxE moneyMaxE;
 private JTextField content;
-	public FpPanel(FpBean bean) {
+	public FpOutPanel(OutFpBean bean) {
 		super(bean);
 	}
 	@Override
@@ -81,7 +81,7 @@ private JTextField content;
 		fbNoFld.setName("发票号码");
 		createDate.getEditor().setName("开票时间");
 		money.setName("发票金额");
-		moneyMaxE=new NumberMaxE(this.bean.getBill().getRemainNotFbMoney());
+		moneyMaxE=new NumberMaxE(this.bean.getPic().getRemainOutNotFbMoney());
 		getValidationGroup().add(fbNoFld,Validators.REQUIRE_NON_EMPTY_STRING);
 		getValidationGroup().add(fbNoFld,Validators.notNull());
 		getValidationGroup().add(money,Validators.REQUIRE_NON_NEGATIVE_NUMBER);
@@ -91,7 +91,7 @@ private JTextField content;
 	@Override
 	protected  void dataBinding() {
 		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ, bean, BeanProperty.create("bill.billid"), billNoFld, jTextFieldBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ, bean, BeanProperty.create("pic.picid"), billNoFld, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("fpNo"), fbNoFld, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("money"), money, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("createDate"), createDate, BeanProperty.create("date")));
@@ -99,13 +99,13 @@ private JTextField content;
 
 	}
 	@Override
-	public void setBean(FpBean bean) {
+	public void setBean(OutFpBean bean) {
 		// TODO 自动生成的方法存根
 		super.setBean(bean);
 		if(moneyMaxE==null)
-			moneyMaxE=new NumberMaxE(bean.getBill().getRemainNotFbMoney());
-		else
-			moneyMaxE.setMax(bean.getBill().getRemainNotFbMoney());
+			moneyMaxE=new NumberMaxE(this.bean.getPic().getRemainOutNotFbMoney());
+		else 
+			moneyMaxE.setMax(bean.getPic().getRemainOutNotFbMoney());
 	}
 	
 	

@@ -1,5 +1,6 @@
 package ui.costPanes;
 
+import java.awt.Component;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -27,6 +28,7 @@ public class EquipmentPnl extends BeanPanel<Equipment> {
 	private JTextField code;
 	private JCheckBox good;
 	private JComboBox<Operation> operation;
+	private JTextField workTime;
 
 	/**
 	 * Create the panel.
@@ -41,6 +43,7 @@ public class EquipmentPnl extends BeanPanel<Equipment> {
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("operation"),operation, BeanProperty.create("selectedItem")));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("name"),equipmentName, BeanProperty.create("text")));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("code"),code, BeanProperty.create("text")));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("workTime"),workTime, BeanProperty.create("text")));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("good"),good, BeanProperty.create("selected")));
 		
 
@@ -48,7 +51,7 @@ public class EquipmentPnl extends BeanPanel<Equipment> {
 
 	@Override
 	protected void createContents() {
-		setLayout(new MigLayout("", "[][grow]", "[][][][]"));
+		setLayout(new MigLayout("", "[][grow]", "[][][][][]"));
 
 		JLabel label = new JLabel("\u8BBE\u5907\u7C7B\u578B:");
 		add(label, "cell 0 0,alignx trailing");
@@ -72,16 +75,24 @@ public class EquipmentPnl extends BeanPanel<Equipment> {
 		code = new JTextField();
 		add(code, "cell 1 2,growx");
 		code.setColumns(10);
-
+		
+		workTime=new JTextField();
+		add(new JLabel("设备日工作时间"), "cell 0 3,alignx right");
+		add(workTime, "cell 1 3,growx");
+		
 		JLabel label_3 = new JLabel("\u53EF\u7528\u6027:");
-		add(label_3, "cell 0 3,alignx right");
+		add(label_3, "cell 0 4,alignx right");
 
 		good = new JCheckBox("\u8BBE\u5907\u662F\u5426\u53EF\u7528");
-		add(good, "cell 1 3");
-
+		add(good, "cell 1 4");
+		
 		getValidationGroup().add(equipmentName,Validators.REQUIRE_NON_EMPTY_STRING);
 		getValidationGroup().add(code,Validators.REQUIRE_NON_NEGATIVE_NUMBER);
-
+		getValidationGroup().add(workTime,Validators.REQUIRE_NON_EMPTY_STRING);
+		getValidationGroup().add(workTime,Validators.REQUIRE_NON_NEGATIVE_NUMBER);
+		equipmentName.setName("设备名称");
+		workTime.setName("日工作时间");
+		code.setName("编号");
 	}
 
 }

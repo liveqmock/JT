@@ -28,6 +28,7 @@ import ui.customComponet.RsTablePane;
 import ui.frames.BillFrame;
 import ui.panels.BackRepairPanel;
 import ui.panels.CheckPnl;
+import ui.panels.FpOutPanel;
 import ui.panels.FpPanel;
 import ui.panels.MaterialsPanel;
 import ui.panels.PicPanel;
@@ -39,6 +40,7 @@ import com.mao.jf.beans.BackRepair;
 import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.BillBean;
 import com.mao.jf.beans.FpBean;
+import com.mao.jf.beans.OutFpBean;
 import com.mao.jf.beans.PicBean;
 import com.mao.jf.beans.SessionData;
 import com.mao.jf.beans.ShipingBean;
@@ -80,6 +82,9 @@ public class PicAction extends AbstractAction {
 				break;
 			case "添加发货信息":
 				editShiping();
+				break;
+			case "添加外协发票信息":
+				editOutFp();
 				break;
 			case "查看图纸":
 				showPic();
@@ -284,6 +289,48 @@ public class PicAction extends AbstractAction {
 		
 		
 	}
+	private void editOutFp() {
+		OutFpBean fpBean=new OutFpBean();
+		if (table.getSelectBean() == null) {
+			JOptionPane.showMessageDialog(table, "未选择要修改的订单项!");
+			return;
+		}
+		final PicBean bean=table.getSelectBean();
+		
+		fpBean.setPic(bean);
+		BeansPanel<OutFpBean> panel=new BeansPanel<OutFpBean>(bean.getFpOutBeans(),new FpOutPanel(fpBean),OutFpBean.class) {
+
+			@Override
+			public OutFpBean saveBean() {
+				getPanelBean().setInputUser(Userman.loginUser);
+				BeanMao.saveBean(getPanelBean());
+				return getPanelBean();
+			}
+
+			@Override
+			protected OutFpBean createNewBean() {
+				OutFpBean fpBean=new OutFpBean();
+				fpBean.setPic(bean);
+				return fpBean;
+			}
+			
+		};
+		
+		BeanDialog<OutFpBean> dialog =new BeanDialog<OutFpBean>(panel,"外协发票管理") {
+			
+			@Override
+			public boolean okButtonAction() {
+				return true;
+			}
+		};
+		dialog.setBounds(100, 100, 500,500);
+		dialog.setLocationRelativeTo(null);
+		dialog.setVisible(true);
+		
+		
+		
+	}
+
 	private void editShiping() {
 		
 		

@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Bindings;
+import org.jdesktop.swingx.JXDatePicker;
 
 import ui.customComponet.BeanPanel;
 import validation.builtin.NumberMaxE;
@@ -33,6 +34,7 @@ public class OperationPlanPnl extends BeanPanel<OperationPlan> {
 	private JComboBox<Operation> operations;
 	private JComboBox<String> technicsFld;
 	private JTextField technicsDesFld;
+	private JXDatePicker planDate;
 
 	/**
 	 * Create the panel.
@@ -60,6 +62,8 @@ public class OperationPlanPnl extends BeanPanel<OperationPlan> {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,}));
 		List<Operation> operationsList = BeanMao.getBeans(Operation.class);
 		Operation[] operationArray=new Operation[operationsList.size()];
@@ -68,13 +72,14 @@ public class OperationPlanPnl extends BeanPanel<OperationPlan> {
 
 		add( new JLabel("\u52A0\u5DE5\u8BBE\u5907:"), "2, 2, right, default");		
 		add(operations, "4, 2, fill, default");
-
+		operations.setName("设备");
 
 		JLabel label = new JLabel("\u4F7F\u7528\u8BBE\u5907\u6570\u91CF:");
 		add( label, "6, 2, right, default");	
 		equipmentNum=new JTextField();
 		equipmentNum.setName("加工设备数");
 		add(equipmentNum, "8, 2, fill, default");
+		
 		List list = BeanMao.beanManager.queryList("select distinct technics from OperationPlan");
 		String[] technicses=null;
 		if(list!=null){
@@ -104,10 +109,18 @@ public class OperationPlanPnl extends BeanPanel<OperationPlan> {
 		add(prepareTime, "8, 6, fill, default");
 		prepareTime.setName("调机时间");
 		
-		JLabel label_3 = new JLabel("\u5907\u6CE8:");
-		add(label_3, "2, 8, right, default");		
+		planDate=new JXDatePicker();
+		planDate.setFormats("yyyy-MM-dd HH:mm");
+
+		add(new JLabel("开始日期:"), "2, 8, right, default");		
 		note=new JTextField();
-		add(note, "4, 8, 5, 1, fill, default");
+		add(planDate, "4, 8, left, default");
+		note.setName("开始日期");
+		
+		JLabel label_3 = new JLabel("\u5907\u6CE8:");
+		add(label_3, "6, 8, right, default");		
+		note=new JTextField();
+		add(note, "8, 8, fill, default");
 		note.setName("备注");
 		operations.addItemListener(new ItemListener() {			
 			@Override
@@ -138,14 +151,15 @@ public class OperationPlanPnl extends BeanPanel<OperationPlan> {
 	@Override
 	protected void dataBinding() {
 		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
+		BeanProperty<Object, Object> comboBoxBeanProperty = BeanProperty.create("selectedItem");
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("unitUseTime"), unitUseTime, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("prepareTime"), prepareTime, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("note"), note, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("equipmentNum"), equipmentNum, jTextFieldBeanProperty));
-		BeanProperty<Object, Object> comboBoxBeanProperty = BeanProperty.create("selectedItem");
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("operation"), operations, comboBoxBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("technics"), technicsFld, comboBoxBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("technicsDes"), technicsDesFld, jTextFieldBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("planDate"), planDate, BeanProperty.create("date")));
 
 	}
 	

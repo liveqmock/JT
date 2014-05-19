@@ -12,6 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import com.mao.jf.beans.annotation.Caption;
 
 @Entity
@@ -28,12 +31,15 @@ public class OperationWork extends BeanMao {
 	@ManyToOne
 	@JoinColumn(name = "operationPlan", referencedColumnName = "id")
 	@Caption(value="工序名")
-	private OperationPlan operationPlan;
+	@NotFound(action=NotFoundAction.IGNORE)
+    private OperationPlan operationPlan;
 
 	@OneToOne
 	@JoinColumn(name = "employee", referencedColumnName = "id")
 
 	@Caption(value="操作员")
+	@NotFound(action=NotFoundAction.IGNORE)
+	
 	private Employee employee;
 
 	@Caption(value="操作日期")

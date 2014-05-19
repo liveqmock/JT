@@ -180,12 +180,12 @@ public class DbSearch {
 
 	public static DbSearch loadFromXml(InputStream is) throws IOException {
 
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-
-		IOUtils.copy(is, os);
+//		ByteArrayOutputStream os = new ByteArrayOutputStream();
+//
+//		IOUtils.copy(is, os);
 
 //		ByteArrayInputStream inputStream=new ByteArrayInputStream(os.toByteArray());
-		ByteArrayInputStream inputStream2=new ByteArrayInputStream(os.toByteArray());
+//		ByteArrayInputStream inputStream2=new ByteArrayInputStream(os.toByteArray());
 
 //		String codeString = getCodeString(inputStream);
 		XStream xStream = new XStream();
@@ -196,12 +196,9 @@ public class DbSearch {
 		xStream.useAttributeFor(String.class);
 		xStream.useAttributeFor(boolean.class);
 		xStream.useAttributeFor(int.class);
-		DbSearch dbSearch= (DbSearch)xStream.fromXML(new InputStreamReader(inputStream2,"GBK"));
+		DbSearch dbSearch= (DbSearch)xStream.fromXML(new InputStreamReader(is,"GBK"));
 
 		is.close();
-		os.close();
-//		inputStream.close();
-		inputStream2.close();
 
 		return dbSearch;
 
@@ -360,6 +357,7 @@ public class DbSearch {
 			}
 			columnField.setLabel(meta.getColumnLabel(c));
 			columnField.setName(meta.getColumnName(c));
+			System.err.println(meta.getColumnClassName(c));
 			getColumnFields().add(columnField);
 		}
 
@@ -382,11 +380,15 @@ public class DbSearch {
 				ResultSet rs = st.executeQuery("select * from core.BBFMSTLR");
 				){
 			dbSearch.getColumns(rs.getMetaData());
+			for(ColumnField<?> columnField:dbSearch.getColumnFields())
+				System.err.println(columnField.getValue().getClass());
 		} catch ( Exception e) {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();
 		}
-		dbSearch.saveAsXml();
+		
+		
+		System.err.println(dbSearch.saveAsXml());
 		
 		
 		

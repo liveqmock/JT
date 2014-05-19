@@ -112,15 +112,13 @@ public class BeanManager {
 		}
 		try{
 			em.getTransaction().begin();
-			query.executeUpdate();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		try{query.executeUpdate();
 			em.getTransaction().commit();
 		}catch(Exception e){
-			try{
-			em.getTransaction().rollback();
-			}catch(Exception e1){
-
-				e.printStackTrace();
-			}
+			e.printStackTrace();
 		}
 	}
 
@@ -133,15 +131,14 @@ public class BeanManager {
 	public void flush() {
 		try{
 			em.getTransaction().begin();
-			em.flush();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		try{em.flush();
 			em.getTransaction().commit();
 		}catch(Exception e){
-			try{
-			em.getTransaction().rollback();
-			}catch(Exception e1){
-
+			
 				e.printStackTrace();
-			}
 		}
 
 	}
@@ -195,21 +192,14 @@ public class BeanManager {
 	public void removeBean(Object object) {
 		try{
 			em.getTransaction().begin();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		try{
 			em.remove(object);
 			em.getTransaction().commit();
 		}catch(Exception e){
-			try{
-			em.getTransaction().commit();
 			e.printStackTrace();
-			}catch(Exception e1){
-				try{
-					em.getTransaction().rollback();
-					}catch(Exception e2){
-						e2.printStackTrace();
-						
-					}
-				
-			}
 		}
 	}
 
@@ -217,17 +207,18 @@ public class BeanManager {
 	public void saveBean(Object bean) {
 		try{
 			em.getTransaction().begin();
-			em.persist(bean);;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		try{em.persist(bean);;
 			em.getTransaction().commit();
 		}catch(Exception e){
-			try{			
-				em.getTransaction().commit();
-			}catch(Exception e1){try{			
+			try{
 				em.getTransaction().rollback();
-			}catch(Exception e2){
-				e2.printStackTrace();
+			}catch(Exception e1){
+				e1.printStackTrace();
 			}
-			}
+			e.printStackTrace();
 		}
 		
 	}
@@ -266,9 +257,9 @@ public class BeanManager {
 		}
 		return caption;
 	}
-
+   
 	public static void main(String a[]) {
-		System.err.println(getCaption(PicBean.class));
+		System.err.println(getCaption(BillBean.class));
 	}
 	
 

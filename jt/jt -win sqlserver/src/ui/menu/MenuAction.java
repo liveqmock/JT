@@ -27,6 +27,7 @@ import ui.costPanes.EquipmentManagerPnl;
 import ui.costPanes.OperationPnl;
 import ui.costPanes.OperationWorkPnl;
 import ui.costPanes.PlanCreatePanel;
+import ui.costPanes.PlansDetail;
 import ui.costPanes.ShowWorkCostPnl;
 import ui.costPanes.WorkCostPnl;
 import ui.costPanes.WorkCreatePanel;
@@ -91,6 +92,9 @@ public class MenuAction extends AbstractAction {
 
 			case "修改密码":
 				changePasswd();
+				break;
+			case "清理内存":
+				clearMemery();
 				break;
 
 			case "关于":
@@ -170,7 +174,10 @@ public class MenuAction extends AbstractAction {
 
 	}
 
-
+	public void clearMemery() {
+		
+		System.gc();
+	}
 	private void showEquipmentUsing() {
 		String sql = "select a.NAME 设备名称,a.code 设备编号, endtime 计划完工时间 from "
 				+ "dbo.equipment a join operation b on a.operation=b.id left "
@@ -200,10 +207,8 @@ public class MenuAction extends AbstractAction {
 
 
 	private void showBillTime() {
-		List<PicPlan> list = BeanMao.getBeans(PicPlan.class," startDate>=?1 and completed=0",new Date());
-		BeanTablePane<PicPlan> tablePane=new BeanTablePane<PicPlan>(list,PicPlan.class);
 		JDialog dialog=new JDialog();
-		dialog.setContentPane(tablePane);
+		dialog.setContentPane(new PlansDetail());
 		dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
 
 		dialog.setLocationRelativeTo(null);

@@ -7,9 +7,11 @@ import com.mao.jf.beans.OperationPlan;
 import com.mao.jf.beans.PicPlan;
 
 public class OperarionPlansPnl extends BeansPanel<OperationPlan> {
+	private static final String[] HEADER=new String[]{"排产序号","设备","工艺","工艺描述",
+		"使用设备数","单位用时","调机用时","计划时间","开始时间","结束时间","计划耗时"};
 	private PicPlan plan;
 	public OperarionPlansPnl(PicPlan plan) {
-		super(null, new OperationPlanPnl(null), OperationPlan.class);
+		super(null,HEADER, new OperationPlanPnl(null), OperationPlan.class);
 		this.plan=plan;
 		getTablePane().getTable().setSortable(false);
 		setPlan(plan);

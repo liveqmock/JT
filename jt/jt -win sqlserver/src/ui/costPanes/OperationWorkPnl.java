@@ -50,6 +50,10 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 	private JTextField checkData;
 	private JTextField planId;
 	private JTextField operationName;
+	private JLabel label;
+	private JTextField billId;
+	private JLabel label_1;
+	private JTextField picId;
 
 	/**
 	 * Create the panel.
@@ -68,7 +72,9 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 				FormFactory.DEFAULT_COLSPEC,
 				FormFactory.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),},
-				new RowSpec[] {
+			new RowSpec[] {
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
@@ -121,62 +127,76 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		operationName.setEditable(false);
 		add(new JLabel("工艺名:"), "6, 4, right, default");
 		add(operationName, "8, 4, fill, default");
+		
+		label = new JLabel("\u8BA2\u5355\u53F7:");
+		add(label, "2, 6, right, default");
+		
+		billId = new JTextField();
+		billId.setEditable(false);
+		add(billId, "4, 6, fill, default");
+		
+		label_1 = new JLabel("\u56FE\u53F7:");
+		add(label_1, "6, 6, right, default");
+		
+		picId = new JTextField();
+		picId.setEditable(false);
+		add(picId, "8, 6, fill, default");
 
 
-		add(new JLabel("投入数:"), "2, 6, right, default");
-		add(getNum, "4, 6, fill, default");
+		add(new JLabel("投入数:"), "2, 8, right, default");
+		add(getNum, "4, 8, fill, default");
 		getNum.setName("实发数");
 
 
-		add(new JLabel("良品数:"), "6, 6, right, default");
-		add(productNum, "8, 6, fill, default");
+		add(new JLabel("良品数:"), "6, 8, right, default");
+		add(productNum, "8, 8, fill, default");
 		productNum.setName("良品数");
 
-		add(new JLabel("不良数:"), "2, 8, right, default");
-		add(scrapNum, "4, 8, fill, default");
+		add(new JLabel("不良数:"), "2, 10, right, default");
+		add(scrapNum, "4, 10, fill, default");
 		scrapNum.setName("不良数");
 
 
-		add(new JLabel("不良描述:"), "6,8, right, default");		
-		add(scrapReason, "8, 8, fill, default");
+		add(new JLabel("不良描述:"), "6, 10, right, default");		
+		add(scrapReason, "8, 10, fill, default");
 
-		add(new JLabel("用时:"), "2, 10, right, default");		
-		add(useTime, "4, 10, fill, default");
+		add(new JLabel("用时:"), "2, 12, right, default");		
+		add(useTime, "4, 12, fill, default");
 		useTime.setName("用时");
 		JLabel label_11 = new JLabel("生产时间:");
-		add(label_11, "6, 10,right,default");
+		add(label_11, "6, 12, right, default");
 
         Calendar calendar=Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, -1);
         finishDate.setDate(calendar.getTime());
         calendar=null;
 		finishDate.setFormats(new String[] {"yyyy\u5E74MM\u6708dd\u65E5"});
-		add(finishDate, "8, 10,left,default");
+		add(finishDate, "8, 12, left, default");
 		finishDate.getEditor().setName("生产时间");
 
-		add( new JLabel("调机用时:"), "2, 12, right, default");	
-		add(prepareTime, "4, 12, fill, default");
+		add( new JLabel("调机用时:"), "2, 14, right, default");	
+		add(prepareTime, "4, 14, fill, default");
 		prepareTime.setName("调机用时");
 
 
-		add(new JLabel("调机员:"), "6, 12, right, default");		
-		add(prepareEmployee, "8, 12, fill, default");
+		add(new JLabel("调机员:"), "6, 14, right, default");		
+		add(prepareEmployee, "8, 14, fill, default");
 
-		add(new JLabel("首件检验人:"), "2, 14, right, default");		
-		add(firstChecker, "4, 14, fill, default");
-		add(new JLabel("首件检验数据:"), "6, 14, right, default");		
-		add(checkData, "8, 14, fill, default");
+		add(new JLabel("首件检验人:"), "2, 16, right, default");		
+		add(firstChecker, "4, 16, fill, default");
+		add(new JLabel("首件检验数据:"), "6, 16, right, default");		
+		add(checkData, "8, 16, fill, default");
 
-		add(new JLabel("检验员:"), "2, 16, right, default");		
-		add(checker, "4, 16, fill, default");
+		add(new JLabel("检验员:"), "2, 18, right, default");		
+		add(checker, "4, 18, fill, default");
 
-		add(new JLabel("主管:"), "6, 16, right, default");		
-		add(superintendent, "8, 16, fill, default");
+		add(new JLabel("主管:"), "6, 18, right, default");		
+		add(superintendent, "8, 18, fill, default");
 
 
 
-		add(new JLabel("备注:"), "2, 18, right, default");		
-		add(note, "4, 18, fill, default");
+		add(new JLabel("备注:"), "2, 20, right, default");		
+		add(note, "4, 20, fill, default");
 		operationId.addFocusListener(new FocusListener() {
 
 			@Override
@@ -205,6 +225,8 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 					operationId.setText(null);
 					return;					
 				}
+				billId.setText(operationPlan.getPicPlan().getPic().getBillId());
+				picId.setText(operationPlan.getPicPlan().getPic().getPicid());
 				operationName.setText(operationPlan.getName());
 				planId.setText(new DecimalFormat("000,000").format(operationPlan.getPicPlan().getId()).replaceAll(",", "-"));
 				getBean().setOperationPlan(operationPlan);

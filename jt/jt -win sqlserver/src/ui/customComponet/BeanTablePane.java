@@ -177,7 +177,7 @@ public class BeanTablePane<T> extends JPanel {
 					for (int i = 0; i < filterColoums.length; i++) {
 
 						for (int c = 0; c < heads.length; c++) {
-							if (heads[c].equals(filterColoums[i])) {
+							if (heads[c].getCaption().equals(filterColoums[i])) {
 								TreeSet<String> colValues = new TreeSet<>();
 								colValues.add("");
 								for (T t : beans) {
@@ -212,22 +212,7 @@ public class BeanTablePane<T> extends JPanel {
 							}
 						}
 					}
-					panel.add(new JButton(new AbstractAction("µ¼³ö") {
-
-						@SuppressWarnings("unchecked")
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							try {
-								((BeanTableModel<T>) table.getModel())
-								.exportToExl(null);
-							} catch ( IllegalArgumentException
-									| IOException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-
-						}
-					}));
+					
 					JScrollPane scrollPane = new JScrollPane(panel);
 					scrollPane.setPreferredSize(new Dimension(100, 60));
 					add(scrollPane, BorderLayout.NORTH);

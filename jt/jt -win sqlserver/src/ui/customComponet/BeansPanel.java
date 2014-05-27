@@ -21,26 +21,30 @@ public abstract class BeansPanel<T> extends JPanel {
 	private boolean vertical=false;
 	private Class<T> class1;
 	protected Collection<T> beans;
-
+	private String[] header;
 	public BeansPanel() {
 		super(null);
 	}
 	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1) {
-		this(beans, beanPanel,class1, null,false);
+		this(beans, null, beanPanel,class1,null,false);
+	}
+	public BeansPanel(Collection<T> beans,String[] header, BeanPanel<T> beanPanel,Class<T> class1) {
+		this(beans, header, beanPanel,class1,null,false);
 	}
 	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1,boolean vertical) {
-		this(beans, beanPanel,class1, null,vertical);
+		this(beans, null, beanPanel,class1,null,vertical);
 	}
 	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1,
 			String filterColumns[]) {
-		this(beans, beanPanel,class1, filterColumns,false);
+		this(beans,null, beanPanel,class1, filterColumns,false);
 	}
-	public BeansPanel(Collection<T> beans, BeanPanel<T> beanPanel,Class<T> class1,
+	public BeansPanel(Collection<T> beans,String[] header, BeanPanel<T> beanPanel,Class<T> class1,
 			String filterColumns[],boolean vertical) {
 		this.beanPanel=beanPanel;
 		this.filterColumns=filterColumns;
 		this.vertical=vertical;
 		this.class1=class1;
+		this.header=header;
 		createContents();
 		setBean(beans);
 	}
@@ -50,7 +54,7 @@ public abstract class BeansPanel<T> extends JPanel {
 
 		beanPanel.setBorder(BorderFactory.createEtchedBorder());
 		setLayout(new BorderLayout(0, 0));
-		tablePane = new BeanTablePane<T>(beans,class1, filterColumns);
+		tablePane = new BeanTablePane<T>(beans,class1, header);
 		ActionListener listener = new ActionListener() {
 
 			@Override

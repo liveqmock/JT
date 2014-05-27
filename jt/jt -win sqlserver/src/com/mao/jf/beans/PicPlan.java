@@ -18,14 +18,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PostLoad;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.mao.jf.beans.annotation.Caption;
 
 @Entity
@@ -65,8 +62,12 @@ public class PicPlan extends BeanMao {
 	@OneToOne(fetch = LAZY)	@JoinColumn(name = "nextPlan", referencedColumnName = "id")	
 	private PicPlan nextPlan;
 	@Transient
-	@Caption(order=5,value="用时")
-	private int useTime;
+	@Caption(order=5,value="计划用时")
+	private int planUseTime;
+
+	@Transient
+	@Caption(order=5,value="实际用时")
+	private int workUseTime;
 
 	@Transient
 	TreeSet<OperationPlan> operationPlanSet;
@@ -150,9 +151,9 @@ public class PicPlan extends BeanMao {
 		return num;
 	}
 
-	public int  getUseTime() {
+	public int  getPlanUseTime() {
 
-		return useTime;
+		return planUseTime;
 	}
 	public Date getStartDate() {
 		return startDate;
@@ -287,14 +288,28 @@ public class PicPlan extends BeanMao {
 		getOpSet();
 		getPlanInfo();
 	}
+	
+	
+	public int getWorkUseTime() {
+		return workUseTime;
+	}
+
+
+
+
 	public void getPlanInfo() {
 		if(getOperationPlans()!=null&&getOperationPlans().size()>0) startDate=getOperationPlanSet().first().getStartDate();
 		if(getOperationPlans()!=null&&getOperationPlans().size()>0)endDate=getOperationPlanSet().last().getEndDate();
 
-		useTime = 0;
+		planUseTime = 0;
 		if(getOperationPlans()!=null)
 			for(OperationPlan operationPlan:getOperationPlans()){
-				useTime+=operationPlan.getPlanProcessTime();
+				planUseTime+=operationPlan.getPlanUseTime();
+			}
+		workUseTime = 0;
+		if(getOperationPlans()!=null)
+			for(OperationPlan operationPlan:getOperationPlans()){
+				workUseTime+=operationPlan.getWorkUseTime();
 			}
 		
 

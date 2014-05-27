@@ -158,6 +158,7 @@ public class PicView extends JScrollPane {
 			}
 		};
 		swingWorker.execute();
+		swingWorker=null;
 
 
 

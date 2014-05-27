@@ -79,6 +79,7 @@ public class MainMenu extends JMenuBar {
 		menu = new JMenu("帮助");
 		add(menu);
 
+		menu.add("清理内存").addActionListener(action);
 		menu.add("关于").addActionListener(action);
 	}
 

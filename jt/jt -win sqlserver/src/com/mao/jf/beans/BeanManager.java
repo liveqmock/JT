@@ -259,7 +259,15 @@ public class BeanManager {
 	}
    
 	public static void main(String a[]) {
-		System.err.println(getCaption(BillBean.class));
+		System.err.println(getCaption(OperationPlan.class));
+	}
+
+
+
+
+	public void clear() {
+		em.clear();
+		
 	}
 	
 

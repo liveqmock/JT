@@ -33,6 +33,7 @@ import ui.panels.FpPanel;
 import ui.panels.MaterialsPanel;
 import ui.panels.PicPanel;
 import ui.panels.PicView;
+import ui.panels.ShipingOutPanel;
 import ui.panels.ShipingPanel;
 import ui.panels.SpecialPnl;
 
@@ -44,6 +45,7 @@ import com.mao.jf.beans.OutFpBean;
 import com.mao.jf.beans.PicBean;
 import com.mao.jf.beans.SessionData;
 import com.mao.jf.beans.ShipingBean;
+import com.mao.jf.beans.ShipingOutBean;
 import com.mao.jf.beans.Userman;
 
 public class PicAction extends AbstractAction {
@@ -79,6 +81,9 @@ public class PicAction extends AbstractAction {
 				break;
 			case "添加发票信息":
 				editFp();
+				break;
+			case "添加外协发货信息":
+				editShipingOut();
 				break;
 			case "添加发货信息":
 				editShiping();
@@ -378,7 +383,52 @@ public class PicAction extends AbstractAction {
 		
 	}
 
+private void editShipingOut() {
+		
+		
+		final PicBean picBean=table.getSelectBean();
+		if (picBean == null) {
+			JOptionPane.showMessageDialog(table, "未选择要修改的图纸项!");
+			return;
+		}
+		if (table.getSelectBean().isComplete()) {
+			JOptionPane.showMessageDialog(table, "该订单已经完成，不能再修改!");
+			return;
+		}
+		ShipingOutBean shipingBean=new ShipingOutBean();
+		shipingBean.setPic(picBean);
+		BeansPanel<ShipingOutBean> panel=new BeansPanel<ShipingOutBean>(picBean.getShipingOutBeans(),new ShipingOutPanel(shipingBean),ShipingOutBean.class) {
 
+			@Override
+			public ShipingOutBean saveBean() {
+				getPanelBean().setCreateUser(Userman.loginUser);
+				BeanMao.saveBean(getPanelBean());
+				return getPanelBean();
+			}
+
+			@Override
+			protected ShipingOutBean createNewBean() {
+				ShipingOutBean shipingBean=new ShipingOutBean();
+				shipingBean.setPic(picBean);
+				return shipingBean;
+			}
+			
+		};
+		
+		BeanDialog<ShipingOutBean> dialog =new BeanDialog<ShipingOutBean>(panel,"外协发票管理") {
+			
+			@Override
+			public boolean okButtonAction() {
+				return true;
+			}
+		};
+		dialog.setBounds(100, 100, 500,500);
+		dialog.setLocationRelativeTo(null);
+		dialog.setVisible(true);
+		
+		
+		
+	}
 
 	private void addColor(String color) {
 		if (table.getTable().getSelectedRows().length==0) {

@@ -60,7 +60,6 @@ public class DbSearchForm extends GridLayout{
 				}
 			}
 		}
-		BeanItemContainer<User> userBeanItemContainer=new BeanItemContainer<>(User.class);
 		dbSearch.createSql();
 	}
 	public void commit() throws CommitException {

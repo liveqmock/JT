@@ -25,6 +25,7 @@ import javax.persistence.PostPersist;
 import javax.persistence.PostRemove;
 import javax.persistence.Transient;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.mao.jf.beans.annotation.Caption;
 
 @Entity
@@ -67,9 +68,12 @@ public class OperationPlan extends BeanMao implements Comparable<OperationPlan> 
 	@Caption( "剩余数量")
 	@Transient
 	private int remainNum;
-	@Caption( "耗时")
+	@Caption( "计划耗时")
 	@Transient
-	private long planProcessTime;
+	private long planUseTime;
+	@Caption( "实际耗时")
+	@Transient
+	private long workUseTime;
 
 	@OneToMany(mappedBy = "operationPlan", cascade = ALL, orphanRemoval = true)	@OrderBy("planStartTime")
 
@@ -105,9 +109,9 @@ public class OperationPlan extends BeanMao implements Comparable<OperationPlan> 
 	 */
 	public EquipmentPlan getEarliestEquipmentPlan() {
 		Object planEndTime= BeanMao.beanManager.queryNativeSingle("select min(planEndTime) from ("
-				+ "select max(planEndTime) planEndTime from EquipmentPlan a join operationPlan b "
-				+ "on a.operationPlan=b.id join operation c on b.operation=c.id and c.id=?1 group by equipment )a"
-				, operation.getId());
+				+ "select max(planEndTime) planEndTime from EquipmentPlan "
+				+ "where equipment in (select id from equipment where operation=?1) "
+				+ "group by equipment)a", operation.getId());
 
 		return BeanMao.getBean(EquipmentPlan.class, " equipment.good=true and equipment.operation=?1 and planEndTime=?2 "
 				,operation,planEndTime);
@@ -271,9 +275,24 @@ public class OperationPlan extends BeanMao implements Comparable<OperationPlan> 
 		return name;
 	}
 
-	public long getPlanProcessTime() {	
+	public long getPlanUseTime() {	
 		try{
-			return (getEndDate().getTime()-getStartDate().getTime())/60000;
+			planUseTime=0;
+			for(EquipmentPlan equipmentPlan:equipmentPlans){
+				planUseTime+=equipmentPlan.getPlanUseTimes();
+			}
+			return planUseTime;
+		}catch (Exception e){
+			return 0;
+		}
+	}
+	public long getWorkUseTime() {	
+		try{
+			workUseTime=0;
+			for(OperationWork operationWork:operationWorks){
+				workUseTime+=operationWork.getWorkTime();
+			}
+			return workUseTime;
 		}catch (Exception e){
 			return 0;
 		}

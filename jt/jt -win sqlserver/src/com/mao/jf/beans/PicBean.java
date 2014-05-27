@@ -122,6 +122,8 @@ public class PicBean  {
 
 	@OneToMany(mappedBy = "pic")
 	private Collection<ShipingBean> shipingBeans;
+	@OneToMany(mappedBy = "pic")
+	private Collection<ShipingOutBean> shipingOutBeans;
 
 	@OneToMany(mappedBy = "pic")
 	@OrderBy("reportDate desc")
@@ -542,6 +544,14 @@ public class PicBean  {
 		return bill.getBillGetDate();
 	}
 
+	public Collection<ShipingOutBean> getShipingOutBeans() {
+		return shipingOutBeans;
+	}
+
+	public void setShipingOutBeans(Collection<ShipingOutBean> shipingOutBeans) {
+		this.shipingOutBeans = shipingOutBeans;
+	}
+
 	@Caption("发货时间")
 	public Date getPicShipingDate() {
 		if(getShipingBeans()!=null&&getShipingBeans().iterator().hasNext())
@@ -560,7 +570,24 @@ public class PicBean  {
 		}
 		else return 0;
 	}
-
+	@Caption("外协发货时间")
+	public Date getPicShipingOutDate() {
+		if(getShipingOutBeans()!=null&&getShipingOutBeans().iterator().hasNext())
+			return getShipingOutBeans().iterator().next().getShipingDate();
+		else return null;
+	}
+	@Caption("外协发货数量")
+	public int getPicShipingOutNum() {
+		if(getShipingOutBeans()!=null)
+		{	
+			int total=0;
+			Iterator<ShipingOutBean> it = getShipingOutBeans().iterator();
+			while(it.hasNext())
+				total+=it.next().getNum();
+			return total;
+		}
+		else return 0;
+	}
 
 	public Number getRemainOutNotFbMoney() {
 		if(getFpOutBeans()==null)return getOutNum()*getOutPrice();

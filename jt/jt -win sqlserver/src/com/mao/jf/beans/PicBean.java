@@ -27,6 +27,8 @@ import com.mao.jf.beans.annotation.Caption;
 import javax.persistence.OneToOne;
 import javax.persistence.Basic;
 
+import org.h2.table.Plan;
+
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 @Entity
@@ -65,10 +67,16 @@ public class PicBean  {
 	@JoinColumn(name = "checker", referencedColumnName = "id")
 	@Basic(fetch = LAZY)
 	private Employee checker;
-	@Caption("良品数")
-	private int nondefective;
 	@Caption("不良数")
-	private int defective;
+	@Transient
+	private int brokeNum;
+	@Caption("发货数量")
+	@Transient
+	private int sendNum;
+//	@Caption("良品数")
+//	private int nondefective;
+//	@Caption("不良数")
+//	private int defective;
 
 
 	@Caption("构件号")
@@ -109,6 +117,8 @@ public class PicBean  {
 	private String specialUser;
 	@Caption("已完结")
 	private boolean complete;
+	@Caption("备注")
+	private String note;
 	private boolean cancel;
 
 	@OneToMany(mappedBy = "pic")	
@@ -136,7 +146,7 @@ public class PicBean  {
 	private int outFpMoney;
 	@Transient
 	private Date OutFpDate;
-
+	
 
 
 	public int getId() {
@@ -228,6 +238,14 @@ public class PicBean  {
 		return gjh;
 	}
 
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
 	public void setGjh(String gjh) {
 		this.gjh = gjh;
 	}
@@ -244,21 +262,6 @@ public class PicBean  {
 		this.checker = checker;
 	}
 
-	public int getNondefective() {
-		return nondefective;
-	}
-
-	public void setNondefective(int nondefective) {
-		this.nondefective = nondefective;
-	}
-
-	public int getDefective() {
-		return defective;
-	}
-
-	public void setDefective(int defective) {
-		this.defective = defective;
-	}
 
 	public String getCustBillNo() {
 		if(custBillNo==null) custBillNo=bill.getBillid();
@@ -539,10 +542,6 @@ public class PicBean  {
 	public Date getRequestDate() {
 		return bill.getRequestDate();
 	}
-	@Caption("订单交货时间")
-	public Date getBillGetDate() {
-		return bill.getBillGetDate();
-	}
 
 	public Collection<ShipingOutBean> getShipingOutBeans() {
 		return shipingOutBeans;
@@ -556,19 +555,7 @@ public class PicBean  {
 	public Date getPicShipingDate() {
 		if(getShipingBeans()!=null&&getShipingBeans().iterator().hasNext())
 			return getShipingBeans().iterator().next().getShipingDate();
-		else return null;
-	}
-	@Caption("发货数量")
-	public int getPicShipingNum() {
-		if(getShipingBeans()!=null)
-		{	
-			int total=0;
-			Iterator<ShipingBean> it = getShipingBeans().iterator();
-			while(it.hasNext())
-				total+=it.next().getNum();
-			return total;
-		}
-		else return 0;
+		else return bill.getBillGetDate();
 	}
 	@Caption("外协发货时间")
 	public Date getPicShipingOutDate() {
@@ -576,7 +563,7 @@ public class PicBean  {
 			return getShipingOutBeans().iterator().next().getShipingDate();
 		else return null;
 	}
-	@Caption("外协发货数量")
+	@Caption("外协交货数量")
 	public int getPicShipingOutNum() {
 		if(getShipingOutBeans()!=null)
 		{	
@@ -627,6 +614,16 @@ public class PicBean  {
 		}
 		if(getFpOutBeans()!=null&&getFpOutBeans().iterator().hasNext())
 			OutFpDate= getFpOutBeans().iterator().next().getCreateDate();
+		getNums();
+	}
+	public void getNums() {
+		sendNum=0;
+		for(ShipingBean shipingBean:getShipingBeans()){
+			sendNum+=shipingBean.getNum();
+			brokeNum+=shipingBean.getBrokeNum();
+			
+		}
+		
 	}
 	@Caption("最后开票日期")
 	public Date getFpDate() {
@@ -639,5 +636,13 @@ public class PicBean  {
 	@Caption("发票张数")
 	public int getFpNum() {
 		return bill.getFpNum();
+	}
+
+	public int getBrokeNum() {
+		return brokeNum;
+	}
+
+	public int getSendNum() {
+		return sendNum;
 	}
 }

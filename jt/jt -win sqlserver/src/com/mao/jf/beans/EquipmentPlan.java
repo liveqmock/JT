@@ -96,6 +96,12 @@ public class EquipmentPlan {
 			equipmentFreeTime.setEquipment(this.equipment);
 		return equipmentFreeTime;
 	}
+	public void computeEndDate() {
+		planEndTime=new Date(getPlanStartTime().getTime()+getPlanUseTimesOf24Hour());
+		
+		
+		
+	}
 
 
 }

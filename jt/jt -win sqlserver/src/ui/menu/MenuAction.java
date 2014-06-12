@@ -26,6 +26,7 @@ import ui.costPanes.EmployeePnl;
 import ui.costPanes.EquipmentManagerPnl;
 import ui.costPanes.OperationPnl;
 import ui.costPanes.OperationWorkPnl;
+import ui.costPanes.OperationworkFind;
 import ui.costPanes.PlanCreatePanel;
 import ui.costPanes.PlansDetail;
 import ui.costPanes.ShowWorkCostPnl;
@@ -83,6 +84,10 @@ public class MenuAction extends AbstractAction {
 			case "订单客户管理":
 				adminCustom(0);
 				break;
+			case "生产数据管理":
+				adminOperationworks();
+				break;
+				
 			case "外协客户管理":
 				adminCustom(1);
 				break;
@@ -172,6 +177,17 @@ public class MenuAction extends AbstractAction {
 				break;
 			}
 
+	}
+
+	private void adminOperationworks() {
+		JDialog dialog=new JDialog();
+		dialog.setContentPane(new OperationworkFind());
+		dialog.setLocationRelativeTo(null);
+		dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
+
+		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+		dialog.setVisible(true);
+		
 	}
 
 	public void clearMemery() {

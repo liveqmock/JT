@@ -34,7 +34,7 @@ public class Root extends UI {
 		return navigator;
 	}
 	@WebServlet(value = "/*", asyncSupported = true)
-	@VaadinServletConfiguration(productionMode = false, ui = Root.class)
+	@VaadinServletConfiguration(productionMode = false, ui = Root.class, widgetset = "com.jxjtjm.widgetset.SmsjtWidgetset")
 	public static class Servlet extends VaadinServlet {
 	}
 

@@ -65,15 +65,15 @@ private JTextField shipingNo;
 
 		shipingDateFld = new JXDatePicker();
 		shipingDateFld.setFormats(new String[] {"yyyy-MM-dd"});
-		add(shipingDateFld, "4, 8, fill, default");
+		
+		JLabel label = new JLabel("交货时间：");
+		add(label, "2, 8");add(shipingDateFld, "4, 8, fill, default");
 
 		noteFld = new JTextField();
 		add(noteFld, "4, 10, fill, default");
-		JLabel numLabel = new JLabel("\u53D1\u8D27\u6570\u91CF\uFF1A");
+		JLabel numLabel = new JLabel("交货数量：");
 		add(numLabel, "2, 6");
 		
-		JLabel label = new JLabel("\u53D1\u8D27\u65F6\u95F4\uFF1A");
-		add(label, "2, 8");
 		
 		JLabel label_1 = new JLabel("\u5907  \u6CE8\uFF1A");
 		add(label_1, "2, 10, right, default");

@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
@@ -82,7 +84,9 @@ public class OperationWork extends BeanMao {
 
 	@Caption(value="调机时间")
 	private float prepareTime;
-
+	@Caption(value="单件程序时间")
+	private float programTime;
+	
 
 	@Caption( value= "首检数据")
 	private String	checkData;
@@ -186,6 +190,14 @@ public class OperationWork extends BeanMao {
 	public float getWorkTime() {
 		return workTime;
 	}
+	public float getProgramTime() {
+		return programTime;
+	}
+
+	public void setProgramTime(float programTime) {
+		this.programTime = programTime;
+	}
+
 	public void setChecker(Employee checker) {
 		this.checker = checker;
 	}
@@ -248,6 +260,5 @@ public class OperationWork extends BeanMao {
 	public void setCheckData(String checkData) {
 		this.checkData = checkData;
 	}
-
 
 }

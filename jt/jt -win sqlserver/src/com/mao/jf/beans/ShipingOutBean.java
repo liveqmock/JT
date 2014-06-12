@@ -25,9 +25,9 @@ public class ShipingOutBean {
 	
 	@Caption("送货单号")
 	private String shipingNo;
-	@Caption("发货日期")
+	@Caption("交货日期")
 	private Date shipingDate;
-	@Caption("发货数量")
+	@Caption("交货数量")
 	private int num;
 	@Caption("备注")
 	private String note;

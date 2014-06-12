@@ -29,6 +29,8 @@ public class ShipingBean {
 	private Date shipingDate;
 	@Caption("发货数量")
 	private int num;
+	@Caption("发货数量")
+	private int brokeNum;
 	@Caption("备注")
 	private String note;
 	@OneToOne
@@ -76,6 +78,12 @@ public class ShipingBean {
 	}
 	public void setShipingNo(String shipingNo) {
 		this.shipingNo = shipingNo;
+	}
+	public int getBrokeNum() {
+		return brokeNum;
+	}
+	public void setBrokeNum(int brokeNum) {
+		this.brokeNum = brokeNum;
 	}
 	@PostPersist
 	public void refreshPic(){

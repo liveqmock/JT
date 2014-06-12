@@ -54,6 +54,9 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 	private JTextField billId;
 	private JLabel label_1;
 	private JTextField picId;
+	private JLabel label_2;
+	private JLabel label_3;
+	private JTextField programTime;
 
 	/**
 	 * Create the panel.
@@ -71,14 +74,16 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 				FormFactory.RELATED_GAP_COLSPEC,
 				FormFactory.DEFAULT_COLSPEC,
 				FormFactory.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("default:grow"),
+				FormFactory.RELATED_GAP_COLSPEC,
+				FormFactory.DEFAULT_COLSPEC,
+				FormFactory.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("default:grow"),
+				FormFactory.RELATED_GAP_COLSPEC,
+				FormFactory.DEFAULT_COLSPEC,
+				FormFactory.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),},
-			new RowSpec[] {
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
+				new RowSpec[] {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
@@ -93,21 +98,7 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,}));
-		getNum=new JTextField();      
-		productNum=new JTextField();  
-		scrapNum=new JTextField();    
-		scrapReason=new JTextField(); 
-		prepareTime=new JTextField(); 
-		useTime=new JTextField();     
-		note=new JTextField();        
-		operationId= new JTextField();
 		employee= new JComboBox<Employee>(new Vector<Employee>(Employee.loadOperaters()));
-		checker= new JComboBox<Employee>();
-		finishDate=new JXDatePicker();
-		prepareEmployee=new JComboBox<Employee>(new Vector<Employee>(Employee.loadOperaters()));
-		superintendent=new JComboBox<Employee>(new Vector<Employee>(Employee.loadSuperintendents()));
-		firstChecker=new JComboBox<Employee>(new Vector<Employee>(Employee.loadAll()));
-		checkData=new JTextField();
 
 		add( new JLabel("操作员:"), "2, 2, right, default");		
 		add(employee, "4, 2, fill, default");
@@ -115,88 +106,9 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 
 
 		add( new JLabel("工艺编号:"), "6, 2, right, default");		
+		operationId= new JTextField();
 		add(operationId, "8, 2, fill, default");
 		operationId.setName("工艺编号");
-
-		add(new JLabel("工艺卡号:"), "2, 4, right, default");
-		planId=new JTextField();
-		planId.setEditable(false);
-		add(planId, "4, 4, fill, default");
-
-		operationName=new JTextField();
-		operationName.setEditable(false);
-		add(new JLabel("工艺名:"), "6, 4, right, default");
-		add(operationName, "8, 4, fill, default");
-		
-		label = new JLabel("\u8BA2\u5355\u53F7:");
-		add(label, "2, 6, right, default");
-		
-		billId = new JTextField();
-		billId.setEditable(false);
-		add(billId, "4, 6, fill, default");
-		
-		label_1 = new JLabel("\u56FE\u53F7:");
-		add(label_1, "6, 6, right, default");
-		
-		picId = new JTextField();
-		picId.setEditable(false);
-		add(picId, "8, 6, fill, default");
-
-
-		add(new JLabel("投入数:"), "2, 8, right, default");
-		add(getNum, "4, 8, fill, default");
-		getNum.setName("实发数");
-
-
-		add(new JLabel("良品数:"), "6, 8, right, default");
-		add(productNum, "8, 8, fill, default");
-		productNum.setName("良品数");
-
-		add(new JLabel("不良数:"), "2, 10, right, default");
-		add(scrapNum, "4, 10, fill, default");
-		scrapNum.setName("不良数");
-
-
-		add(new JLabel("不良描述:"), "6, 10, right, default");		
-		add(scrapReason, "8, 10, fill, default");
-
-		add(new JLabel("用时:"), "2, 12, right, default");		
-		add(useTime, "4, 12, fill, default");
-		useTime.setName("用时");
-		JLabel label_11 = new JLabel("生产时间:");
-		add(label_11, "6, 12, right, default");
-
-        Calendar calendar=Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, -1);
-        finishDate.setDate(calendar.getTime());
-        calendar=null;
-		finishDate.setFormats(new String[] {"yyyy\u5E74MM\u6708dd\u65E5"});
-		add(finishDate, "8, 12, left, default");
-		finishDate.getEditor().setName("生产时间");
-
-		add( new JLabel("调机用时:"), "2, 14, right, default");	
-		add(prepareTime, "4, 14, fill, default");
-		prepareTime.setName("调机用时");
-
-
-		add(new JLabel("调机员:"), "6, 14, right, default");		
-		add(prepareEmployee, "8, 14, fill, default");
-
-		add(new JLabel("首件检验人:"), "2, 16, right, default");		
-		add(firstChecker, "4, 16, fill, default");
-		add(new JLabel("首件检验数据:"), "6, 16, right, default");		
-		add(checkData, "8, 16, fill, default");
-
-		add(new JLabel("检验员:"), "2, 18, right, default");		
-		add(checker, "4, 18, fill, default");
-
-		add(new JLabel("主管:"), "6, 18, right, default");		
-		add(superintendent, "8, 18, fill, default");
-
-
-
-		add(new JLabel("备注:"), "2, 20, right, default");		
-		add(note, "4, 20, fill, default");
 		operationId.addFocusListener(new FocusListener() {
 
 			@Override
@@ -205,7 +117,7 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 
 			}
 
-			
+
 
 			@Override
 			public void focusGained(FocusEvent e) {
@@ -213,6 +125,115 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 
 			}
 		});
+
+		add(new JLabel("工艺卡号:"), "2, 4, right, default");
+		planId=new JTextField();
+		planId.setEditable(false);
+		add(planId, "4, 4, fill, default");
+		add(new JLabel("工艺名:"), "6, 4, right, default");
+
+		operationName=new JTextField();
+		operationName.setEditable(false);
+		add(operationName, "8, 4, fill, default");
+
+		label = new JLabel("\u8BA2\u5355\u53F7:");
+		add(label, "10, 4, right, default");
+
+		billId = new JTextField();
+		billId.setEditable(false);
+		add(billId, "12, 4, fill, default");
+
+		label_1 = new JLabel("\u56FE\u53F7:");
+		add(label_1, "14, 4, right, default");
+
+		picId = new JTextField();
+		picId.setEditable(false);
+		add(picId, "16, 4, fill, default");
+
+
+		JLabel label_10 = new JLabel("投入数:");
+		add(label_10, "2, 6, right, default");
+		getNum=new JTextField();      
+		add(getNum, "4, 6, fill, default");
+		getNum.setName("实发数");
+
+
+		JLabel label_12 = new JLabel("良品数:");
+		add(label_12, "6, 6, right, default");
+		productNum=new JTextField();  
+		add(productNum, "8, 6, fill, default");
+		productNum.setName("良品数");
+
+		JLabel label_13 = new JLabel("不良数:");
+		add(label_13, "10, 6, right, default");
+		scrapNum=new JTextField();    
+		add(scrapNum, "12, 6, fill, default");
+		scrapNum.setName("不良数");
+
+
+		JLabel label_14 = new JLabel("不良描述:");
+		add(label_14, "14, 6, right, default");		
+		scrapReason=new JTextField(); 
+		add(scrapReason, "16, 6, fill, default");
+
+		JLabel label_15 = new JLabel("用时:");
+		add(label_15, "2, 8, right, default");		
+		useTime=new JTextField();     
+		add(useTime, "4, 8, fill, default");
+		useTime.setName("用时");
+
+		label_3 = new JLabel("\u7A0B\u5E8F\u65F6\u95F4:");
+		add(label_3, "6, 8, right, default");
+
+		programTime = new JTextField();
+		programTime.setName("\u7528\u65F6");
+		add(programTime, "8, 8, fill, default");
+
+		JLabel label_11 = new JLabel("生产时间:");
+		add(label_11, "10, 8, right, default");
+
+		finishDate=new JXDatePicker();
+		finishDate.setFormats(new String[] {"yyyy\u5E74MM\u6708dd\u65E5"});
+		add(finishDate, "12, 8, left, default");
+		finishDate.getEditor().setName("生产时间");
+
+		label_2 = new JLabel("\u8C03\u673A\u7528\u65F6:");
+		add(label_2, "2, 10");
+		prepareTime=new JTextField(); 
+		add(prepareTime, "4, 10, fill, default");
+		prepareTime.setName("调机用时");
+
+
+		JLabel label_4 = new JLabel("调机员:");
+		add(label_4, "6, 10, right, default");		
+		prepareEmployee=new JComboBox<Employee>(new Vector<Employee>(Employee.loadOperaters()));
+		add(prepareEmployee, "8, 10, fill, default");
+
+		JLabel label_5 = new JLabel("首件检验人:");
+		add(label_5, "2, 12, right, default");		
+		firstChecker=new JComboBox<Employee>(new Vector<Employee>(Employee.loadAll()));
+		add(firstChecker, "4, 12, fill, default");
+		JLabel label_6 = new JLabel("首件检验数据:");
+		add(label_6, "6, 12, right, default");		
+		checkData=new JTextField();
+		add(checkData, "8, 12, fill, default");
+
+		JLabel label_7 = new JLabel("检验员:");
+		add(label_7, "10, 12, right, default");		
+		checker= new JComboBox<Employee>();
+		add(checker, "12, 12, fill, default");
+
+		JLabel label_8 = new JLabel("主管:");
+		add(label_8, "14, 12, right, default");		
+		superintendent=new JComboBox<Employee>(new Vector<Employee>(Employee.loadSuperintendents()));
+		add(superintendent, "16, 12, fill, default");
+
+
+
+		JLabel label_9 = new JLabel("备注:");
+		add(label_9, "2, 14, right, default");		
+		note=new JTextField();        
+		add(note, "4, 14, 13, 1, fill, default");
 		addValidators();
 		addEnterKeyAction();
 	}
@@ -236,11 +257,12 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 				operationId.setText(null);
 			}
 		}
-		
+
 	}
 	public void addValidators() {
 
 
+		getValidationGroup().add(programTime,Validators.numberMin(0));
 		getValidationGroup().add(getNum,Validators.REQUIRE_VALID_INTEGER);
 		getValidationGroup().add(getNum,Validators.numberMin(0));
 		getValidationGroup().add(getNum,Validators.REQUIRE_NON_EMPTY_STRING);
@@ -264,7 +286,7 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 	protected void dataBinding() {
 		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
 		BeanProperty<Object, Object> comboBoxBeanProperty = BeanProperty.create("selectedItem");
-		
+
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("getNum"), getNum, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("productNum"), productNum, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("scrapNum"), scrapNum, jTextFieldBeanProperty));
@@ -279,6 +301,7 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("prepareEmployee"), prepareEmployee, comboBoxBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("firstChecker"), firstChecker, comboBoxBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("superintendent"), superintendent, comboBoxBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("programTime"), programTime, jTextFieldBeanProperty));
 
 
 
@@ -305,7 +328,7 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 
 			}
 		};
-		
+
 		getNum.addKeyListener(enterKeyListener);
 		productNum.addKeyListener(enterKeyListener);
 		scrapNum.addKeyListener(enterKeyListener);

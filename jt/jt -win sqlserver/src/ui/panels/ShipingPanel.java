@@ -19,12 +19,13 @@ import com.jgoodies.forms.layout.RowSpec;
 import com.mao.jf.beans.ShipingBean;
 
 public class ShipingPanel extends BeanPanel<ShipingBean> {
-private JTextField numFld;
-private JTextField noteFld;
-private JXDatePicker shipingDateFld;
-private JTextField picFld;
-private NumberMaxE moneyMaxE;
-private JTextField shipingNo;
+	private JTextField numFld;
+	private JTextField noteFld;
+	private JXDatePicker shipingDateFld;
+	private JTextField picFld;
+	private NumberMaxE moneyMaxE;
+	private JTextField shipingNo;
+	private JTextField brokeNum;
 	public ShipingPanel(ShipingBean bean) {
 		super(bean);
 	}
@@ -35,7 +36,9 @@ private JTextField shipingNo;
 				ColumnSpec.decode("right:default"),
 				FormFactory.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),},
-			new RowSpec[] {
+				new RowSpec[] {
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
@@ -46,17 +49,17 @@ private JTextField shipingNo;
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,}));
-		
+
 		JLabel lblNewLabel = new JLabel("\u56FE\u53F7\uFF1A");
 		add(lblNewLabel, "2, 2, right, default");
-		
+
 		picFld = new JTextField();
 		add(picFld, "4, 2, fill, default");
 		picFld.setEditable(false);
-		
+
 		JLabel label_2 = new JLabel("\u9001\u8D27\u5355\u53F7\uFF1A");
 		add(label_2, "2, 4, right, default");
-		
+
 		shipingNo = new JTextField();
 		shipingNo.setName("\u6570\u91CF");
 		add(shipingNo, "4, 4, fill, default");
@@ -64,26 +67,32 @@ private JTextField shipingNo;
 		numFld = new JTextField();
 		add(numFld, "4, 6, fill, default");
 
+		brokeNum = new JTextField();
+		add(new JLabel("不良数："), "2, 8");
+		add(brokeNum, "4, 8, fill, default");
+
 		shipingDateFld = new JXDatePicker();
 		shipingDateFld.setFormats(new String[] {"yyyy-MM-dd"});
-		add(shipingDateFld, "4, 8, fill, default");
+		add(shipingDateFld, "4, 10, fill, default");
 
 		noteFld = new JTextField();
-		add(noteFld, "4, 10, fill, default");
+		add(noteFld, "4, 12, fill, default");
 		JLabel numLabel = new JLabel("\u53D1\u8D27\u6570\u91CF\uFF1A");
 		add(numLabel, "2, 6");
-		
+
 		JLabel label = new JLabel("\u53D1\u8D27\u65F6\u95F4\uFF1A");
-		add(label, "2, 8");
-		
+		add(label, "2, 10");
+
 		JLabel label_1 = new JLabel("\u5907  \u6CE8\uFF1A");
-		add(label_1, "2, 10, right, default");
-		
-		
+		add(label_1, "2, 12, right, default");
+
+
 		numFld.setName("数量");
 		shipingDateFld.getEditor().setName("发货时间");
 		noteFld.setName("备注");
-		 moneyMaxE=new NumberMaxE(this.bean.getPic().getRemainNotShipingNum());
+		moneyMaxE=new NumberMaxE(this.bean.getPic().getRemainNotShipingNum());
+		getValidationGroup().add(brokeNum,Validators.REQUIRE_VALID_INTEGER);
+		getValidationGroup().add(brokeNum,Validators.REQUIRE_NON_NEGATIVE_NUMBER);
 		getValidationGroup().add(numFld,moneyMaxE);
 		getValidationGroup().add(numFld,Validators.REQUIRE_NON_NEGATIVE_NUMBER);
 		getValidationGroup().add(numFld,Validators.REQUIRE_VALID_INTEGER);
@@ -96,6 +105,7 @@ private JTextField shipingNo;
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("shipingNo"), shipingNo, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("num"), numFld, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("note"), noteFld, jTextFieldBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("brokeNum"), brokeNum, jTextFieldBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean, BeanProperty.create("shipingDate"), shipingDateFld, BeanProperty.create("date")));
 
 	}
@@ -106,5 +116,5 @@ private JTextField shipingNo;
 		moneyMaxE.setMax(bean.getPic().getRemainNotShipingNum());
 	}
 
-	
+
 }

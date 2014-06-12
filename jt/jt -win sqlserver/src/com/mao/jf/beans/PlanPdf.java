@@ -96,7 +96,7 @@ public class PlanPdf {
 		chunk.setLineHeight(30);
 		paragraph.add(chunk);
 		paragraph.add("    ");
-		chunk=new Chunk(String.format("纳期时间：%1$tY年%1$tm月%1$td日", plan.getPic().getBillDate()),underLine);
+		chunk=new Chunk(String.format("纳期时间：%1$tY年%1$tm月%1$td日", plan.getPic().getRequestDate()),underLine);
 		chunk.setLineHeight(30);
 		paragraph.add(chunk);
 

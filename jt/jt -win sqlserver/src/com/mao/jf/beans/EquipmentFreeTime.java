@@ -16,7 +16,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
-import org.apache.commons.collections.bag.TreeBag;
 
 @Entity
 public class EquipmentFreeTime {
@@ -65,36 +64,27 @@ public class EquipmentFreeTime {
 	@PrePersist
 	public void computeFreeTime(){
 		long realtime = getEndDate().getTime()-getStartDate().getTime();
-		long days = realtime/86400000;
-		long hour = realtime%86400000;
-		freeTime=hour+days*equipment.getWorkTime();
-		Calendar calendarStart=Calendar.getInstance();
-		calendarStart.setTime(startDate);
-		if(calendarStart.get(Calendar.HOUR_OF_DAY)<8){
-			calendarStart.set(Calendar.HOUR_OF_DAY, 8);
-			calendarStart.set(Calendar.MINUTE, 0);
-			calendarStart.set(Calendar.SECOND, 0);
-			freeTime-=(calendarStart.getTimeInMillis()-startDate.getTime());
+		long days = realtime/86400000l;
+		long dayTime = realtime%86400000l;
+		freeTime=dayTime+days*equipment.getWorkTime()*60000l;
+		if(getEndDate().getTime()<getStartDate().getTime()){
+			freeTime-=86400000l-equipment.getWorkTime()*60000l;
+		}else{ 
+			long workTime = equipment.getWorkTime()*60000l-getDayTime(getEndDate());		
+			if(workTime<0)freeTime-=workTime;
 		}
-		Calendar calendarEnd = Calendar.getInstance();
-		calendarEnd.setTime(endDate);
-		if(calendarEnd.get(Calendar.HOUR_OF_DAY)<8){
-			calendarEnd.set(Calendar.HOUR_OF_DAY, 0);
-			calendarEnd.set(Calendar.MINUTE, 0);
-			calendarEnd.set(Calendar.SECOND, 0);
-			freeTime-=(endDate.getTime()-calendarEnd.getTimeInMillis());
-		}
-		
-		if(getDayTime(calendarStart)>getDayTime(calendarEnd)
-				&&calendarEnd.get(Calendar.HOUR_OF_DAY)>8){
-			
-			freeTime-=8*3600000l;
-		}
-		if(freeTime<0)freeTime=0;
 		
 	}
-	
-	public long getDayTime(Calendar calendar) {
+	public static long getDayTime(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+		int minute=calendar.get(Calendar.MINUTE);
+		int second=calendar.get(Calendar.SECOND);
+		int miSecond=calendar.get(Calendar.MILLISECOND);
+		return hour*3600000l+minute*60000l+second*1000+miSecond;
+	}
+	public static long getDayTime(Calendar calendar) {
 		int hour = calendar.get(Calendar.HOUR_OF_DAY);
 		int minute=calendar.get(Calendar.MINUTE);
 		int second=calendar.get(Calendar.SECOND);

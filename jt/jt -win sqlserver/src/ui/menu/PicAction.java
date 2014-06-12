@@ -82,7 +82,7 @@ public class PicAction extends AbstractAction {
 			case "添加发票信息":
 				editFp();
 				break;
-			case "添加外协发货信息":
+			case "添加外协交货信息":
 				editShipingOut();
 				break;
 			case "添加发货信息":
@@ -368,7 +368,7 @@ public class PicAction extends AbstractAction {
 			
 		};
 		
-		BeanDialog<ShipingBean> dialog =new BeanDialog<ShipingBean>(panel,"发票管理") {
+		BeanDialog<ShipingBean> dialog =new BeanDialog<ShipingBean>(panel,"添加发货信息") {
 			
 			@Override
 			public boolean okButtonAction() {
@@ -378,7 +378,6 @@ public class PicAction extends AbstractAction {
 		dialog.setBounds(100, 100, 500,500);
 		dialog.setLocationRelativeTo(null);
 		dialog.setVisible(true);
-		
 		
 		
 	}
@@ -415,7 +414,7 @@ private void editShipingOut() {
 			
 		};
 		
-		BeanDialog<ShipingOutBean> dialog =new BeanDialog<ShipingOutBean>(panel,"外协发票管理") {
+		BeanDialog<ShipingOutBean> dialog =new BeanDialog<ShipingOutBean>(panel,"添加外协交货信息") {
 			
 			@Override
 			public boolean okButtonAction() {

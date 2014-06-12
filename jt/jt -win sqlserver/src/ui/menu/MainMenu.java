@@ -30,6 +30,8 @@ public class MainMenu extends JMenuBar {
 		add(menu);
 		if(Userman.loginUser.getMenus().contains("月度统计"))
 			menu.add("月度统计").addActionListener(action);
+		if(Userman.loginUser.getMenus().contains("生产数据管理"))
+			menu.add("生产数据管理").addActionListener(action);
 		if(Userman.loginUser.getMenus().contains("年度统计"))
 			menu.add("年度统计").addActionListener(action);
 		if(Userman.loginUser.getMenus().contains("员工产出统计"))

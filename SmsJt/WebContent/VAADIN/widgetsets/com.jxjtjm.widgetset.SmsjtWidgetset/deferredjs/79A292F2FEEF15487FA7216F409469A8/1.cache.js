@@ -1,0 +1,1 @@
+$wnd.com_jxjtjm_widgetset_SmsjtWidgetset.runAsyncCallback1('i8(1207,1,hnd);_.nc=function f$b(){vPb((!qPb&&(qPb=new wPb),qPb),this.b.e)};tbd(Vh)(1);\n//# sourceURL=com.jxjtjm.widgetset.SmsjtWidgetset-1.js\n')

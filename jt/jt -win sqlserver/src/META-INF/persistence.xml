@@ -12,8 +12,8 @@
 			<property name="javax.persistence.jdbc.user" value="rdp" />
 			<property name="javax.persistence.jdbc.password" value="mao564864" />
 			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider" />
-			<property name="hibernate.show_sql" value="false" />
-			<property name="hibernate.format_sql" value="false" />
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="true" />
 			<property name="hibernate.connection.provider_class"
 				value="org.hibernate.connection.C3P0ConnectionProvider" />
 			<!-- 最小连接数 -->

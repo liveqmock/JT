@@ -2,7 +2,6 @@ package com.mao.jf.beans;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.beans.Transient;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -11,8 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
@@ -29,7 +27,11 @@ public class OperationWork extends BeanMao {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private int id;
-
+     
+	@Transient
+	@Caption("图号")
+	private String picid;
+	
 	@ManyToOne
 	@JoinColumn(name = "operationPlan", referencedColumnName = "id")
 	@Caption(value="工序名")
@@ -85,7 +87,7 @@ public class OperationWork extends BeanMao {
 	@Caption(value="调机时间")
 	private float prepareTime;
 	@Caption(value="单件程序时间")
-	private float programTime;
+	private long programTime;
 	
 
 	@Caption( value= "首检数据")
@@ -187,15 +189,22 @@ public class OperationWork extends BeanMao {
 
 
 
+	public float getProgramTime() {
+		return programTime/60000f;
+	}
+
+
 	public float getWorkTime() {
 		return workTime;
 	}
-	public float getProgramTime() {
-		return programTime;
+	
+	public Date getProgramTimeDate() {
+		return new Date(programTime-8*3600000);
 	}
 
-	public void setProgramTime(float programTime) {
-		this.programTime = programTime;
+	
+	public void setProgramTimeDate(Date programTime) {
+		this.programTime = programTime.getTime()+8*3600000;
 	}
 
 	public void setChecker(Employee checker) {
@@ -259,6 +268,10 @@ public class OperationWork extends BeanMao {
 
 	public void setCheckData(String checkData) {
 		this.checkData = checkData;
+	}
+
+	public String getPicid() {
+		return getPlan().getPicId();
 	}
 
 }

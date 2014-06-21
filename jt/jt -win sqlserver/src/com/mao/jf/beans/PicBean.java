@@ -633,6 +633,10 @@ public class PicBean  {
 	public float getFpMoney() {
 		return bill.getFpMoney();
 	}
+	@Caption("未开票金额")
+	public float getNotFpMoney() {
+		return getReportTaxMoney()-bill.getFpMoney();
+	}
 	@Caption("发票张数")
 	public int getFpNum() {
 		return bill.getFpNum();

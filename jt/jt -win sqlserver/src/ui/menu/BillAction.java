@@ -21,7 +21,6 @@ import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-import ui.costPanes.EmployeeCostPnl;
 import ui.costPanes.EmployeePnl;
 import ui.costPanes.OperationPnl;
 import ui.costPanes.PlanCreatePanel;
@@ -153,9 +152,6 @@ public class BillAction extends AbstractAction {
 
 			case "查看订单组":
 				showBillGroup();
-				break;
-			case "员工产出统计":
-				showEmployeeCost();
 				break;
 			case "工序产出统计":
 				showWorkCost();
@@ -315,16 +311,6 @@ public class BillAction extends AbstractAction {
 
 	}
 
-	private void showEmployeeCost() {
-		JDialog dialog=new JDialog();
-		dialog.setContentPane(new EmployeeCostPnl());
-		dialog.setLocationRelativeTo(null);
-		dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
-
-		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-		dialog.setVisible(true);
-
-	}
 
 
 

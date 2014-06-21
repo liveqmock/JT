@@ -1,6 +1,7 @@
 package ui.menu;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dialog.ModalityType;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
@@ -20,9 +21,10 @@ import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 
-import ui.costPanes.EmployeeCostPnl;
 import ui.costPanes.EmployeePnl;
+import ui.costPanes.EmployeeStaticPnl;
 import ui.costPanes.EquipmentManagerPnl;
 import ui.costPanes.OperationPnl;
 import ui.costPanes.OperationWorkPnl;
@@ -42,6 +44,7 @@ import ui.panels.ChangePasswdPanel;
 import ui.panels.CustomPanel;
 import ui.panels.UsermanPnl;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.BillBean;
 import com.mao.jf.beans.Custom;
@@ -245,7 +248,30 @@ public class MenuAction extends AbstractAction {
 
 	private void showEmployeeCost() {
 		JDialog dialog=new JDialog();
-		dialog.setContentPane(new EmployeeCostPnl());
+		dialog.setContentPane(
+				new EmployeeStaticPnl("Select [操作员],sum([程序时间折算合计]),sum([生产用时]),sum([调机时间]),sum([程序时间折算合计]),sum([产品数]),sum([报废数]) from dbo.[员工日统计] where 操作员 like ? and [生产日期] between ? and ? group by [操作员] ",null,null,null){
+
+					@Override
+					public Container  dbClickAction() {
+						return new EmployeeStaticPnl("select * from 员工日统计  where 操作员 like ? and [生产日期] between ? and ?",(String)name.getSelectedItem(),sDate.getDate(),eDate.getDate()) {
+							
+							@Override
+							public Container  dbClickAction() {
+								return new EmployeeStaticPnl("select * from employeeWorkDetail  where 操作员 like ? and [生产日期] between ? and ?",(String)name.getSelectedItem(),sDate.getDate(),eDate.getDate()) {
+									
+									@Override
+									public Container  dbClickAction() {
+										// TODO 自动生成的方法存根
+										return showPic();
+									}
+								};
+							}
+						};
+						
+					}
+					
+				}
+				);
 		dialog.setLocationRelativeTo(null);
 		dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
 
@@ -307,7 +333,7 @@ public class MenuAction extends AbstractAction {
 
 		
 		
-		OperationWorkPnl operationWorkPnl=new OperationWorkPnl(new OperationWork());
+		final OperationWorkPnl operationWorkPnl=new OperationWorkPnl(new OperationWork());
 		BeansPanel<OperationWork> panel=new BeansPanel<OperationWork>(new ArrayList<OperationWork>(),operationWorkPnl,OperationWork.class) {
 
 			@Override
@@ -319,6 +345,7 @@ public class MenuAction extends AbstractAction {
 			@Override
 			protected OperationWork createNewBean() {
 				OperationWork operationWork= new OperationWork();
+				operationWorkPnl.init();
 				operationWork.setEmployee(getBeanPanel().getBean().getEmployee());
 				return operationWork;
 			}

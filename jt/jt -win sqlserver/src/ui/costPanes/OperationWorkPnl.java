@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Vector;
 
 import javax.swing.JComboBox;
@@ -31,6 +32,8 @@ import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Employee;
 import com.mao.jf.beans.OperationPlan;
 import com.mao.jf.beans.OperationWork;
+import com.toedter.calendar.JCalendar;
+import com.toedter.calendar.JTextFieldDateEditor;
 
 public class OperationWorkPnl extends BeanPanel<OperationWork> {
 	private JTextField getNum     ;
@@ -56,7 +59,7 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 	private JTextField picId;
 	private JLabel label_2;
 	private JLabel label_3;
-	private JTextField programTime;
+	private JTextFieldDateEditor programTime;
 
 	/**
 	 * Create the panel.
@@ -185,7 +188,7 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		label_3 = new JLabel("\u7A0B\u5E8F\u65F6\u95F4:");
 		add(label_3, "6, 8, right, default");
 
-		programTime = new JTextField();
+		programTime = new JTextFieldDateEditor("HH ±mm∑÷ss√Î","0",'0');
 		programTime.setName("\u7528\u65F6");
 		add(programTime, "8, 8, fill, default");
 
@@ -262,7 +265,6 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 	public void addValidators() {
 
 
-		getValidationGroup().add(programTime,Validators.numberMin(0));
 		getValidationGroup().add(getNum,Validators.REQUIRE_VALID_INTEGER);
 		getValidationGroup().add(getNum,Validators.numberMin(0));
 		getValidationGroup().add(getNum,Validators.REQUIRE_NON_EMPTY_STRING);
@@ -301,7 +303,7 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("prepareEmployee"), prepareEmployee, comboBoxBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("firstChecker"), firstChecker, comboBoxBeanProperty));
 		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("superintendent"), superintendent, comboBoxBeanProperty));
-		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("programTime"), programTime, jTextFieldBeanProperty));
+		bindingGroup.addBinding( Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,  BeanProperty.create("programTimeDate"), programTime, BeanProperty.create("date")));
 
 
 
@@ -346,5 +348,9 @@ public class OperationWorkPnl extends BeanPanel<OperationWork> {
 		checkData.addKeyListener(enterKeyListener);
 		operationName.addKeyListener(enterKeyListener);
 		planId.addKeyListener(enterKeyListener);
+	}
+	public void init() {
+		operationId.setText(null);
+		
 	}
 }

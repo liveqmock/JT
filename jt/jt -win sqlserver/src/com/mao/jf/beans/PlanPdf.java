@@ -80,8 +80,12 @@ public class PlanPdf {
 		Image img = Image.getInstance(PlanPdf.class.getResource("logo.PNG"));
 		img.scalePercent(30f);
 		paragraph.add(new Chunk(img,-10,-5,true));
+		
 		phrase.setFont(fontChinese);
 		paragraph.add(phrase);
+		img = Image.getInstance(PlanPdf.class.getResource("planTop.png"));
+		paragraph.add(new Chunk(img,175,-20,true));
+		img.scalePercent(80f);
 		document.add(paragraph);
 		paragraph = new Paragraph();
 

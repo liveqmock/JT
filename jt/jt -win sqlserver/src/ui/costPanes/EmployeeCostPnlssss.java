@@ -34,8 +34,8 @@ import ui.customComponet.RsTablePane;
 import com.mao.jf.beans.Employee;
 import com.mao.jf.beans.SessionData;
 
-public class EmployeeCostPnl extends JPanel {
-	private static String sql="select * from 员工日统计 where 操作员 like ? and 生产时间 between ? and ? order by 操作员,生产时间";
+public class EmployeeCostPnlssss extends JPanel {
+	private static String sql="select * from 员工日统计  where 操作员 like ? and 生产时间 between ? and ? order by 操作员,生产时间";
 	private JXDatePicker sDate;
 	private RsTablePane tablePane;
 	private JComboBox<String> name;
@@ -46,7 +46,7 @@ public class EmployeeCostPnl extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public EmployeeCostPnl() {
+	public EmployeeCostPnlssss() {
 		setLayout(new BorderLayout(0, 0));
 
 		JPanel panel = new JPanel();

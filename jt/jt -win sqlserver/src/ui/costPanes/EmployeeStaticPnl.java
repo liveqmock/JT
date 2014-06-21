@@ -2,6 +2,7 @@ package ui.costPanes;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dialog.ModalityType;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
@@ -30,28 +31,30 @@ import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXTable;
 
+import sun.net.www.content.image.jpeg;
 import ui.customComponet.RsTablePane;
 import ui.panels.PicView;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.mao.jf.beans.BeanMao;
 import com.mao.jf.beans.Employee;
 import com.mao.jf.beans.PicBean;
 import com.mao.jf.beans.SessionData;
 
-public class EmployeeOperationDetailPnl extends JPanel {
-	private static String sql="select b.name 员工,e.id,e.custom 客户,e.picid 图号,c.name 工序,finishdate 完成日期,a.worktime 操作时间, a.worktime*wage 工资,a.worktime*c.cost 产值,a.scrapnum 报废数量, e.reportprice*a.scrapnum 报废成本 	from employee b left join operationwork   a on a.employee=b.id  join operationplan c on a.operationplan = c.id 	join  billplan d on c.billplan=d.id join bill e on d.bill =e.id   where b.name like ?  and finishdate between ? and ?  union select  a.name,e.id,e.custom 客户,e.picid,c.name+'_调机' oper,finishdate,b.worktime 操作时间, b.worktime*wage 工资,b.worktime*c.cost 产值,null,null from  employee a  left join operationwork b on b.prepareemployee =a.id join operationplan  c on b.operationplan = c.id join  billplan d on c.billplan=d.id join bill e on d.bill =e.id  where a.name like ? and finishdate between ?  and ?";
-	private JXDatePicker sDate;
+public abstract class EmployeeStaticPnl extends JPanel {
+	private  String sql="select b.name 员工,e.id,e.custom 客户,e.picid 图号,c.name 工序,finishdate 完成日期,a.worktime 操作时间, a.worktime*wage 工资,a.worktime*c.cost 产值,a.scrapnum 报废数量, e.reportprice*a.scrapnum 报废成本 	from employee b left join operationwork   a on a.employee=b.id  join operationplan c on a.operationplan = c.id 	join  billplan d on c.billplan=d.id join bill e on d.bill =e.id   where b.name like ?  and finishdate between ? and ?  union select  a.name,e.id,e.custom 客户,e.picid,c.name+'_调机' oper,finishdate,b.worktime 操作时间, b.worktime*wage 工资,b.worktime*c.cost 产值,null,null from  employee a  left join operationwork b on b.prepareemployee =a.id join operationplan  c on b.operationplan = c.id join  billplan d on c.billplan=d.id join bill e on d.bill =e.id  where a.name like ? and finishdate between ?  and ?";
+	protected JXDatePicker sDate;
 	private RsTablePane tablePane;
-	private JComboBox<String> name;
+	protected JComboBox<String> name;
 	private JPopupMenu popupMenu;
-	private JXDatePicker eDate;
+	protected JXDatePicker eDate;
 
 
 	/**
 	 * Create the panel.
 	 */
-	public EmployeeOperationDetailPnl(String nameStr,Date startDate,Date endDate) {
-
+	public EmployeeStaticPnl(String sql,String nameStr,Date startDate,Date endDate) {
+		this.sql=sql;
 		setLayout(new BorderLayout(0, 0));
 
 		JPanel panel = new JPanel();
@@ -66,8 +69,8 @@ public class EmployeeOperationDetailPnl extends JPanel {
 
 		name = new JComboBox<>(Employee.getNames());
 		panel.add(name);
-//		name.setMinimumSize(new Dimension(60, 20));
-//		name.setMaximumSize(new Dimension(100, 40));
+		//		name.setMinimumSize(new Dimension(60, 20));
+		//		name.setMaximumSize(new Dimension(100, 40));
 		JLabel label_2 = new JLabel("\u65E5\u671F\uFF1A");
 		panel.add(label_2);
 
@@ -146,7 +149,7 @@ public class EmployeeOperationDetailPnl extends JPanel {
 
 
 		});
-		
+
 
 		name.setSelectedItem(nameStr);
 		sDate.setDate(startDate);
@@ -154,7 +157,8 @@ public class EmployeeOperationDetailPnl extends JPanel {
 		search();
 	}
 	private void search() {
-		if(sDate.getDate()==null||eDate.getDate()==null) JOptionPane.showMessageDialog(EmployeeOperationDetailPnl.this, "必须输入日期");
+		if(sDate.getDate()==null&&eDate.getDate()==null)return ;
+		if(sDate.getDate()==null||eDate.getDate()==null) JOptionPane.showMessageDialog(this, "必须输入日期");
 		try(PreparedStatement pst=SessionData.getConnection().prepareStatement(sql)){
 			pst.setString(1, "%"+name.getSelectedItem()+"%");
 			pst.setDate(2, new java.sql.Date(sDate.getDate().getTime()));
@@ -172,21 +176,31 @@ public class EmployeeOperationDetailPnl extends JPanel {
 		}
 
 	}
-	private void dbClick() {
-		int picId=(int) tablePane.getTable().getValueAt(tablePane.getTable().getSelectedRow(), 1);
-		PicBean pic=BeanMao.beanManager.find(PicBean.class, picId);
-		if(StringUtils.isNoneBlank(pic.getImageUrl())){
-			
+	public abstract Container  dbClickAction() ;
+	public void dbClick() {
+		Container container=dbClickAction();
+		if(container!=null){
 			JDialog dialog=new JDialog();
-			PicView imageView=new PicView();
-			dialog.setContentPane(imageView);
+			dialog.setContentPane(container);
 			dialog.setLocationRelativeTo(null);
 			dialog.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
 
-			imageView.showFile(pic.getImageUrl());
 			dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 			dialog.setVisible(true);
-			
 		}
+	}
+	public Container  showPic() {
+
+		int picId=(int) tablePane.getTable().getValueAt(tablePane.getTable().getSelectedRow(), 2);
+		PicBean pic=BeanMao.beanManager.find(PicBean.class, picId);
+		if(StringUtils.isNoneBlank(pic.getImageUrl())){
+
+			PicView imageView=new PicView();
+
+			imageView.showFile(pic.getImageUrl());
+			return imageView;
+		}
+		return null;
+
 	}
 }

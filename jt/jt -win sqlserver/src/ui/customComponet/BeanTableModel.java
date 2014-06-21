@@ -269,6 +269,7 @@ public class BeanTableModel<T> extends AbstractTableModel  {
 		beans.remove(bean);
 		BeanMao.removeBean( bean);
 		fireTableRowsDeleted(row, row);
+		fireTableDataChanged();
 	}
 
 	@Override

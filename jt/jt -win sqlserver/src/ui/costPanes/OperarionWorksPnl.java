@@ -19,7 +19,9 @@ public class OperarionWorksPnl extends BeansPanel<OperationWork> {
 	@Override
 	public OperationWork createNewBean() {
 		// TODO 自动生成的方法存根
-		return new OperationWork(plan);
+		OperationWork operationWork= new OperationWork(plan);
+		operationWork.setOperationPlan(getPanelBean().getOperationPlan());
+		return operationWork ;
 	}
 	public PicPlan getPlan() {
 		return plan;

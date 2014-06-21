@@ -92,6 +92,7 @@ public class PicPanel extends BeanPanel<PicBean> {
 	private JFileChooser fileChooser;
 	private File imgFile;
 	private JButton addOutCustomBt;
+	private JCheckBox complete;
 	
 	public PicPanel(PicBean bean) {
 		super(bean);		
@@ -127,6 +128,8 @@ public class PicPanel extends BeanPanel<PicBean> {
 				FormFactory.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),},
 				new RowSpec[] {
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
@@ -352,8 +355,11 @@ public class PicPanel extends BeanPanel<PicBean> {
 		noteFld = new JTextField();
 		noteFld.setColumns(10);
 		panel.add(noteFld, "4, 30, 5, 1, fill, default");
+		
+		complete=new JCheckBox("ÒÑÍê½á");
 
-
+		panel.add(complete, "4, 32, 5, 1, fill, default");
+		
 
 	}
 
@@ -579,6 +585,7 @@ public class PicPanel extends BeanPanel<PicBean> {
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("gjh"), gjh, jTextFieldBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("meterialCode"), meterialCode, jTextFieldBeanProperty).bind();
 		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("outContent"), outContent, jTextFieldBeanProperty).bind();
+		Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, bean,BeanProperty.create("complete"), complete, checkBoxBeanProperty).bind();
 		
 	}
 

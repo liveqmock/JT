@@ -102,7 +102,7 @@ public abstract class EmployeeStaticPnl extends JPanel {
 		add(tablePane, BorderLayout.CENTER);
 		final JXTable table = tablePane.getTable();
 		popupMenu=new JPopupMenu();
-		popupMenu.add(new AbstractAction("查看图纸"){
+		popupMenu.add(new AbstractAction("明细"){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -160,12 +160,9 @@ public abstract class EmployeeStaticPnl extends JPanel {
 		if(sDate.getDate()==null&&eDate.getDate()==null)return ;
 		if(sDate.getDate()==null||eDate.getDate()==null) JOptionPane.showMessageDialog(this, "必须输入日期");
 		try(PreparedStatement pst=SessionData.getConnection().prepareStatement(sql)){
-			pst.setString(1, "%"+name.getSelectedItem()+"%");
+			pst.setString(1, name.getSelectedItem()==null||name.getSelectedItem().equals("")?"%":(String)name.getSelectedItem());
 			pst.setDate(2, new java.sql.Date(sDate.getDate().getTime()));
 			pst.setDate(3, new java.sql.Date(eDate.getDate().getTime()));
-			pst.setString(4, "%"+name.getSelectedItem()+"%");
-			pst.setDate(5, new java.sql.Date(sDate.getDate().getTime()));
-			pst.setDate(6, new java.sql.Date(eDate.getDate().getTime()));
 			RowSetFactory rowSetFactory = RowSetProvider.newFactory();
 			CachedRowSet crs = rowSetFactory.createCachedRowSet();
 			crs.populate(pst.executeQuery());
@@ -175,6 +172,14 @@ public abstract class EmployeeStaticPnl extends JPanel {
 			e1.printStackTrace();
 		}
 
+	}
+	public String getName() {
+		try{
+		return (String)tablePane.getTable().getValueAt(tablePane.getTable().getSelectedRow(), 0);
+		}catch(Exception e){
+			return null;
+		}
+		
 	}
 	public abstract Container  dbClickAction() ;
 	public void dbClick() {

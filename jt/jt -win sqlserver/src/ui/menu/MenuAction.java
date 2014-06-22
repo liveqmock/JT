@@ -249,15 +249,15 @@ public class MenuAction extends AbstractAction {
 	private void showEmployeeCost() {
 		JDialog dialog=new JDialog();
 		dialog.setContentPane(
-				new EmployeeStaticPnl("Select [操作员],sum([程序时间折算合计]),sum([生产用时]),sum([调机时间]),sum([程序时间折算合计]),sum([产品数]),sum([报废数]) from dbo.[员工日统计] where 操作员 like ? and [生产日期] between ? and ? group by [操作员] ",null,null,null){
+				new EmployeeStaticPnl("Select [操作员],sum([程序时间折算合计]) 程序时间折算合计,sum([生产用时]) 生产用时,sum([调机时间]) 调机时间,sum([合计工作时间]) 合计工作时间,sum([产品数]) 产品数,sum([报废数])  报废数 from dbo.[员工日统计] where 操作员 like ? and [生产日期] between ? and ? group by [操作员] ",null,null,null){
 
 					@Override
 					public Container  dbClickAction() {
-						return new EmployeeStaticPnl("select * from 员工日统计  where 操作员 like ? and [生产日期] between ? and ?",(String)name.getSelectedItem(),sDate.getDate(),eDate.getDate()) {
+						return new EmployeeStaticPnl("select * from 员工日统计  where 操作员 like ? and [生产日期] between ? and ?",getName(),sDate.getDate(),eDate.getDate()) {
 							
 							@Override
 							public Container  dbClickAction() {
-								return new EmployeeStaticPnl("select * from employeeWorkDetail  where 操作员 like ? and [生产日期] between ? and ?",(String)name.getSelectedItem(),sDate.getDate(),eDate.getDate()) {
+								return new EmployeeStaticPnl("select * from employeeWorkDetail  where 操作员 like ? and [生产日期] between ? and ?",getName(),sDate.getDate(),eDate.getDate()) {
 									
 									@Override
 									public Container  dbClickAction() {
